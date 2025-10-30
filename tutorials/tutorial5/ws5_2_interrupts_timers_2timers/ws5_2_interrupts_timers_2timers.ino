@@ -46,8 +46,7 @@ void setup() {
 }
 
 void loop() {
-  // Blink the red LED
-  
+  // Blink the red LED - without timer
   digitalWrite(RED_LED, HIGH); delay(250);
   digitalWrite(RED_LED, LOW);  delay(250);
 
