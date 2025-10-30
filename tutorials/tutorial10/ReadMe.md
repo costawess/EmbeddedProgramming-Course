@@ -1,4 +1,4 @@
-# Tutorial 10 - Setting up the Integrated Development Environment
+# Tutorial 10 - Millis()
 
 ## Millis()
 
@@ -24,15 +24,5 @@ void loop() {
 }
 
 ```
-
-
-## Interrupts
-
-### Hardware Interrupts
-
-
-
-### Software Interrupts - Timers
-
 
 

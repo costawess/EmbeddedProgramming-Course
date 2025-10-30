@@ -4,32 +4,35 @@
 
 Here you will find a set of tutorials to practice the Embedded Programming concepts using the ESP32 and the Arduino IDE.
 
-![pcb used in the practicals.](pcb.png)
+![pcb used in the practicals.](figures/pcb.png)
 
 This repository is intended to facilitate the understanding of the concepts presented in class, providing step-by-step examples, exercises, and references that students can reproduce and expand upon independently. By following the tutorials, you will gradually build the skills necessary to work with embedded systems in a structured and practical way.
 
 This page is available at: [https://github.com/costawess/EmbeddedProgramming-Course/](https://github.com/costawess/EmbeddedProgramming-Course/)
 
+---
 
-## Content
+## EP Content
 
 The content of each tutorial is listed below:
 
-- [Tutorial 1](/tutorials/tutorial1/ReadMe.md) - Setting up the Arduino IDE. Hello World.
-- [Tutorial 2](/tutorials/tutorial2/ReadMe.md) - Input and Output.
-- [Tutorial 3](/tutorials/tutorial3/ReadMe.md) - UART Communication.
-- [Tutorial 4](/tutorials/tutorial4/ReadMe.md) - Variables/Data Types.
-- [Tutorial 5](/tutorials/tutorial5/ReadMe.md) - Control Flow: The if-else and switch statements.
-- [Tutorial 6](/tutorials/tutorial6/ReadMe.md) - Control Flow: The for, while, and do-while loop statements.
-- [Tutorial 7](/tutorials/tutorial7/ReadMe.md) - Functions.
-- [Tutorial 8](/tutorials/tutorial8/ReadMe.md) - Arrays and Strings.
-- [Tutorial 9](/tutorials/tutorial9/ReadMe.md) - Pointers.
-- [Tutorial 10](/tutorials/tutorial10/ReadMe.md) - Millis() and Interrupts.
-- [Tutorial 11](/tutorials/tutorial11/ReadMe.md) - Structures.
-- [Tutorial 12](/tutorials/tutorial12/ReadMe.md) - Libraries.
+- [Workshop 1](/tutorials/tutorial1/ReadMe.md) - Setting up the Arduino IDE. Hello World.
+- [Workshop 2](/tutorials/tutorial2/ReadMe.md) - Flowcharts, if-else, while.
+- [Workshop 3](/tutorials/tutorial3/ReadMe.md) - Variables, Data types, If and Loops.
+- [Workshop 4](/tutorials/tutorial4/ReadMe.md) - UART and ADC.
+- [Workshop 5](/tutorials/tutorial5/ReadMe.md) - Functions, Libraries, Interrupts, Timers
+- [Workshop 6](/tutorials/tutorial6/ReadMe.md) - Kitchen Timer.
+- [Workshop 7](/tutorials/tutorial7/ReadMe.md) - I2C protocol and State Machine.
 
-- [Tutorial 13](/tutorials/tutorial13/ReadMe.md) - I2C Communication.
-- [Tutorial 14](/tutorials/tutorial134ReadMe.md) - SPI Communication.
+---
+
+## Extra Tutorials
+
+⚠️ This section is still in progress.
+
+
+---
+
 
 ## How to use
 

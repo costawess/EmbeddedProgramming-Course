@@ -1,132 +1,126 @@
-# Tutorial 2 - Input and Output
+# Tutorial 5 - If-else, While, and Flowcharts
 
-## Learning Objectives
 
-- Understand the concept of GPIO (General Purpose Input/Output).
-- Configure ESP32 digital pins as input and output.
-- Write simple programs to control LEDs.
-- Read the state of physical buttons and use them to interact with LEDs.
-- Develop basic conditional control logic using if/else statements.
 
-## Introduction to GPIOs
+## if statement
 
-### What are digital input and output pins?
 
-- **Digital Output:**  
-    A pin configured as output can send a HIGH (3.3V) or LOW (0V) signal. Then powering an LED for instance.
-    *Example*: turning an LED on or off.  
-
-- **Digital Input:**  
-    A pin configured as input can read external signals as HIGH or LOW.  
-    *Example*: checking if a button is pressed.
-
-Important to note that in many microcontrollers, every GPIO is at least digital. Some GPIOs have extra capabilities, such as analog input, PWM, or special functions such as connectivity protocols. For the ESP32-WROOM-32, please refer to the "Pin Definitions" chapter in the [datasheet](https://www.espressif.com/sites/default/files/documentation/esp32-wroom-32_datasheet_en.pdf).
-
-### Basic configuration in code
+```cpp
+int x = 10;
+int y = 20;
+if (x > y) {
+  printf("x is greater than y"); // msg
+}
+```
 
 ![alt text](image.png)
 
-## Output Examples – LEDs
-
-### Turning a single LED on and off
+### if-else statement
 
 ```cpp
-// Turn on an LED using ESP32
-
-// Define the pin where the LED is connected
-const int ledPin = 23;
-
-void setup() {
-  // Initialize the LED pin as an output
-  pinMode(ledPin, OUTPUT);
-
-  // Turn the LED on
-  digitalWrite(ledPin, HIGH);
+int x = 10;
+int y = 20;
+if (x > y) {
+  printf("x is greater than y"); //msg1
 }
-
-void loop() {
-  // Nothing else to do in the loop since the LED remains on
+else
+{
+    printf("x is greater than y"); //msg2
 }
 ```
 
-- `const int`: Declares the variable (`ledPin`) as a constant integer.
-- `pinMode`: Initializes the pin as `INPUT` or `OUTPUT`. This allows the pin to send/write voltage to the LED (OUTPUT) or to receive/read (INPUT).
-- `digitalWrite`: Sets the output of the pin to `HIGH` or `LOW`.
+![alt text](image-1.png)
 
-<details>
-<summary>Exercise 1</summary>
 
-**Task:**  
-Develop a program to light up multiple LEDs.
-
-**Solution:**  
-[ex1](ex1/ex1.ino)
-</details>
-
-<details>
-<summary>Exercise 2</summary>
-
-**Task:**  
-Develop a program to light up multiple LEDs. Make them blink in sequence (use the `delay()` function).  
-
-**Solution:**  
-[ex2](ex2/ex2.ino)
-
-</details>
-
-## Input Examples – Buttons
+### if-else-if statement
 
 ```cpp
-// Reading the state of a button with ESP32
+int x = 10;
 
-const int buttonPin = 34;  // GPIO where the button is connected
-int buttonState = 0; // state of the button
+if (x < 0) {
+  printf("x is less than 0"); // message 1
+}
+else if (x<10)
+{
+    printf("x is greater than or equal to 0 and less than 10"); // message 2
+}
+else
+{
+    printf("x is greater than or equal to 10"); // message 3
+}
+```
+
+![alt text](image-2.png)
+
+
+## The switch statement
+
+Instead of using many `if..else` statements, one can use the `switch` statement. The `switch` statement selects one of the code blocks to be executed according to an specific condition/expression:
+
+```cpp
+switch (condition_or_expression) {
+  case Case1:
+    // code block 1
+    break;
+  case Case2:
+    // code block 2
+    break;
+  case Case3:
+    // code block 3
+    break;
+  default:
+    // default code
+}
+```
+
+
+![alt text](image-3.png)
+
+### Example: Switch statement
+
+```cpp
+int day = 3;
+
+switch (day) {
+  case 6:
+    printf("Today is Saturday");
+    break;
+  case 7:
+    printf("Today is Sunday");
+    break;
+  default:
+    printf("Weekday! ;)");
+}
+```
+
+![alt text](image-4.png)
+
+- Obs.: `break` exits the switch. If the command is omitted, the execution falls through into the next case. For more details refer to [w3schools](https://www.w3schools.com/c/c_switch.php).
+
+## While
+
+Example
+
+```cpp
+char country[] = "Netherlands";
+int i = 0;
 
 void setup() {
-  // Initialize Serial Monitor
-  Serial.begin(115200);
+  // put your setup code here, to run once:
+  Serial.begin(115200);  
 
-  // Configure the button pin as input
-  pinMode(buttonPin, INPUT);
-}
-
-void loop() {
-  // Read the state of the button
-  buttonState = digitalRead(buttonPin);
-
-  // Print the state
-  if (buttonState == HIGH) {
-    Serial.println("Button is pressed!");
-  } else {
-    Serial.println("Button is not pressed.");
+  while(i<11){
+    Serial.printf("%c", country[i]);
+    Serial.println(country[i]);
+    i++; // variable = variable+1; variable++;
   }
 }
+
+void loop() {
+}
 ```
 
-<details>
-<summary>Exercise 3</summary>
-
-**Task:**  
-Develop a program to turn on an LED when the button is pressed.
-
-<!-- **Solution:**  
-[ex3](ex3/ex3.ino) -->
-
-</details>
-
-<details>
-<summary>Exercise 4</summary>
-
-**Task:**  
-Develop a program to turn on an LED combinations: multiple buttons controlling LEDs. Create your own logic.
-
-<!-- **Solution:**  
-[ex4](ex4/ex4.ino) -->
-
-</details>
-
 ## Next Tutorial
-
-Go to [Tutorial 3](../tutorial3/ReadMe.md) - Input and Output.
+Go to [Tutorial 6](../tutorial6/ReadMe.md) - UART and ADC.
 
 Back to [main page](../../README.md).
