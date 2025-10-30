@@ -1,4 +1,4 @@
-# Tutorial 5 - If-else, While, and Flowcharts
+# Workshop 2 - If-else, While, and Flowcharts
 
 
 
@@ -121,6 +121,6 @@ void loop() {
 ```
 
 ## Next Tutorial
-Go to [Tutorial 6](../tutorial6/ReadMe.md) - UART and ADC.
+Go to [Workshop 3](../tutorial6/ReadMe.md) - Variables, Data types, If and Loops
 
 Back to [main page](../../README.md).

@@ -20,7 +20,7 @@
 
 ### Hardware Interrupts
 
-### What is a Hardware Interrupt?
+#### What is a Hardware Interrupt?
 
 ⚠️ This section is still in progress.
 
@@ -30,13 +30,13 @@
 This tutorial demonstrates how to use **hardware timer interrupts** on the **ESP32** using the Arduino framework.  
 Timer interrupts allow you to execute specific code automatically at fixed time intervals, without blocking the main loop.
 
-### What is a Timer Interrupt?
+#### What is a Timer Interrupt?
 
 A timer interrupt is a hardware-based mechanism that triggers a function (called an Interrupt Service Routine – ISR) after a specified time period.  
 Unlike using the delay function `delay()`, timers operate independently of your main program flow, allowing for precise timing and non-blocking execution.
 The ESP32 has 4 hardware timers per group, allowing multiple independent timing operations.
 
-## Structure Overview
+#### Structure Overview
 
 The general structure for using a timer interrupt on ESP32 is:
 
@@ -50,7 +50,7 @@ timerAlarmWrite(My_timer, 1000000, true);           // set alarm to 1 second (in
 timerAlarmEnable(My_timer);                         // enable the alarm
 ```
 
-## Example
+#### Example
 
 The following code blinks the LED every two seconds.
 
@@ -86,7 +86,7 @@ void loop()
 
 ```
 
-#### Explanation
+##### Explanation
 
 - `int ticks = 10000;`: this variable defines the number of ticks (count of the timer clock) before the timer interrupt is triggered. The total time (also called period) before the interrupt occurs is:
 

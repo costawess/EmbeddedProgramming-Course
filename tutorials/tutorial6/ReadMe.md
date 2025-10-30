@@ -1,11 +1,9 @@
 # Workshop 6 - Kitchen Timer
 
+⚠️ This section is still in progress.
 
-
-
-```
 
 ## Next Tutorial
-Go to [Tutorial 7](../tutorial7/ReadMe.md) - Input and Output.
+Go to [Workshop 7](../tutorial7/ReadMe.md) - I2C protocol and State Machine.
 
 Back to [main page](../../README.md).

@@ -150,9 +150,9 @@ The ESP will output the Wifi networks found:
 
 ---
 
-# Input and Output
+## Input and Output
 
-## Learning Objectives
+### Learning Objectives
 
 - Understand the concept of GPIO (General Purpose Input/Output).
 - Configure ESP32 digital pins as input and output.
@@ -160,9 +160,9 @@ The ESP will output the Wifi networks found:
 - Read the state of physical buttons and use them to interact with LEDs.
 - Develop basic conditional control logic using if/else statements.
 
-## Introduction to GPIOs
+### Introduction to GPIOs
 
-### What are digital input and output pins?
+#### What are digital input and output pins?
 
 - **Digital Output:**  
     A pin configured as output can send a HIGH (3.3V) or LOW (0V) signal. Then powering an LED for instance.
@@ -174,13 +174,13 @@ The ESP will output the Wifi networks found:
 
 Important to note that in many microcontrollers, every GPIO is at least digital. Some GPIOs have extra capabilities, such as analog input, PWM, or special functions such as connectivity protocols. For the ESP32-WROOM-32, please refer to the "Pin Definitions" chapter in the [datasheet](https://www.espressif.com/sites/default/files/documentation/esp32-wroom-32_datasheet_en.pdf).
 
-### Basic configuration in code
+#### Basic configuration in code
 
 ![alt text](image.png)
 
-## Output Examples – LEDs
+### Output Examples – LEDs
 
-### Turning a single LED on and off
+#### Turning a single LED on and off
 
 ```cpp
 // Turn on an LED using ESP32
@@ -226,7 +226,7 @@ Develop a program to light up multiple LEDs. Make them blink in sequence (use th
 
 </details>
 
-## Input Examples – Buttons
+### Input Examples – Buttons
 
 ```cpp
 // Reading the state of a button with ESP32

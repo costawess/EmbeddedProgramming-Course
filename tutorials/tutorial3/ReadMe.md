@@ -1,36 +1,8 @@
-# Tutorial 3 - UART and ADC
+# Workshop 3 - Variables, Data types, If and Loops
 
-![](20250918090718.png)
+## Variables
 
-## OUTPUT
-
-## INPUT
-
-### Example: User inputs Through UART comm.
-
-```cpp
-void setup() {
-  Serial.begin(115200);
-  Serial.println("Enter a number and press Enter:");
-}
-
-void loop() {
-  if (Serial.available() > 0) { // only starts if the serial communication is active
-    int value = Serial.parseInt();   // read an integer number from serial
-    Serial.print("You entered: ");
-    Serial.println(value);
-
-    if (value > 5) {
-      Serial.println("The entered value is greater than 5");
-    } else if (value < 5) {
-      Serial.println("The entered value is less than 5");
-    } else {
-      Serial.println("The entered value is equal to 5");
-    }
-    Serial.println("\nEnter another number:");
-  }
-}
-```
+⚠️ This section is still in progress.
 
 ## Variable Types
 
@@ -67,7 +39,7 @@ Note: sizes and ranges depend on the board architecture (8-bit AVR vs 32-bit ESP
 
 ### Types of Variables
 
-lembra que usamos no tutorial 3 
+<!-- #TODO lembra que usamos no tutorial 3 
 
 Serial.printl
 
@@ -81,19 +53,19 @@ o bacana que agora está convertendo
 
 tipos de variaveis 
 
-- int de 2 a 4 bytes
+- int de 2 a 4 bytes -->
 
 ### Assigning a value to a variable
 
+⚠️ This section is still in progress.
 
 #### Exercise
 
+⚠️ This section is still in progress.
 
-
-[Solution](exercises/exercise1/exercise1.ino)
+<!-- [Solution](exercises/exercise1/exercise1.ino) -->
 
 ## Next Tutorial
-
-Go to [Tutorial 4](../tutorial4/ReadMe.md) - Variables, Data types, If and Loops.
+Go to [Workshop 4](../tutorial5/ReadMe.md) - UART and ADC.
 
 Back to [main page](../../README.md).
