@@ -30,3 +30,4 @@ nav:
   - Introduction: intro.md
   - Chapters:
       - Chapter 1: chapter-1.md
+strict: false # trocar para true no futuro
