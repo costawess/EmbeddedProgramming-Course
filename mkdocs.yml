@@ -1,0 +1,32 @@
+site_name: My Embedded Book
+site_url: https://<your-username>.github.io/my-book
+repo_url: https://github.com/<your-username>/my-book
+theme:
+  name: material
+  language: en
+  features:
+    - navigation.instant
+    - navigation.tracking
+    - navigation.sections
+    - navigation.top
+    - content.code.copy
+    - content.tabs.link
+    - toc.follow # mantém o TOC visível ao rolar
+  logo: assets/hanze_logo.png
+  # favicon: assets/favicon.ico
+markdown_extensions:
+  - admonition
+  - pymdownx.details
+  - pymdownx.superfences
+  - pymdownx.tabbed:
+      alternate_style: true
+  - toc:
+      permalink: true
+plugins:
+  - search
+  - mermaid2
+nav:
+  - Home: index.md
+  - Introduction: intro.md
+  - Chapters:
+      - Chapter 1: chapter-1.md
