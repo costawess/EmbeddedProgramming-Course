@@ -27,9 +27,7 @@ plugins:
   - mermaid2
 nav:
   - Home: index.md
-  - Introduction: intro.md
-  - Chapters:
-      - Chapter 1: chapter-1.md
+  - Workshops:
       - Workshop 1 - Setting up the Arduino IDE. Hello World: tutorials/tutorial1/ReadMe.md
       - Workshop 2 - Flowcharts, if-else, while: tutorials/tutorial2/ReadMe.md 
       - Workshop 3 - Variables, Data types, If and Loops.: tutorials/tutorial3/ReadMe.md
