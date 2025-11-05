@@ -1,6 +1,6 @@
-site_name: My Embedded Book
-site_url: https://<your-username>.github.io/my-book
-repo_url: https://github.com/<your-username>/my-book
+site_name: Embedded Programming 2025-2026
+site_url: https://costawess.github.io/EmbeddedProgramming-Course/
+repo_url: https://github.com/costawess/EmbeddedProgramming-Course
 theme:
   name: material
   language: en
@@ -35,6 +35,6 @@ nav:
       - Workshop 3 - Variables, Data types, If and Loops.: tutorials/tutorial3/ReadMe.md
       - Workshop 4 - UART and ADC.: tutorials/tutorial4/ReadMe.md
       - Workshop 5 - Functions, Libraries, Interrupts, Timers: tutorials/tutorial5/ReadMe.md
-      - Workshop 6 -  - Kitchen Timer.: tutorials/tutorial6/ReadMe.md
+      - Workshop 6 - Kitchen Timer.: tutorials/tutorial6/ReadMe.md
       - Workshop 7 - I2C protocol and State Machine: tutorials/tutorial7/ReadMe.md
 strict: false # trocar para true no futuro
