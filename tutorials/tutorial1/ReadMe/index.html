@@ -11,6 +11,8 @@
         <link rel="canonical" href="https://<your-username>.github.io/my-book/tutorials/tutorial1/ReadMe/">
       
       
+        <link rel="prev" href="../../../chapter-1/">
+      
       
       
       <link rel="icon" href="../../../assets/images/favicon.png">
@@ -18,7 +20,7 @@
     
     
       
-        <title>Workshop 1 - Setting up the Integrated Development Environment - My Embedded Book</title>
+        <title>Workshop 1 - Setting up the Arduino IDE. Hello World - My Embedded Book</title>
       
     
     
@@ -95,7 +97,7 @@
         <div class="md-header__topic" data-md-component="header-topic">
           <span class="md-ellipsis">
             
-              Workshop 1 - Setting up the Integrated Development Environment
+              Workshop 1 - Setting up the Arduino IDE. Hello World
             
           </span>
         </div>
@@ -255,8 +257,10 @@
       
   
   
+    
   
   
+  
     
     
     
@@ -267,11 +271,11 @@
       
     
     
-    <li class="md-nav__item md-nav__item--section md-nav__item--nested">
+    <li class="md-nav__item md-nav__item--active md-nav__item--section md-nav__item--nested">
       
         
         
-        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_3" >
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_3" checked>
         
           
           <label class="md-nav__link" for="__nav_3" id="__nav_3_label" tabindex="">
@@ -287,7 +291,7 @@
             <span class="md-nav__icon md-icon"></span>
           </label>
         
-        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_3_label" aria-expanded="false">
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_3_label" aria-expanded="true">
           <label class="md-nav__title" for="__nav_3">
             <span class="md-nav__icon md-icon"></span>
             Chapters
@@ -312,6 +316,251 @@
   
 
       </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+    
+  
+  
+  
+    <li class="md-nav__item md-nav__item--active">
+      
+      <input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
+      
+      
+        
+      
+      
+        <label class="md-nav__link md-nav__link--active" for="__toc">
+          
+  
+  
+  <span class="md-ellipsis">
+    Workshop 1 - Setting up the Arduino IDE. Hello World
+    
+  </span>
+  
+
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <a href="./" class="md-nav__link md-nav__link--active">
+        
+  
+  
+  <span class="md-ellipsis">
+    Workshop 1 - Setting up the Arduino IDE. Hello World
+    
+  </span>
+  
+
+      </a>
+      
+        
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#what-is-the-arduino-software-ide" class="md-nav__link">
+    <span class="md-ellipsis">
+      What is the Arduino Software (IDE)?
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#download-the-ide" class="md-nav__link">
+    <span class="md-ellipsis">
+      Download the IDE
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#connect-the-esp32-and-install-the-driver" class="md-nav__link">
+    <span class="md-ellipsis">
+      Connect the ESP32 and Install the Driver
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#ide-at-first-glance" class="md-nav__link">
+    <span class="md-ellipsis">
+      IDE at First Glance
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#installing-the-esp32-library" class="md-nav__link">
+    <span class="md-ellipsis">
+      Installing the ESP32 library
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#selecting-the-esp-board" class="md-nav__link">
+    <span class="md-ellipsis">
+      Selecting the ESP board
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#example-1-hello-world" class="md-nav__link">
+    <span class="md-ellipsis">
+      Example 1: Hello World
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#example-2-wifi-scan" class="md-nav__link">
+    <span class="md-ellipsis">
+      Example 2: Wifi Scan
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#references" class="md-nav__link">
+    <span class="md-ellipsis">
+      References
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#input-and-output" class="md-nav__link">
+    <span class="md-ellipsis">
+      Input and Output
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Input and Output">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#learning-objectives" class="md-nav__link">
+    <span class="md-ellipsis">
+      Learning Objectives
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#introduction-to-gpios" class="md-nav__link">
+    <span class="md-ellipsis">
+      Introduction to GPIOs
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Introduction to GPIOs">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#what-are-digital-input-and-output-pins" class="md-nav__link">
+    <span class="md-ellipsis">
+      What are digital input and output pins?
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#basic-configuration-in-code" class="md-nav__link">
+    <span class="md-ellipsis">
+      Basic configuration in code
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#output-examples-leds" class="md-nav__link">
+    <span class="md-ellipsis">
+      Output Examples – LEDs
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Output Examples – LEDs">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#turning-a-single-led-on-and-off" class="md-nav__link">
+    <span class="md-ellipsis">
+      Turning a single LED on and off
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#input-examples-buttons" class="md-nav__link">
+    <span class="md-ellipsis">
+      Input Examples – Buttons
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#next-workshop" class="md-nav__link">
+    <span class="md-ellipsis">
+      Next Workshop
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+      
     </li>
   
 
