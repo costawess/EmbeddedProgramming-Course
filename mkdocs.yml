@@ -22,6 +22,12 @@ markdown_extensions:
       alternate_style: true
   - toc:
       permalink: true
+  - pymdownx.highlight
+  - pymdownx.superfences
+  - pymdownx.details
+  - pymdownx.magiclink
+  - pymdownx.tasklist:
+      custom_checkbox: true
 plugins:
   - search
   - mermaid2
