@@ -16,13 +16,13 @@ This page is available at: [https://github.com/costawess/EmbeddedProgramming-Cou
 
 The content of each tutorial is listed below:
 
-- [Workshop 1](/tutorials/tutorial1/ReadMe.md) - Setting up the Arduino IDE. Hello World.
-- [Workshop 2](/tutorials/tutorial2/ReadMe.md) - Flowcharts, if-else, while.
-- [Workshop 3](/tutorials/tutorial3/ReadMe.md) - Variables, Data types, If and Loops.
-- [Workshop 4](/tutorials/tutorial4/ReadMe.md) - UART and ADC.
-- [Workshop 5](/tutorials/tutorial5/ReadMe.md) - Functions, Libraries, Interrupts, Timers
-- [Workshop 6](/tutorials/tutorial6/ReadMe.md) - Kitchen Timer.
-- [Workshop 7](/tutorials/tutorial7/ReadMe.md) - I2C protocol and State Machine.
+- [Workshop 1](./tutorials/tutorial1/ReadMe.md) - Setting up the Arduino IDE. Hello World.
+- [Workshop 2](./tutorials/tutorial2/ReadMe.md) - Flowcharts, if-else, while.
+- [Workshop 3](./tutorials/tutorial3/ReadMe.md) - Variables, Data types, If and Loops.
+- [Workshop 4](./tutorials/tutorial4/ReadMe.md) - UART and ADC.
+- [Workshop 5](./tutorials/tutorial5/ReadMe.md) - Functions, Libraries, Interrupts, Timers
+- [Workshop 6](./tutorials/tutorial6/ReadMe.md) - Kitchen Timer.
+- [Workshop 7](./tutorials/tutorial7/ReadMe.md) - I2C protocol and State Machine.
 
 ---
 
