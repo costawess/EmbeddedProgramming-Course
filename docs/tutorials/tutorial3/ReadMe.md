@@ -67,5 +67,3 @@ tipos de variaveis
 
 ## Next Tutorial
 Go to [Workshop 4](../tutorial5/ReadMe.md) - UART and ADC.
-
-Back to [main page](../../README.md).

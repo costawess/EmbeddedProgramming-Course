@@ -121,6 +121,4 @@ void loop() {
 ```
 
 ## Next Tutorial
-Go to [Workshop 3](../tutorial6/ReadMe.md) - Variables, Data types, If and Loops
-
-Back to [main page](../../README.md).
+Go to [Workshop 3](../tutorial6/ReadMe.md) - Variables, Data types, If and Loops.

@@ -6,7 +6,7 @@
 
 ## INPUT
 
-### Example: User inputs Through UART comm.
+### Example: User inputs Through UART comm
 
 ```cpp
 void setup() {
@@ -32,10 +32,6 @@ void loop() {
 }
 ```
 
-
-
 ## Next Tutorial
 
 Go to [Workshop 5](../tutorial4/ReadMe.md) - Functions, Libraries, Interrupts, Timers.
-
-Back to [main page](../../README.md).

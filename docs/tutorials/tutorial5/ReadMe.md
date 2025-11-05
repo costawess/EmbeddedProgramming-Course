@@ -6,13 +6,11 @@
 
 ⚠️ This section is still in progress.
 
-
 ---
 
 ## Libraries
 
 ⚠️ This section is still in progress.
-
 
 ---
 
@@ -23,7 +21,6 @@
 #### What is a Hardware Interrupt?
 
 ⚠️ This section is still in progress.
-
 
 ### Software Interrupts - Timers
 
@@ -96,9 +93,9 @@ T_\text{interrupt} = \frac{\text{ticks}}{\text{\text{timer\_frequency}}} = \frac
 
 This means that the interrupt occurs every 2 seconds.
 
-- `hw_timer_t *My_timer = NULL;`: Creates a pointer to a hardware timer object. 
+- `hw_timer_t *My_timer = NULL;`: Creates a pointer to a hardware timer object.
 That means each tick = 1 / 10,000 = 0.0001 seconds = 100 µs.
-- `timerBegin(timer_frequency);`: Initializes the timer (in Hertz). In the example, the argument `timer_frequency` represents the base clock frequency (in this case `timer_frequency` = 10 kHz = 10 thousand ticks per second). 
+- `timerBegin(timer_frequency);`: Initializes the timer (in Hertz). In the example, the argument `timer_frequency` represents the base clock frequency (in this case `timer_frequency` = 10 kHz = 10 thousand ticks per second).
   - A little bit of math: This means that each tick = 1 / 10,000 = 0.0001 seconds or 100 $\mu$s.
 - `timerAttachInterrupt(My_timer, &TimerInterrupt);`: Links the Interrupt Service Routine (ISR) to the timer. Which means that every time the timer reaches the tick count, it calls the function `TimerInterrupt()` (you can change the function as you wish). In the example, the function `TimerInterrupt()` is called every 2 seconds.
 - `timerAlarm(My_timer, ticks, true, 0);`: Configures when the timer should trigger an interrupt.
@@ -110,8 +107,8 @@ That means each tick = 1 / 10,000 = 0.0001 seconds = 100 µs.
 | auto-reload| `true` | Auto-reload enabled (the timer repeats infinitely) |
 | reload count | `0` | Number of reloads (0 = infinite) |
 
-- `timerStart(My_timer);`: Starts the timer. 
-    - Another timer functions:
+- `timerStart(My_timer);`: Starts the timer.
+  - Another timer functions:
 
 | Function | Description |
 |-----------|--------------|
@@ -160,5 +157,3 @@ d) ticks = $25000\times 25\times 10^{-3} = 25$ ticks
 ## Next Tutorial
 
 Go to [Workshop 6](../tutorial6/ReadMe.md) - Kitchen Timer.
-
-Back to [main page](../../README.md).

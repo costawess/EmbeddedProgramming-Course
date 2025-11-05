@@ -279,5 +279,3 @@ Develop a program to turn on an LED combinations: multiple buttons controlling L
 
 ## Next Workshop
 Go to [Workshop 2](../tutorial2/ReadMe.md) - If-else, While, and Flowcharts.
-
-Back to [main page](../../README.md).
