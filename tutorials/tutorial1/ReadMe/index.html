@@ -1,0 +1,847 @@
+
+<!doctype html>
+<html lang="en" class="no-js">
+  <head>
+    
+      <meta charset="utf-8">
+      <meta name="viewport" content="width=device-width,initial-scale=1">
+      
+      
+      
+        <link rel="canonical" href="https://<your-username>.github.io/my-book/tutorials/tutorial1/ReadMe/">
+      
+      
+      
+      
+      <link rel="icon" href="../../../assets/images/favicon.png">
+      <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.6.23">
+    
+    
+      
+        <title>Workshop 1 - Setting up the Integrated Development Environment - My Embedded Book</title>
+      
+    
+    
+      <link rel="stylesheet" href="../../../assets/stylesheets/main.84d31ad4.min.css">
+      
+      
+
+
+    
+    
+      
+    
+    
+      
+        
+        
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,300i,400,400i,700,700i%7CRoboto+Mono:400,400i,700,700i&display=fallback">
+        <style>:root{--md-text-font:"Roboto";--md-code-font:"Roboto Mono"}</style>
+      
+    
+    
+    <script>__md_scope=new URL("../../..",location),__md_hash=e=>[...e].reduce(((e,_)=>(e<<5)-e+_.charCodeAt(0)),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
+    
+      
+
+    
+    
+    
+  </head>
+  
+  
+    <body dir="ltr">
+  
+    
+    <input class="md-toggle" data-md-toggle="drawer" type="checkbox" id="__drawer" autocomplete="off">
+    <input class="md-toggle" data-md-toggle="search" type="checkbox" id="__search" autocomplete="off">
+    <label class="md-overlay" for="__drawer"></label>
+    <div data-md-component="skip">
+      
+        
+        <a href="#workshop-1-setting-up-the-integrated-development-environment" class="md-skip">
+          Skip to content
+        </a>
+      
+    </div>
+    <div data-md-component="announce">
+      
+    </div>
+    
+    
+      
+
+  
+
+<header class="md-header md-header--shadow" data-md-component="header">
+  <nav class="md-header__inner md-grid" aria-label="Header">
+    <a href="../../.." title="My Embedded Book" class="md-header__button md-logo" aria-label="My Embedded Book" data-md-component="logo">
+      
+  <img src="../../../assets/hanze_logo.png" alt="logo">
+
+    </a>
+    <label class="md-header__button md-icon" for="__drawer">
+      
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M3 6h18v2H3zm0 5h18v2H3zm0 5h18v2H3z"/></svg>
+    </label>
+    <div class="md-header__title" data-md-component="header-title">
+      <div class="md-header__ellipsis">
+        <div class="md-header__topic">
+          <span class="md-ellipsis">
+            My Embedded Book
+          </span>
+        </div>
+        <div class="md-header__topic" data-md-component="header-topic">
+          <span class="md-ellipsis">
+            
+              Workshop 1 - Setting up the Integrated Development Environment
+            
+          </span>
+        </div>
+      </div>
+    </div>
+    
+    
+      <script>var palette=__md_get("__palette");if(palette&&palette.color){if("(prefers-color-scheme)"===palette.color.media){var media=matchMedia("(prefers-color-scheme: light)"),input=document.querySelector(media.matches?"[data-md-color-media='(prefers-color-scheme: light)']":"[data-md-color-media='(prefers-color-scheme: dark)']");palette.color.media=input.getAttribute("data-md-color-media"),palette.color.scheme=input.getAttribute("data-md-color-scheme"),palette.color.primary=input.getAttribute("data-md-color-primary"),palette.color.accent=input.getAttribute("data-md-color-accent")}for(var[key,value]of Object.entries(palette.color))document.body.setAttribute("data-md-color-"+key,value)}</script>
+    
+    
+    
+      
+      
+        <label class="md-header__button md-icon" for="__search">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+        </label>
+        <div class="md-search" data-md-component="search" role="dialog">
+  <label class="md-search__overlay" for="__search"></label>
+  <div class="md-search__inner" role="search">
+    <form class="md-search__form" name="search">
+      <input type="text" class="md-search__input" name="query" aria-label="Search" placeholder="Search" autocapitalize="off" autocorrect="off" autocomplete="off" spellcheck="false" data-md-component="search-query" required>
+      <label class="md-search__icon md-icon" for="__search">
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11z"/></svg>
+      </label>
+      <nav class="md-search__options" aria-label="Search">
+        
+        <button type="reset" class="md-search__icon md-icon" title="Clear" aria-label="Clear" tabindex="-1">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M19 6.41 17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/></svg>
+        </button>
+      </nav>
+      
+    </form>
+    <div class="md-search__output">
+      <div class="md-search__scrollwrap" tabindex="0" data-md-scrollfix>
+        <div class="md-search-result" data-md-component="search-result">
+          <div class="md-search-result__meta">
+            Initializing search
+          </div>
+          <ol class="md-search-result__list" role="presentation"></ol>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+      
+    
+    
+      <div class="md-header__source">
+        <a href="https://github.com/<your-username>/my-book" title="Go to repository" class="md-source" data-md-component="source">
+  <div class="md-source__icon md-icon">
+    
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--! Font Awesome Free 7.1.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2025 Fonticons, Inc.--><path d="M439.6 236.1 244 40.5c-5.4-5.5-12.8-8.5-20.4-8.5s-15 3-20.4 8.4L162.5 81l51.5 51.5c27.1-9.1 52.7 16.8 43.4 43.7l49.7 49.7c34.2-11.8 61.2 31 35.5 56.7-26.5 26.5-70.2-2.9-56-37.3L240.3 199v121.9c25.3 12.5 22.3 41.8 9.1 55-6.4 6.4-15.2 10.1-24.3 10.1s-17.8-3.6-24.3-10.1c-17.6-17.6-11.1-46.9 11.2-56v-123c-20.8-8.5-24.6-30.7-18.6-45L142.6 101 8.5 235.1C3 240.6 0 247.9 0 255.5s3 15 8.5 20.4l195.6 195.7c5.4 5.4 12.7 8.4 20.4 8.4s15-3 20.4-8.4l194.7-194.7c5.4-5.4 8.4-12.8 8.4-20.4s-3-15-8.4-20.4"/></svg>
+  </div>
+  <div class="md-source__repository">
+    GitHub
+  </div>
+</a>
+      </div>
+    
+  </nav>
+  
+</header>
+    
+    <div class="md-container" data-md-component="container">
+      
+      
+        
+          
+        
+      
+      <main class="md-main" data-md-component="main">
+        <div class="md-main__inner md-grid">
+          
+            
+              
+              <div class="md-sidebar md-sidebar--primary" data-md-component="sidebar" data-md-type="navigation" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+
+
+<nav class="md-nav md-nav--primary" aria-label="Navigation" data-md-level="0">
+  <label class="md-nav__title" for="__drawer">
+    <a href="../../.." title="My Embedded Book" class="md-nav__button md-logo" aria-label="My Embedded Book" data-md-component="logo">
+      
+  <img src="../../../assets/hanze_logo.png" alt="logo">
+
+    </a>
+    My Embedded Book
+  </label>
+  
+    <div class="md-nav__source">
+      <a href="https://github.com/<your-username>/my-book" title="Go to repository" class="md-source" data-md-component="source">
+  <div class="md-source__icon md-icon">
+    
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--! Font Awesome Free 7.1.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2025 Fonticons, Inc.--><path d="M439.6 236.1 244 40.5c-5.4-5.5-12.8-8.5-20.4-8.5s-15 3-20.4 8.4L162.5 81l51.5 51.5c27.1-9.1 52.7 16.8 43.4 43.7l49.7 49.7c34.2-11.8 61.2 31 35.5 56.7-26.5 26.5-70.2-2.9-56-37.3L240.3 199v121.9c25.3 12.5 22.3 41.8 9.1 55-6.4 6.4-15.2 10.1-24.3 10.1s-17.8-3.6-24.3-10.1c-17.6-17.6-11.1-46.9 11.2-56v-123c-20.8-8.5-24.6-30.7-18.6-45L142.6 101 8.5 235.1C3 240.6 0 247.9 0 255.5s3 15 8.5 20.4l195.6 195.7c5.4 5.4 12.7 8.4 20.4 8.4s15-3 20.4-8.4l194.7-194.7c5.4-5.4 8.4-12.8 8.4-20.4s-3-15-8.4-20.4"/></svg>
+  </div>
+  <div class="md-source__repository">
+    GitHub
+  </div>
+</a>
+    </div>
+  
+  <ul class="md-nav__list" data-md-scrollfix>
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../.." class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Home
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../intro/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Introduction
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+    
+    
+      
+        
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--section md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_3" >
+        
+          
+          <label class="md-nav__link" for="__nav_3" id="__nav_3_label" tabindex="">
+            
+  
+  
+  <span class="md-ellipsis">
+    Chapters
+    
+  </span>
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_3_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_3">
+            <span class="md-nav__icon md-icon"></span>
+            Chapters
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../chapter-1/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Chapter 1
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+  </ul>
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+            
+              
+              <div class="md-sidebar md-sidebar--secondary" data-md-component="sidebar" data-md-type="toc" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#what-is-the-arduino-software-ide" class="md-nav__link">
+    <span class="md-ellipsis">
+      What is the Arduino Software (IDE)?
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#download-the-ide" class="md-nav__link">
+    <span class="md-ellipsis">
+      Download the IDE
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#connect-the-esp32-and-install-the-driver" class="md-nav__link">
+    <span class="md-ellipsis">
+      Connect the ESP32 and Install the Driver
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#ide-at-first-glance" class="md-nav__link">
+    <span class="md-ellipsis">
+      IDE at First Glance
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#installing-the-esp32-library" class="md-nav__link">
+    <span class="md-ellipsis">
+      Installing the ESP32 library
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#selecting-the-esp-board" class="md-nav__link">
+    <span class="md-ellipsis">
+      Selecting the ESP board
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#example-1-hello-world" class="md-nav__link">
+    <span class="md-ellipsis">
+      Example 1: Hello World
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#example-2-wifi-scan" class="md-nav__link">
+    <span class="md-ellipsis">
+      Example 2: Wifi Scan
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#references" class="md-nav__link">
+    <span class="md-ellipsis">
+      References
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#input-and-output" class="md-nav__link">
+    <span class="md-ellipsis">
+      Input and Output
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Input and Output">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#learning-objectives" class="md-nav__link">
+    <span class="md-ellipsis">
+      Learning Objectives
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#introduction-to-gpios" class="md-nav__link">
+    <span class="md-ellipsis">
+      Introduction to GPIOs
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Introduction to GPIOs">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#what-are-digital-input-and-output-pins" class="md-nav__link">
+    <span class="md-ellipsis">
+      What are digital input and output pins?
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#basic-configuration-in-code" class="md-nav__link">
+    <span class="md-ellipsis">
+      Basic configuration in code
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#output-examples-leds" class="md-nav__link">
+    <span class="md-ellipsis">
+      Output Examples – LEDs
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Output Examples – LEDs">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#turning-a-single-led-on-and-off" class="md-nav__link">
+    <span class="md-ellipsis">
+      Turning a single LED on and off
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#input-examples-buttons" class="md-nav__link">
+    <span class="md-ellipsis">
+      Input Examples – Buttons
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#next-workshop" class="md-nav__link">
+    <span class="md-ellipsis">
+      Next Workshop
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+          
+          
+            <div class="md-content" data-md-component="content">
+              <article class="md-content__inner md-typeset">
+                
+                  
+
+
+  
+  
+
+
+<h1 id="workshop-1-setting-up-the-integrated-development-environment">Workshop 1 - Setting up the Integrated Development Environment<a class="headerlink" href="#workshop-1-setting-up-the-integrated-development-environment" title="Permanent link">&para;</a></h1>
+<h2 id="what-is-the-arduino-software-ide">What is the Arduino Software (IDE)?<a class="headerlink" href="#what-is-the-arduino-software-ide" title="Permanent link">&para;</a></h2>
+<p><img src="arduino_logo.png" alt="Arduino Logo" width="100"/></p>
+<p>The Arduino Integrated Development Environment—or Arduino Software (IDE)—connects to Arduino/ESP boards to upload software and communicate with them. It brings together in a single graphical interface essential tools for software development, such as a <strong>code editor, compiler, and debugger</strong>.</p>
+<p>The programs, also called sketches, are writen in the code editor and save as a <code>.ino</code> file.</p>
+<h2 id="download-the-ide">Download the IDE<a class="headerlink" href="#download-the-ide" title="Permanent link">&para;</a></h2>
+<p>First things first: Download the Arduino IDE on the official website <a href="https://www.arduino.cc/en/software/">Arduino.cc</a>.</p>
+<h2 id="connect-the-esp32-and-install-the-driver">Connect the ESP32 and Install the Driver<a class="headerlink" href="#connect-the-esp32-and-install-the-driver" title="Permanent link">&para;</a></h2>
+<p>To establish a serial connection with your ESP32 device, use a USB-to-UART bridge. This allows your computer to communicate with the ESP32 for programming and debugging.</p>
+<p><img alt="alt text" src="../image-3.png" /></p>
+<p>In some cases, the USB-to-UART bridge is provided as an external module. This approach is common for compact development boards or final products where minimizing space and cost is important.</p>
+<p><img alt="alt text" src="../image-4.png" /></p>
+<ul>
+<li>The chip enables bidirectional communication (conversion):<ul>
+<li>from the ESP, it converts UART to USB for the PC.</li>
+<li>from the PC, it converts USB to UART for the ESP.</li>
+</ul>
+</li>
+<li>So what is the purpose of the driver?<ul>
+<li>it allows the operating system to recognize this chip as a virtual serial port (<code>COM</code>).</li>
+</ul>
+</li>
+</ul>
+<p>That is what we will do! ;)</p>
+<ol>
+<li>First connect the ESP32 to the PC.</li>
+<li>Download and install the CP210x driver: <a href="https://www.silabs.com/developers/usb-to-uart-bridge-vcp-drivers">CP210x USB to UART Bridge VCP Drivers</a>.</li>
+<li>Check whether the installation was successful. In the Device Manager, under "Ports," the <code>Silicon Labs CP210x USB to UART</code> should appear.</li>
+</ol>
+<p><img alt="alt text" src="../image-5.png" /></p>
+<p>For more details, refer to the <a href="https://docs.espressif.com/projects/esp-idf/en/stable/esp32/get-started/establish-serial-connection.html">ESP32 Serial Connection Guide</a>.</p>
+<h2 id="ide-at-first-glance">IDE at First Glance<a class="headerlink" href="#ide-at-first-glance" title="Permanent link">&para;</a></h2>
+<p>When you open the IDE for the first time, this sketch window appears.</p>
+<p><img alt="" src="../first_sketch.png" /></p>
+<ul>
+<li>
+<p><code>void setup()</code>: runs only once. Used for initialisations.</p>
+</li>
+<li>
+<p><code>void loop()</code>: runs in a loop. Statements are executed infinitely.</p>
+</li>
+</ul>
+<p>In summary, this is the basic structure that every Arduino program follows. The <code>setup()</code> function runs once at the start, typically used for initialization, while the <code>loop()</code> function contains the main code that runs repeatedly. This structure ensures your program can continuously respond to inputs and perform tasks.</p>
+<div class="highlight"><pre><span></span><code><span class="c1">// this is a comment</span>
+
+<span class="kt">void</span><span class="w"> </span><span class="nf">setup</span><span class="p">()</span>
+<span class="p">{</span>
+<span class="w">    </span><span class="c1">//this part will be run just once</span>
+<span class="p">}</span>
+
+<span class="kt">void</span><span class="w"> </span><span class="nf">loop</span><span class="p">()</span>
+<span class="p">{</span>
+<span class="w">    </span><span class="c1">//this part will be executed in a loop</span>
+<span class="w">    </span><span class="c1">//(as the name of the function suggests)</span>
+<span class="p">}</span>
+</code></pre></div>
+<p>The following flowchart represents the code flow.</p>
+<p><img alt="" src="../flowchart_program_flow.png" /></p>
+<h2 id="installing-the-esp32-library">Installing the ESP32 library<a class="headerlink" href="#installing-the-esp32-library" title="Permanent link">&para;</a></h2>
+<p>Navigate to the Boards Manager, search for <code>Arduino ESP32 Boards</code> or <code>esp32</code>, and then click <code>Install</code>.</p>
+<p><img alt="alt text" src="../image-2.png" /></p>
+<p>If this step did not work, please follow the randomNerdsTutorial approach <a href="https://randomnerdtutorials.com/installing-the-esp32-board-in-arduino-ide-windows-instructions/">link</a> to install the ESP32 board in the arduino IDE. </p>
+<h2 id="selecting-the-esp-board">Selecting the ESP board<a class="headerlink" href="#selecting-the-esp-board" title="Permanent link">&para;</a></h2>
+<p>To select the board navigate to <code>Tools &gt; Board &gt; esp32 &gt; ESP32 Dev Module</code>.</p>
+<p><img alt="alt text" src="../image-7.png" /></p>
+<p>Alternativelly:</p>
+<p><img alt="alt text" src="../image-1.png" /></p>
+<h2 id="example-1-hello-world">Example 1: Hello World<a class="headerlink" href="#example-1-hello-world" title="Permanent link">&para;</a></h2>
+<p>The codes below show two options for printing "Hello World" via Serial communication. Please open the Serial Monitor in the Arduino IDE to see what is being transmitted.</p>
+<div class="highlight"><pre><span></span><code><span class="c1">// ESP32 &quot;Hello, world&quot; — v1</span>
+<span class="kt">void</span><span class="w"> </span><span class="nf">setup</span><span class="p">()</span><span class="w"> </span><span class="p">{</span>
+<span class="w">  </span><span class="n">Serial</span><span class="p">.</span><span class="n">begin</span><span class="p">(</span><span class="mi">115200</span><span class="p">);</span><span class="w">          </span><span class="c1">// Open serial at 115200 bps</span>
+<span class="w">  </span><span class="n">Serial</span><span class="p">.</span><span class="n">println</span><span class="p">(</span><span class="s">&quot;Hello, world&quot;</span><span class="p">);</span><span class="w"> </span>
+<span class="p">}</span>
+
+<span class="kt">void</span><span class="w"> </span><span class="nf">loop</span><span class="p">()</span><span class="w"> </span><span class="p">{</span>
+<span class="w">  </span><span class="c1">// Nothing to do here</span>
+<span class="p">}</span>
+</code></pre></div>
+<div class="highlight"><pre><span></span><code><span class="c1">// ESP32 &quot;Hello, world&quot; — v2</span>
+<span class="kt">void</span><span class="w"> </span><span class="nf">setup</span><span class="p">()</span><span class="w"> </span><span class="p">{</span>
+<span class="w">  </span><span class="n">Serial</span><span class="p">.</span><span class="n">begin</span><span class="p">(</span><span class="mi">115200</span><span class="p">);</span>
+<span class="p">}</span>
+
+<span class="kt">void</span><span class="w"> </span><span class="nf">loop</span><span class="p">()</span><span class="w"> </span><span class="p">{</span>
+<span class="w">  </span><span class="n">Serial</span><span class="p">.</span><span class="n">println</span><span class="p">(</span><span class="s">&quot;Hello, world&quot;</span><span class="p">);</span>
+<span class="w">  </span><span class="n">delay</span><span class="p">(</span><span class="mi">1000</span><span class="p">);</span>
+<span class="p">}</span>
+</code></pre></div>
+<p><strong>Question:</strong> What is the difference in the behavior of the codes?</p>
+<ul>
+<li>In the first code, "Hello, world" is printed only once, right after the ESP32 starts, because the <code>Serial.println("Hello, world");</code> command is inside the <code>setup()</code> function, which runs only once.</li>
+<li>In the second code, "Hello, world" is printed repeatedly every second, because the <code>Serial.println("Hello, world");</code> command is inside the <code>loop()</code> function, which runs continuously. The <code>delay(1000);</code> causes a 1-second pause between each print.</li>
+</ul>
+<h2 id="example-2-wifi-scan">Example 2: Wifi Scan<a class="headerlink" href="#example-2-wifi-scan" title="Permanent link">&para;</a></h2>
+<p>Let's try a built-in example from the IDE.</p>
+<p>First, open the WiFiScan example. Navigate to <code>File &gt; Examples &gt; WiFi &gt; WiFiScan</code>.</p>
+<p><img alt="alt text" src="../image_example_wifi.png" /></p>
+<p>To open the Serial Monitor, click the magnifying glass icon in the upper right corner of the window.</p>
+<p><img alt="alt text" src="../image-8.png" /></p>
+<p>The ESP will output the Wifi networks found:</p>
+<p><img alt="alt text" src="../image-9.png" /></p>
+<!-- TODO ## What happens in the background? -->
+
+<h2 id="references">References<a class="headerlink" href="#references" title="Permanent link">&para;</a></h2>
+<ul>
+<li>Using the Arduino Software (IDE)
+<a href="https://docs.arduino.cc/learn/starting-guide/the-arduino-software-ide/">https://docs.arduino.cc/learn/starting-guide/the-arduino-software-ide/</a></li>
+<li>UART Communication <a href="https://randomnerdtutorials.com/esp32-uart-communication-serial-arduino/">https://randomnerdtutorials.com/esp32-uart-communication-serial-arduino/</a></li>
+</ul>
+<hr />
+<h2 id="input-and-output">Input and Output<a class="headerlink" href="#input-and-output" title="Permanent link">&para;</a></h2>
+<h3 id="learning-objectives">Learning Objectives<a class="headerlink" href="#learning-objectives" title="Permanent link">&para;</a></h3>
+<ul>
+<li>Understand the concept of GPIO (General Purpose Input/Output).</li>
+<li>Configure ESP32 digital pins as input and output.</li>
+<li>Write simple programs to control LEDs.</li>
+<li>Read the state of physical buttons and use them to interact with LEDs.</li>
+<li>Develop basic conditional control logic using if/else statements.</li>
+</ul>
+<h3 id="introduction-to-gpios">Introduction to GPIOs<a class="headerlink" href="#introduction-to-gpios" title="Permanent link">&para;</a></h3>
+<h4 id="what-are-digital-input-and-output-pins">What are digital input and output pins?<a class="headerlink" href="#what-are-digital-input-and-output-pins" title="Permanent link">&para;</a></h4>
+<ul>
+<li>
+<p><strong>Digital Output:</strong><br />
+    A pin configured as output can send a HIGH (3.3V) or LOW (0V) signal. Then powering an LED for instance.
+    <em>Example</em>: turning an LED on or off.  </p>
+</li>
+<li>
+<p><strong>Digital Input:</strong><br />
+    A pin configured as input can read external signals as HIGH or LOW.<br />
+<em>Example</em>: checking if a button is pressed.</p>
+</li>
+</ul>
+<p>Important to note that in many microcontrollers, every GPIO is at least digital. Some GPIOs have extra capabilities, such as analog input, PWM, or special functions such as connectivity protocols. For the ESP32-WROOM-32, please refer to the "Pin Definitions" chapter in the <a href="https://www.espressif.com/sites/default/files/documentation/esp32-wroom-32_datasheet_en.pdf">datasheet</a>.</p>
+<h4 id="basic-configuration-in-code">Basic configuration in code<a class="headerlink" href="#basic-configuration-in-code" title="Permanent link">&para;</a></h4>
+<p><img alt="alt text" src="../image.png" /></p>
+<h3 id="output-examples-leds">Output Examples – LEDs<a class="headerlink" href="#output-examples-leds" title="Permanent link">&para;</a></h3>
+<h4 id="turning-a-single-led-on-and-off">Turning a single LED on and off<a class="headerlink" href="#turning-a-single-led-on-and-off" title="Permanent link">&para;</a></h4>
+<div class="highlight"><pre><span></span><code><span class="c1">// Turn on an LED using ESP32</span>
+
+<span class="c1">// Define the pin where the LED is connected</span>
+<span class="k">const</span><span class="w"> </span><span class="kt">int</span><span class="w"> </span><span class="n">ledPin</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">23</span><span class="p">;</span>
+
+<span class="kt">void</span><span class="w"> </span><span class="nf">setup</span><span class="p">()</span><span class="w"> </span><span class="p">{</span>
+<span class="w">  </span><span class="c1">// Initialize the LED pin as an output</span>
+<span class="w">  </span><span class="n">pinMode</span><span class="p">(</span><span class="n">ledPin</span><span class="p">,</span><span class="w"> </span><span class="n">OUTPUT</span><span class="p">);</span>
+
+<span class="w">  </span><span class="c1">// Turn the LED on</span>
+<span class="w">  </span><span class="n">digitalWrite</span><span class="p">(</span><span class="n">ledPin</span><span class="p">,</span><span class="w"> </span><span class="n">HIGH</span><span class="p">);</span>
+<span class="p">}</span>
+
+<span class="kt">void</span><span class="w"> </span><span class="nf">loop</span><span class="p">()</span><span class="w"> </span><span class="p">{</span>
+<span class="w">  </span><span class="c1">// Nothing else to do in the loop since the LED remains on</span>
+<span class="p">}</span>
+</code></pre></div>
+<ul>
+<li><code>const int</code>: Declares the variable (<code>ledPin</code>) as a constant integer.</li>
+<li><code>pinMode</code>: Initializes the pin as <code>INPUT</code> or <code>OUTPUT</code>. This allows the pin to send/write voltage to the LED (OUTPUT) or to receive/read (INPUT).</li>
+<li><code>digitalWrite</code>: Sets the output of the pin to <code>HIGH</code> or <code>LOW</code>.</li>
+</ul>
+<details>
+<summary>Exercise 1</summary>
+
+**Task:**  
+Develop a program to light up multiple LEDs.
+
+**Solution:**  
+[ex1](ex1/ex1.ino)
+</details>
+
+<details>
+<summary>Exercise 2</summary>
+
+**Task:**  
+Develop a program to light up multiple LEDs. Make them blink in sequence (use the `delay()` function).  
+
+**Solution:**  
+[ex2](ex2/ex2.ino)
+
+</details>
+
+<h3 id="input-examples-buttons">Input Examples – Buttons<a class="headerlink" href="#input-examples-buttons" title="Permanent link">&para;</a></h3>
+<div class="highlight"><pre><span></span><code><span class="c1">// Reading the state of a button with ESP32</span>
+
+<span class="k">const</span><span class="w"> </span><span class="kt">int</span><span class="w"> </span><span class="n">buttonPin</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">34</span><span class="p">;</span><span class="w">  </span><span class="c1">// GPIO where the button is connected</span>
+<span class="kt">int</span><span class="w"> </span><span class="n">buttonState</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">0</span><span class="p">;</span><span class="w"> </span><span class="c1">// state of the button</span>
+
+<span class="kt">void</span><span class="w"> </span><span class="nf">setup</span><span class="p">()</span><span class="w"> </span><span class="p">{</span>
+<span class="w">  </span><span class="c1">// Initialize Serial Monitor</span>
+<span class="w">  </span><span class="n">Serial</span><span class="p">.</span><span class="n">begin</span><span class="p">(</span><span class="mi">115200</span><span class="p">);</span>
+
+<span class="w">  </span><span class="c1">// Configure the button pin as input</span>
+<span class="w">  </span><span class="n">pinMode</span><span class="p">(</span><span class="n">buttonPin</span><span class="p">,</span><span class="w"> </span><span class="n">INPUT</span><span class="p">);</span>
+<span class="p">}</span>
+
+<span class="kt">void</span><span class="w"> </span><span class="nf">loop</span><span class="p">()</span><span class="w"> </span><span class="p">{</span>
+<span class="w">  </span><span class="c1">// Read the state of the button</span>
+<span class="w">  </span><span class="n">buttonState</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">digitalRead</span><span class="p">(</span><span class="n">buttonPin</span><span class="p">);</span>
+
+<span class="w">  </span><span class="c1">// Print the state</span>
+<span class="w">  </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">buttonState</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="n">HIGH</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="n">Serial</span><span class="p">.</span><span class="n">println</span><span class="p">(</span><span class="s">&quot;Button is pressed!&quot;</span><span class="p">);</span>
+<span class="w">  </span><span class="p">}</span><span class="w"> </span><span class="k">else</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="n">Serial</span><span class="p">.</span><span class="n">println</span><span class="p">(</span><span class="s">&quot;Button is not pressed.&quot;</span><span class="p">);</span>
+<span class="w">  </span><span class="p">}</span>
+<span class="p">}</span>
+</code></pre></div>
+<details>
+<summary>Exercise 3</summary>
+
+**Task:**  
+Develop a program to turn on an LED when the button is pressed.
+
+<!-- **Solution:**  
+[ex3](ex3/ex3.ino) -->
+
+</details>
+
+<details>
+<summary>Exercise 4</summary>
+
+**Task:**  
+Develop a program to turn on an LED combinations: multiple buttons controlling LEDs. Create your own logic.
+
+<!-- **Solution:**  
+[ex4](ex4/ex4.ino) -->
+
+</details>
+
+<h2 id="next-workshop">Next Workshop<a class="headerlink" href="#next-workshop" title="Permanent link">&para;</a></h2>
+<p>Go to <a href="../../tutorial2/ReadMe/">Workshop 2</a> - If-else, While, and Flowcharts.</p>
+
+
+
+
+
+
+
+
+
+
+
+
+                
+              </article>
+            </div>
+          
+          
+  <script>var tabs=__md_get("__tabs");if(Array.isArray(tabs))e:for(var set of document.querySelectorAll(".tabbed-set")){var labels=set.querySelector(".tabbed-labels");for(var tab of tabs)for(var label of labels.getElementsByTagName("label"))if(label.innerText.trim()===tab){var input=document.getElementById(label.htmlFor);input.checked=!0;continue e}}</script>
+
+<script>var target=document.getElementById(location.hash.slice(1));target&&target.name&&(target.checked=target.name.startsWith("__tabbed_"))</script>
+        </div>
+        
+          <button type="button" class="md-top md-icon" data-md-component="top" hidden>
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M13 20h-2V8l-5.5 5.5-1.42-1.42L12 4.16l7.92 7.92-1.42 1.42L13 8z"/></svg>
+  Back to top
+</button>
+        
+      </main>
+      
+        <footer class="md-footer">
+  
+  <div class="md-footer-meta md-typeset">
+    <div class="md-footer-meta__inner md-grid">
+      <div class="md-copyright">
+  
+  
+    Made with
+    <a href="https://squidfunk.github.io/mkdocs-material/" target="_blank" rel="noopener">
+      Material for MkDocs
+    </a>
+  
+</div>
+      
+    </div>
+  </div>
+</footer>
+      
+    </div>
+    <div class="md-dialog" data-md-component="dialog">
+      <div class="md-dialog__inner md-typeset"></div>
+    </div>
+    
+    
+    
+      
+      <script id="__config" type="application/json">{"base": "../../..", "features": ["navigation.instant", "navigation.tracking", "navigation.sections", "navigation.top", "content.code.copy", "content.tabs.link", "toc.follow"], "search": "../../../assets/javascripts/workers/search.973d3a69.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": null}</script>
+    
+    
+      <script src="../../../assets/javascripts/bundle.f55a23d4.min.js"></script>
+      
+    
+  </body>
+</html>
