@@ -34,7 +34,7 @@ nav:
       - Workshop 2 - Flowcharts, if-else, while: tutorials/tutorial2/ReadMe.md) 
       - Workshop 3 - Variables, Data types, If and Loops.: tutorials/tutorial3/ReadMe.md
       - Workshop 4 - UART and ADC.: tutorials/tutorial4/ReadMe.md
-      # - [Workshop 5](./tutorials/tutorial5/ReadMe.md) - Functions, Libraries, Interrupts, Timers
-      # - [Workshop 6](./tutorials/tutorial6/ReadMe.md) - Kitchen Timer.
-      # - [Workshop 7](./tutorials/tutorial7/ReadMe.md) - I2C protocol and State Machine.
+      - [Workshop 5 - Functions, Libraries, Interrupts, Timers: tutorials/tutorial5/ReadMe.md
+      - [Workshop 6 -  - Kitchen Timer.: tutorials/tutorial6/ReadMe.md
+      - [Workshop 7 - I2C protocol and State Machine: tutorials/tutorial7/ReadMe.md
 strict: false # trocar para true no futuro
