@@ -87,9 +87,9 @@ void loop()
 
 - `int ticks = 10000;`: this variable defines the number of ticks (count of the timer clock) before the timer interrupt is triggered. The total time (also called period) before the interrupt occurs is:
 
-\[
-T_\text{interrupt} = \frac{\text{ticks}}{\text{\text{timer\_frequency}}} = \frac{20000}{10000} = 2~\text{seconds}
-\]
+$$
+T_\text{interrupt} = \frac{\text{ticks}}{\text{timer_frequency}} = \frac{20000}{10000} = 2~\text{seconds}
+$$
 
 This means that the interrupt occurs every 2 seconds.
 
