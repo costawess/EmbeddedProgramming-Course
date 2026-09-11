@@ -21,7 +21,7 @@
       
       
       <link rel="icon" href="../../../assets/images/favicon.png">
-      <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.7.0">
+      <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.7.7">
     
     
       
@@ -29,7 +29,7 @@
       
     
     
-      <link rel="stylesheet" href="../../../assets/stylesheets/main.618322db.min.css">
+      <link rel="stylesheet" href="../../../assets/stylesheets/main.ec1eaa64.min.css">
       
       
 
@@ -405,10 +405,10 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#installing-the-esp32-library" class="md-nav__link">
+  <a href="#installing-the-esp32-boards" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Installing the ESP32 library
+        Installing the ESP32 boards
       
     </span>
   </a>
@@ -831,10 +831,10 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#installing-the-esp32-library" class="md-nav__link">
+  <a href="#installing-the-esp32-boards" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Installing the ESP32 library
+        Installing the ESP32 boards
       
     </span>
   </a>
@@ -1080,7 +1080,7 @@
 </code></pre></div>
 <p>The following flowchart represents the code flow.</p>
 <p><img alt="" src="../flowchart_program_flow.png" /></p>
-<h2 id="installing-the-esp32-library">Installing the ESP32 library<a class="headerlink" href="#installing-the-esp32-library" title="Permanent link">&para;</a></h2>
+<h2 id="installing-the-esp32-boards">Installing the ESP32 boards<a class="headerlink" href="#installing-the-esp32-boards" title="Permanent link">&para;</a></h2>
 <p>Navigate to the Boards Manager, search for <code>Arduino ESP32 Boards</code> or <code>esp32</code>, and then click <code>Install</code>.</p>
 <p><img alt="alt text" src="../image-2.png" /></p>
 <p>If this step did not work, please follow the randomNerdsTutorial approach <a href="https://randomnerdtutorials.com/installing-the-esp32-board-in-arduino-ide-windows-instructions/">link</a> to install the ESP32 board in the arduino IDE. </p>
@@ -1091,23 +1091,23 @@
 <p><img alt="alt text" src="../image-1.png" /></p>
 <h2 id="example-1-hello-world">Example 1: Hello World<a class="headerlink" href="#example-1-hello-world" title="Permanent link">&para;</a></h2>
 <p>The codes below show two options for printing "Hello World" via Serial communication. Please open the Serial Monitor in the Arduino IDE to see what is being transmitted.</p>
-<div class="highlight"><pre><span></span><code><span class="c1">// ESP32 &quot;Hello, world&quot; — v1</span>
+<div class="highlight"><pre><span></span><code><span class="c1">// ESP32 "Hello, world" — v1</span>
 <span class="kt">void</span><span class="w"> </span><span class="nf">setup</span><span class="p">()</span><span class="w"> </span><span class="p">{</span>
 <span class="w">  </span><span class="n">Serial</span><span class="p">.</span><span class="n">begin</span><span class="p">(</span><span class="mi">115200</span><span class="p">);</span><span class="w">          </span><span class="c1">// Open serial at 115200 bps</span>
-<span class="w">  </span><span class="n">Serial</span><span class="p">.</span><span class="n">println</span><span class="p">(</span><span class="s">&quot;Hello, world&quot;</span><span class="p">);</span><span class="w"> </span>
+<span class="w">  </span><span class="n">Serial</span><span class="p">.</span><span class="n">println</span><span class="p">(</span><span class="s">"Hello, world"</span><span class="p">);</span><span class="w"> </span>
 <span class="p">}</span>
 
 <span class="kt">void</span><span class="w"> </span><span class="nf">loop</span><span class="p">()</span><span class="w"> </span><span class="p">{</span>
 <span class="w">  </span><span class="c1">// Nothing to do here</span>
 <span class="p">}</span>
 </code></pre></div>
-<div class="highlight"><pre><span></span><code><span class="c1">// ESP32 &quot;Hello, world&quot; — v2</span>
+<div class="highlight"><pre><span></span><code><span class="c1">// ESP32 "Hello, world" — v2</span>
 <span class="kt">void</span><span class="w"> </span><span class="nf">setup</span><span class="p">()</span><span class="w"> </span><span class="p">{</span>
 <span class="w">  </span><span class="n">Serial</span><span class="p">.</span><span class="n">begin</span><span class="p">(</span><span class="mi">115200</span><span class="p">);</span>
 <span class="p">}</span>
 
 <span class="kt">void</span><span class="w"> </span><span class="nf">loop</span><span class="p">()</span><span class="w"> </span><span class="p">{</span>
-<span class="w">  </span><span class="n">Serial</span><span class="p">.</span><span class="n">println</span><span class="p">(</span><span class="s">&quot;Hello, world&quot;</span><span class="p">);</span>
+<span class="w">  </span><span class="n">Serial</span><span class="p">.</span><span class="n">println</span><span class="p">(</span><span class="s">"Hello, world"</span><span class="p">);</span>
 <span class="w">  </span><span class="n">delay</span><span class="p">(</span><span class="mi">1000</span><span class="p">);</span>
 <span class="p">}</span>
 </code></pre></div>
@@ -1224,9 +1224,9 @@ Develop a program to light up multiple LEDs. Make them blink in sequence (use th
 
 <span class="w">  </span><span class="c1">// Print the state</span>
 <span class="w">  </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">buttonState</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="n">HIGH</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
-<span class="w">    </span><span class="n">Serial</span><span class="p">.</span><span class="n">println</span><span class="p">(</span><span class="s">&quot;Button is pressed!&quot;</span><span class="p">);</span>
+<span class="w">    </span><span class="n">Serial</span><span class="p">.</span><span class="n">println</span><span class="p">(</span><span class="s">"Button is pressed!"</span><span class="p">);</span>
 <span class="w">  </span><span class="p">}</span><span class="w"> </span><span class="k">else</span><span class="w"> </span><span class="p">{</span>
-<span class="w">    </span><span class="n">Serial</span><span class="p">.</span><span class="n">println</span><span class="p">(</span><span class="s">&quot;Button is not pressed.&quot;</span><span class="p">);</span>
+<span class="w">    </span><span class="n">Serial</span><span class="p">.</span><span class="n">println</span><span class="p">(</span><span class="s">"Button is not pressed."</span><span class="p">);</span>
 <span class="w">  </span><span class="p">}</span>
 <span class="p">}</span>
 </code></pre></div>
@@ -1311,10 +1311,10 @@ Develop a program to turn on an LED combinations: multiple buttons controlling L
     
       
       
-      <script id="__config" type="application/json">{"annotate": null, "base": "../../..", "features": ["navigation.instant", "navigation.tracking", "navigation.sections", "navigation.top", "content.code.copy", "content.tabs.link", "toc.follow"], "search": "../../../assets/javascripts/workers/search.7a47a382.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": null}</script>
+      <script id="__config" type="application/json">{"annotate": null, "base": "../../..", "features": ["navigation.instant", "navigation.tracking", "navigation.sections", "navigation.top", "content.code.copy", "content.tabs.link", "toc.follow"], "search": "../../../assets/javascripts/workers/search.2c215733.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": null}</script>
     
     
-      <script src="../../../assets/javascripts/bundle.e71a0d61.min.js"></script>
+      <script src="../../../assets/javascripts/bundle.d7400e89.min.js"></script>
       
         <script src="../../../javascripts/mathjax.js"></script>
       
