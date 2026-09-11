@@ -71,7 +71,7 @@ The following flowchart represents the code flow.
 
 ![](flowchart_program_flow.png)
 
-## Installing the ESP32 library
+## Installing the ESP32 boards
 
 Navigate to the Boards Manager, search for `Arduino ESP32 Boards` or `esp32`, and then click `Install`.
 
