@@ -1,0 +1,5 @@
+# Only needed to re-import an updated external LaTeX deck.
+-r requirements.txt
+pypandoc_binary>=1.17,<2
+pymupdf>=1.26,<3
+numpy>=2,<3

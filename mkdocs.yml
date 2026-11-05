@@ -1,5 +1,5 @@
 site_name: Embedded Programming
-site_description: ESP32 workshops, interactive simulations, and experiments for Embedded Programming at Hanze.
+site_description: Embedded Programming lectures, practical tutorials, and interactive ESP32 simulations at Hanze.
 site_url: https://costawess.github.io/EmbeddedProgramming-Course/
 repo_url: https://github.com/costawess/EmbeddedProgramming-Course
 repo_name: EmbeddedProgramming-Course
@@ -27,7 +27,6 @@ theme:
   features:
     - navigation.tabs
     - navigation.tabs.sticky
-    - navigation.indexes
     - navigation.instant
     - navigation.instant.progress
     - navigation.tracking
@@ -77,17 +76,49 @@ watch:
 
 nav:
   - Home: index.md
-  - Workshops:
-      - workshops/index.md
+  - Lectures:
+      - Overview: lectures/index.md
+      - Course & foundations:
+          - Course organisation: lectures/course.md
+          - How programs run: lectures/how-programs-run.md
+          - The ESP32 family: lectures/esp32-introduction.md
+          - Architecture & memory: lectures/architecture.md
+      - Hardware & setup:
+          - Pinout & electrical limits: lectures/pinout.md
+          - The course board: lectures/course-board.md
+          - Arduino IDE & first sketch: lectures/arduino-ide.md
+      - Programming:
+          - Variables, types & numbers: lectures/variables-types.md
+          - Flowcharts: lectures/flowcharts.md
+          - Functions & decisions: lectures/functions-decisions.md
+          - Loops & arrays: lectures/loops-arrays.md
+          - Structs: lectures/structs.md
+          - Code quality & debugging: lectures/code-quality-debugging.md
+      - Inputs, outputs & timing:
+          - Digital inputs & outputs: lectures/digital-io.md
+          - Analog input, PWM & DAC: lectures/analog-pwm.md
+          - Timing, interrupts & timers: lectures/timing-interrupts.md
+          - Breadboards & libraries: lectures/breadboard-libraries.md
+      - Communication & behaviour:
+          - Serial communication & UART: lectures/serial-uart.md
+          - I2C: lectures/i2c.md
+          - SPI & logic analysis: lectures/spi-logic-analyzer.md
+          - State machines: lectures/state-machines.md
+      - Connected systems & projects:
+          - Wi-Fi & web: lectures/wifi-web.md
+          - IoT, MQTT & BLE: lectures/iot-mqtt-ble.md
+          - Storage, low power & OTA: lectures/storage-low-power-ota.md
+          - Projects & best practices: lectures/projects-best-practices.md
+      - References: lectures/references.md
+  - Tutorials:
+      - Overview: tutorials/index.md
       - Getting started:
-          - "01 · Arduino IDE & Hello World": tutorials/tutorial1/ReadMe.md
+          - Arduino setup & GPIO: tutorials/arduino-setup-gpio/index.md
       - Programming fundamentals:
-          - "02 · Flowcharts & control flow": tutorials/tutorial2/ReadMe.md
-          - "03 · Variables, types & loops": tutorials/tutorial3/ReadMe.md
-      - Communication & sensors:
-          - "04 · UART & ADC": tutorials/tutorial4/ReadMe.md
-      - Timing & embedded systems:
-          - "05 · Functions, interrupts & timers": tutorials/tutorial5/ReadMe.md
-          - "06 · Kitchen timer": tutorials/tutorial6/ReadMe.md
-          - "07 · I2C & state machines": tutorials/tutorial7/ReadMe.md
+          - Variables & data types: tutorials/variables-types/index.md
+          - Conditionals, switch & while: tutorials/conditionals-loops/index.md
+      - Serial communication:
+          - Reading serial input: tutorials/serial-input/index.md
+      - Timing:
+          - Hardware timer interrupts: tutorials/hardware-timers/index.md
   - Dashboard: dashboard.md

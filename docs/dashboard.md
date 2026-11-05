@@ -9,7 +9,7 @@ hide:
 
 <div class="ep-dashboard-toolbar" markdown>
 
-Explore interactive simulations and ESP32 experiments alongside the workshops.
+Explore interactive simulations and ESP32 experiments alongside the lectures and tutorials.
 
 [Open full screen :material-open-in-new:](dashboard-app/web/index.html){ target="_blank" rel="noopener" }
 

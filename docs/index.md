@@ -7,11 +7,11 @@ hide:
 
 # Embedded Programming
 
-<p class="ep-intro">From your first LED to connected embedded systems. Learn through guided workshops, explore concepts in interactive simulations, and bring your code to life on the ESP32.</p>
+<p class="ep-intro">From your first LED to connected embedded systems. Understand the concepts in the lectures, practise with guided tutorials, and explore the behaviour in interactive simulations.</p>
 
 <div class="ep-actions" markdown>
 
-[Start learning :material-arrow-right:](tutorials/tutorial1/ReadMe.md){ .md-button .md-button--primary }
+[Start learning :material-arrow-right:](lectures/index.md){ .md-button .md-button--primary }
 [Explore the dashboard :material-view-dashboard-outline:](dashboard.md){ .md-button }
 
 </div>
@@ -20,13 +20,13 @@ hide:
 
 <div class="grid cards" markdown>
 
--   :material-book-open-page-variant-outline:{ .lg .middle } **Guided workshops**
+-   :material-book-open-page-variant-outline:{ .lg .middle } **Lectures**
 
     ---
 
-    Seven practical workshops, from Arduino IDE setup to interrupts, I2C, and state machines. Follow the examples and put each concept into practice.
+    Explore 25 chapters covering programming, the ESP32, hardware interfaces, timing, communication, and connected systems. Study the diagrams, examples, quizzes, and exercises.
 
-    [:material-arrow-right: Browse workshops](workshops/index.md)
+    [:material-arrow-right: Browse lectures](lectures/index.md)
 
 -   :material-flask-outline:{ .lg .middle } **Simulations & experiments**
 
@@ -36,32 +36,32 @@ hide:
 
     [:material-arrow-right: Open EP Dashboard](dashboard.md)
 
--   :material-chip:{ .lg .middle } **Build on real hardware**
+-   :material-chip:{ .lg .middle } **Practical tutorials**
 
     ---
 
-    Connect your ESP32, upload a sketch, and observe how your program interacts with buttons, sensors, and displays.
+    Set up the Arduino IDE and practise GPIO, variables, control flow, serial input, and hardware timers on your ESP32.
 
-    [:material-arrow-right: Set up your environment](tutorials/tutorial1/ReadMe.md)
+    [:material-arrow-right: Choose a tutorial](tutorials/index.md)
 
 </div>
 
 ## Learn by doing
 
-The workshops build from simple concepts to more complete embedded systems. Each topic includes explanations, examples, and exercises you can reproduce and adapt independently.
+The course builds from simple concepts to more complete embedded systems. Each topic includes explanations, examples, and exercises you can reproduce and adapt independently.
 
-1. **Follow a workshop** to understand the concept and run the examples.
+1. **Read a lecture and follow a tutorial** to understand the concept and run the examples.
 2. **Explore the dashboard** to observe and experiment with the behaviour.
 3. **Try it on the ESP32** and modify the code to test your own ideas.
 
 !!! tip "Find your way"
-    Switch between **Home**, **Workshops**, and **Dashboard** using the top menu. Within Workshops, click a topic group in the left sidebar to expand it. On smaller screens, open the menu using the top-left icon.
+    Switch between **Home**, **Lectures**, **Tutorials**, and **Dashboard** using the top menu. Click a topic group in the left sidebar to expand it. On smaller screens, open the menu using the top-left icon.
 
 ## Hardware & software
 
 ![PCB used in the practicals](figures/pcb.png){ .ep-hardware loading=lazy }
 
-The examples were developed with **Arduino IDE 2.3.5**. The workshops use an **ESP32-WROOM** development board; other ESP32 variants may require adjustments to pin mappings.
+The course uses an **ESP32-WROOM** development board. The lectures cover Arduino-ESP32 core **3.x**; other ESP32 variants may require adjustments to pin mappings and available peripherals. The original practical examples were developed with **Arduino IDE 2.3.5**.
 
 ## Resources
 

@@ -67,6 +67,34 @@
 .md-typeset .admonition, .md-typeset details { border-radius: .4rem; }
 .ep-hardware { border: 1px solid var(--ep-border); border-radius: .5rem; max-width: 30rem; }
 
+.lecture-figure {
+  display: block;
+  max-width: 100%;
+  max-height: 34rem;
+  margin: 1rem auto;
+  padding: .5rem;
+  background: #fff;
+  border: 1px solid var(--ep-border);
+  border-radius: .4rem;
+  object-fit: contain;
+}
+
+.md-typeset .lecture-simulation {
+  padding: .25rem .6rem;
+  margin: .2rem .2rem .4rem 0;
+  font-size: .65rem;
+}
+
+.md-typeset .lecture-answer { margin: .6rem 0 1rem; }
+.md-typeset .lecture-answer summary { cursor: pointer; }
+.md-typeset .lecture-answer > p { padding: 0 .6rem; }
+
+/* Keep MathJax's off-screen accessible MathML from widening narrow pages. */
+.md-typeset mjx-assistive-mml {
+  max-width: 1px !important;
+  overflow: hidden !important;
+}
+
 /* Isolate the dashboard's application CSS while preserving course navigation. */
 .md-content:has(.ep-dashboard) { min-width: 0; }
 .ep-dashboard iframe {

@@ -98,8 +98,12 @@ with sync_playwright() as p:
     page.locator('#comparisonButton').click()
     assert 'Not completed' in page.locator('#comparisonTable').inner_text()
     page.goto(f'http://127.0.0.1:{server.server_port}/web/index.html')
-    assert page.locator('[data-feature-key=realTimeChallenge]').is_visible()
-    page.locator('a[href="./experiments/real_time_challenge.html"]').click()
+    enabled = page.evaluate('window.DASHBOARD_FLAGS.realTimeChallenge')
+    assert page.locator('[data-feature-key=realTimeChallenge]').is_visible() == enabled
+    if enabled:
+        page.locator('a[href="./experiments/real_time_challenge.html"]').click()
+    else:
+        page.goto(f'http://127.0.0.1:{server.server_port}/web/experiments/real_time_challenge.html')
     assert page.locator('h1').inner_text() == 'Real-Time Challenge'
     page.locator('#sound').click()
     assert page.locator('#sound').inner_text() == 'Sound OFF'

@@ -1,0 +1,14 @@
+void loop() {
+  if (!mqtt.connected()) {
+    if (mqtt.connect("esp32-hanze-01"))
+      mqtt.subscribe("hanze/lab/led");
+    else { delay(2000); return; }
+  }
+  mqtt.loop();
+  static unsigned long t0 = 0;
+  if (millis() - t0 > 5000) {       // every 5 s
+    t0 = millis();
+    mqtt.publish("hanze/lab/light",
+                 String(analogRead(34)).c_str());
+  }
+}

@@ -50,24 +50,24 @@ def main():
                     if response.url.startswith(origin) and response.status >= 400 else None)
             page.goto(base + "/", wait_until="networkidle")
             expect(page.locator("body")).to_have_attribute("data-md-color-scheme", "slate")
-            expect(page.locator(".md-tabs__link")).to_have_text(["Home", "Workshops", "Dashboard"])
+            expect(page.locator(".md-tabs__link")).to_have_text(["Home", "Lectures", "Tutorials", "Dashboard"])
             expect(page.locator(".grid.cards > ul > li")).to_have_count(3)
             assert page.evaluate("getComputedStyle(document.body).backgroundColor") == "rgb(30, 33, 41)"
             page.screenshot(path=str(artifacts / "home-desktop.png"), full_page=True)
 
             # Follow the Material instant-navigation path, rather than only direct URLs.
-            page.locator(".md-tabs__link", has_text="Workshops").click()
-            expect(page.locator(".md-content h1")).to_contain_text("Workshops")
-            expect(page.locator(".grid.cards > ul > li")).to_have_count(7)
+            page.locator(".md-tabs__link", has_text="Tutorials").click()
+            expect(page.locator(".md-content h1")).to_contain_text("Practical tutorials")
+            expect(page.locator(".grid.cards > ul > li")).to_have_count(5)
             group = page.locator(".md-sidebar--primary label.md-nav__link", has_text="Programming fundamentals")
             checkbox = page.locator("#" + group.get_attribute("for"))
             expect(checkbox).not_to_be_checked()
             group.click()
             expect(checkbox).to_be_checked()
-            expect(page.locator(".md-sidebar--primary a", has_text="02")).to_be_visible()
+            expect(page.locator(".md-sidebar--primary a", has_text="Variables & data types")).to_be_visible()
             group.click()
             expect(checkbox).not_to_be_checked()
-            page.screenshot(path=str(artifacts / "workshops-desktop.png"), full_page=True)
+            page.screenshot(path=str(artifacts / "tutorials-desktop.png"), full_page=True)
 
             page.locator(".md-tabs__link", has_text="Dashboard").click()
             expect(page.locator(".md-content h1")).to_contain_text("EP Dashboard")
@@ -110,7 +110,7 @@ def main():
             # Course and app layouts must fit phone, tablet, and desktop widths.
             for width in (390, 768, 1440):
                 page.set_viewport_size({"width": width, "height": 900})
-                for route in ("/", "/workshops/", "/dashboard/"):
+                for route in ("/", "/lectures/", "/tutorials/", "/lectures/analog-pwm/", "/dashboard/"):
                     page.goto(base + route, wait_until="networkidle")
                     assert page.evaluate("document.documentElement.scrollWidth <= innerWidth"), (width, route)
                     if route == "/dashboard/":
@@ -122,7 +122,7 @@ def main():
                     page.screenshot(path=str(artifacts / "dashboard-mobile.png"))
                     page.locator('.md-header label[for="__drawer"]').click()
                     expect(page.locator("#__drawer")).to_be_checked()
-                    expect(page.locator(".md-sidebar--primary a", has_text="Workshops")).to_be_visible()
+                    expect(page.locator(".md-sidebar--primary label.md-nav__link", has_text="Tutorials")).to_be_visible()
 
             # Leaving and returning to the Dashboard exercises iframe cleanup.
             page.goto(base + "/", wait_until="networkidle")
@@ -132,13 +132,43 @@ def main():
                 page.locator(".md-tabs__link", has_text="Home").click()
                 expect(page.locator(".md-content h1")).to_contain_text("Embedded Programming")
 
+            # A lecture keeps its diagrams, copyable examples, tables, and quiz answers.
+            page.locator(".md-tabs__link", has_text="Lectures").click()
+            expect(page.locator(".md-content h1")).to_contain_text("Lectures")
+            page.locator('.md-content a[href$="analog-pwm/"]').first.click()
+            expect(page.locator(".md-content h1")).to_contain_text("Analog Input, PWM and DAC")
+            expect(page.locator(".lecture-figure").first).to_be_visible()
+            assert page.locator(".lecture-figure").first.evaluate("el => el.complete && el.naturalWidth > 100")
+            expect(page.locator(".md-typeset table").first).to_be_attached()
+            expect(page.locator(".highlight").first).to_be_attached()
+            expect(page.locator("mjx-container").first).to_be_attached(timeout=20000)
+            expect(page.locator("mjx-merror")).to_have_count(0)
+            answer = page.locator("details.lecture-answer").first
+            expect(answer).not_to_have_attribute("open", "")
+            answer.locator("summary").click()
+            expect(answer).to_have_attribute("open", "")
+            expect(answer.locator("p")).to_be_visible()
+            page.screenshot(path=str(artifacts / "lecture-desktop.png"))
+
+            # Lecture simulation buttons open the selected local lab in the same shell.
+            page.locator(".lecture-simulation").first.click()
+            expect(page.locator("#ep-dashboard-frame")).to_have_attribute("src", base + "/dashboard-app/web/simulations/course_topics_lab.html?topic=adc")
+            lab = page.frame_locator("#ep-dashboard-frame")
+            expect(lab.locator("h1")).to_be_visible()
+            expect(page.locator(".md-tabs__link", has_text="Lectures")).to_be_visible()
+
+            # Previously published tutorial URLs remain usable after renaming folders.
+            page.goto(base + "/tutorials/tutorial1/ReadMe/", wait_until="networkidle")
+            expect(page).to_have_url(base + "/tutorials/arduino-setup-gpio/")
+            expect(page.locator(".md-content h1")).to_contain_text("Arduino IDE setup and digital GPIO")
+
             assert not missing, missing
             assert not errors, errors
             browser.close()
     finally:
         server.shutdown()
         server.server_close()
-    print("PASS: top tabs, sidebar expansion, cards, palettes, embedded dashboard, experiments, downloads, responsive layouts, instant navigation; no browser errors or missing local assets.")
+    print("PASS: course tabs, sidebar expansion, lecture diagrams/tables/code/math/quizzes, deep-linked simulations, renamed tutorial redirects, palettes, dashboard, responsive layouts; no browser errors or missing local assets.")
 
 
 if __name__ == "__main__":

@@ -1,0 +1,22 @@
+void loop() {
+  unsigned long now = millis();
+  bool pressed = pressEvent(now);
+  switch (state) {
+    case READY:
+      if (pressed) enterState(RUNNING, now);
+      break;
+    case RUNNING:
+      if (pressed) enterState(READY, now);  // cancel has priority
+      else if (now - enteredAt >= DURATION) enterState(DONE, now);
+      break;
+    case DONE:
+      if (pressed) enterState(READY, now);
+      break;
+    default:
+      enterState(READY, now);
+      break;
+  }
+  digitalWrite(BLUE_LED, state == RUNNING ? HIGH : LOW);
+  bool flash = ((now - enteredAt) / 250UL) % 2 == 0;
+  digitalWrite(RED_LED, state == DONE && flash ? HIGH : LOW);
+}

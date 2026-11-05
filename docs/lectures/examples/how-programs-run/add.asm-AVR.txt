@@ -1,0 +1,11 @@
+.include "m328Pdef.inc"
+.def a = r16
+.def b = r17
+.def c = r18
+start:
+    ldi a, 10      ; a = 10
+    ldi b, 11      ; b = 11
+    mov c, a       ; c = a
+    add c, b       ; c = c + b
+loop:
+    rjmp loop      ; jump forever

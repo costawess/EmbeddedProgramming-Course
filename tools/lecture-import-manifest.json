@@ -1,0 +1,133 @@
+{
+  "chapters": [
+    {
+      "slug": "course",
+      "title": "The Course",
+      "sections": 7
+    },
+    {
+      "slug": "how-programs-run",
+      "title": "How Programs Run",
+      "sections": 11
+    },
+    {
+      "slug": "esp32-introduction",
+      "title": "Introduction to the ESP32",
+      "sections": 9
+    },
+    {
+      "slug": "architecture",
+      "title": "Architecture",
+      "sections": 14
+    },
+    {
+      "slug": "pinout",
+      "title": "Pinout and Forbidden Pins",
+      "sections": 11
+    },
+    {
+      "slug": "course-board",
+      "title": "The Course Board",
+      "sections": 6
+    },
+    {
+      "slug": "arduino-ide",
+      "title": "Arduino IDE Setup",
+      "sections": 14
+    },
+    {
+      "slug": "variables-types",
+      "title": "Variables, Types and Numbers",
+      "sections": 15
+    },
+    {
+      "slug": "flowcharts",
+      "title": "Flowcharts",
+      "sections": 11
+    },
+    {
+      "slug": "digital-io",
+      "title": "Digital Inputs and Outputs",
+      "sections": 15
+    },
+    {
+      "slug": "functions-decisions",
+      "title": "Functions and Decisions",
+      "sections": 25
+    },
+    {
+      "slug": "loops-arrays",
+      "title": "Loops and Arrays",
+      "sections": 15
+    },
+    {
+      "slug": "structs",
+      "title": "Structs: Grouping Data",
+      "sections": 10
+    },
+    {
+      "slug": "serial-uart",
+      "title": "Serial Communication (UART)",
+      "sections": 20
+    },
+    {
+      "slug": "analog-pwm",
+      "title": "Analog Input, PWM and DAC",
+      "sections": 19
+    },
+    {
+      "slug": "timing-interrupts",
+      "title": "Time and Interrupts",
+      "sections": 32
+    },
+    {
+      "slug": "code-quality-debugging",
+      "title": "Code Quality and Debugging",
+      "sections": 14
+    },
+    {
+      "slug": "breadboard-libraries",
+      "title": "Breadboard and Libraries",
+      "sections": 17
+    },
+    {
+      "slug": "i2c",
+      "title": "The I2C Bus",
+      "sections": 13
+    },
+    {
+      "slug": "spi-logic-analyzer",
+      "title": "SPI and the Logic Analyzer",
+      "sections": 23
+    },
+    {
+      "slug": "state-machines",
+      "title": "State Machines",
+      "sections": 25
+    },
+    {
+      "slug": "wifi-web",
+      "title": "Going Further: Wi-Fi and the Web",
+      "sections": 7
+    },
+    {
+      "slug": "iot-mqtt-ble",
+      "title": "Going Further: MQTT and Bluetooth",
+      "sections": 6
+    },
+    {
+      "slug": "storage-low-power-ota",
+      "title": "Going Further: Storage, Low Power and OTA",
+      "sections": 6
+    },
+    {
+      "slug": "projects-best-practices",
+      "title": "Projects and Best Practices",
+      "sections": 8
+    }
+  ],
+  "total_sections": 353,
+  "diagram_count": 107,
+  "code_example_count": 134,
+  "unconverted_latex_count": 0
+}

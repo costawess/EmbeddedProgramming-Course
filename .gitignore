@@ -1,7 +1,9 @@
 /ideas.txt
-add futuro/*
 /.venv/
 /site/
 /artifacts/
 __pycache__/
 *.pyc
+.vscode/
+.theia/
+*.lnk

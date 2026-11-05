@@ -1,0 +1,16 @@
+#include <WiFi.h>
+#include <PubSubClient.h>
+WiFiClient net;
+PubSubClient mqtt(net);
+const int LED_PIN = 2;
+void onMessage(char* topic, byte* payload, unsigned int len) {
+  String msg;
+  for (unsigned int i = 0; i < len; i++) msg += (char) payload[i];
+  digitalWrite(LED_PIN, msg == "ON" ? HIGH : LOW);
+}
+void setup() {
+  pinMode(LED_PIN, OUTPUT);
+  /* ... connect to Wi-Fi ... */
+  mqtt.setServer("test.mosquitto.org", 1883);
+  mqtt.setCallback(onMessage);
+}

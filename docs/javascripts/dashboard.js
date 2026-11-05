@@ -6,6 +6,17 @@
     dispose();
     const frame = document.getElementById("ep-dashboard-frame");
     if (!frame) return;
+    // Lecture links can open a particular local simulation in the course shell.
+    const parameters = new URLSearchParams(window.location.search);
+    const lab = parameters.get("lab");
+    if (lab && /^(simulations|experiments)\/[a-z0-9_-]+\.html$/.test(lab)) {
+      const url = new URL(`../dashboard-app/web/${lab}`, window.location.href);
+      parameters.delete("lab");
+      url.search = parameters.toString();
+      if (frame.src !== url.href) frame.src = url.href;
+      const standalone = document.querySelector(".ep-dashboard-toolbar a");
+      if (standalone) standalone.href = url.href;
+    }
     let resizeObserver;
     let themeObserver;
     let animation;
