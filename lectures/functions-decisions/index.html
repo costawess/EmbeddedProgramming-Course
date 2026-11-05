@@ -283,7 +283,7 @@
   
   
     <li class="md-tabs__item">
-      <a href="../../dashboard/" class="md-tabs__link">
+      <a href="https://costawess.github.io/Programming-Dashboard/web/index.html" class="md-tabs__link">
         
   
   
@@ -2366,7 +2366,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../dashboard/" class="md-nav__link">
+      <a href="https://costawess.github.io/Programming-Dashboard/web/index.html" class="md-nav__link">
         
   
   
@@ -2748,7 +2748,7 @@
 
 <h1 id="functions-and-decisions">Functions and Decisions<a class="headerlink" href="#functions-and-decisions" title="Permanent link">&para;</a></h1>
 <h2 id="functions-give-a-name-to-a-job">Functions: give a name to a job<a class="headerlink" href="#functions-give-a-name-to-a-job" title="Permanent link">&para;</a></h2>
-<p><a class="md-button lecture-simulation" href="../../dashboard/?lab=simulations/course_topics_lab.html&amp;topic=functions">Try simulation: Functions</a></p>
+<p><a class="md-button lecture-simulation" href="https://costawess.github.io/Programming-Dashboard/web/simulations/course_topics_lab.html?topic=functions">Try simulation: Functions</a></p>
 <ul>
 <li>
 <p>A <strong>function</strong> is a block of code with a name that you can <strong>call</strong> whenever you need it.</p>
@@ -2816,7 +2816,7 @@
 </div>
 <p><em>Sources: Example from lecture 2 <a href="../references/#ep-lectures">Embedded Programming, lectures 1–6</a></em></p>
 <h2 id="parameters-functions-with-input">Parameters: functions with input<a class="headerlink" href="#parameters-functions-with-input" title="Permanent link">&para;</a></h2>
-<p><a class="md-button lecture-simulation" href="../../dashboard/?lab=simulations/course_topics_lab.html&amp;topic=functions">Try simulation: Functions</a></p>
+<p><a class="md-button lecture-simulation" href="https://costawess.github.io/Programming-Dashboard/web/simulations/course_topics_lab.html?topic=functions">Try simulation: Functions</a></p>
 <div class="highlight"><span class="filename">blink_times.ino</span><pre><span></span><code><span class="kt">void</span><span class="w"> </span><span class="nf">blinkTimes</span><span class="p">(</span><span class="kt">int</span><span class="w"> </span><span class="n">pin</span><span class="p">,</span><span class="w"> </span><span class="kt">int</span><span class="w"> </span><span class="n">times</span><span class="p">,</span><span class="w"> </span><span class="kt">int</span><span class="w"> </span><span class="n">ms</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
 <span class="w">  </span><span class="k">for</span><span class="w"> </span><span class="p">(</span><span class="kt">int</span><span class="w"> </span><span class="n">i</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">0</span><span class="p">;</span><span class="w"> </span><span class="n">i</span><span class="w"> </span><span class="o">&lt;</span><span class="w"> </span><span class="n">times</span><span class="p">;</span><span class="w"> </span><span class="n">i</span><span class="o">++</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
 <span class="w">    </span><span class="n">digitalWrite</span><span class="p">(</span><span class="n">pin</span><span class="p">,</span><span class="w"> </span><span class="n">HIGH</span><span class="p">);</span>
@@ -2853,8 +2853,8 @@
 <p>Changing <code>times</code> inside the function does <strong>not</strong> change the variable of the caller: the function works on a copy.</p>
 </div>
 <h2 id="flowchart-calling-a-function">Flowchart: calling a function<a class="headerlink" href="#flowchart-calling-a-function" title="Permanent link">&para;</a></h2>
-<p><a class="md-button lecture-simulation" href="../../dashboard/?lab=simulations/course_topics_lab.html&amp;topic=functions">Try simulation: Functions</a></p>
-<p><a class="md-button lecture-simulation" href="../../dashboard/?lab=simulations/arduino_flowchart_converter.html">Try simulation: Arduino to flowchart</a></p>
+<p><a class="md-button lecture-simulation" href="https://costawess.github.io/Programming-Dashboard/web/simulations/course_topics_lab.html?topic=functions">Try simulation: Functions</a></p>
+<p><a class="md-button lecture-simulation" href="https://costawess.github.io/Programming-Dashboard/web/simulations/arduino_flowchart_converter.html">Try simulation: Arduino to flowchart</a></p>
 <p><img alt="Flowchart: calling a function" class="lecture-figure" loading="lazy" src="../assets/diagrams/functions-decisions-043.png" /></p>
 <ul>
 <li>
@@ -2871,7 +2871,7 @@
 </li>
 </ul>
 <h2 id="return-values-functions-with-output">Return values: functions with output<a class="headerlink" href="#return-values-functions-with-output" title="Permanent link">&para;</a></h2>
-<p><a class="md-button lecture-simulation" href="../../dashboard/?lab=simulations/course_topics_lab.html&amp;topic=functions">Try simulation: Functions</a></p>
+<p><a class="md-button lecture-simulation" href="https://costawess.github.io/Programming-Dashboard/web/simulations/course_topics_lab.html?topic=functions">Try simulation: Functions</a></p>
 <div class="highlight"><span class="filename">convert.ino</span><pre><span></span><code><span class="k">const</span><span class="w"> </span><span class="kt">int</span><span class="w"> </span><span class="n">POT_PIN</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">36</span><span class="p">;</span>
 <span class="kt">float</span><span class="w"> </span><span class="nf">convertToVoltage</span><span class="p">(</span><span class="kt">int</span><span class="w"> </span><span class="n">adcValue</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
 <span class="w">  </span><span class="k">return</span><span class="w"> </span><span class="n">adcValue</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="mf">3.3</span><span class="w"> </span><span class="o">/</span><span class="w"> </span><span class="mf">4095.0</span><span class="p">;</span><span class="w">    </span><span class="c1">// 12-bit ADC</span>
@@ -2908,7 +2908,7 @@
 </div>
 <p><em>Sources: Adapted from lecture 2 <a href="../references/#ep-lectures">Embedded Programming, lectures 1–6</a></em></p>
 <h2 id="kinds-of-functions-input-and-output">Kinds of functions: input and output<a class="headerlink" href="#kinds-of-functions-input-and-output" title="Permanent link">&para;</a></h2>
-<p><a class="md-button lecture-simulation" href="../../dashboard/?lab=simulations/course_topics_lab.html&amp;topic=functions">Try simulation: Functions</a></p>
+<p><a class="md-button lecture-simulation" href="https://costawess.github.io/Programming-Dashboard/web/simulations/course_topics_lab.html?topic=functions">Try simulation: Functions</a></p>
 <div class="tabular">
 
 L3.0cm L5.4cm L4.6cm **Kind** & **Signature (example)** & **Call**  
@@ -2927,7 +2927,7 @@ several outputs & `void minMax(const float v[], int n,`
 <p><strong>Inputs</strong> = parameters of any type (<code>int</code>, <code>float</code>, <code>bool</code>, <code>char</code>, <code>String</code>, arrays, references). <strong>Output</strong> = exactly one return value or <code>void</code>; more results via reference parameters.</p>
 </div>
 <h2 id="example-geometric-figures">Example: geometric figures<a class="headerlink" href="#example-geometric-figures" title="Permanent link">&para;</a></h2>
-<p><a class="md-button lecture-simulation" href="../../dashboard/?lab=simulations/course_topics_lab.html&amp;topic=functions">Try simulation: Functions</a></p>
+<p><a class="md-button lecture-simulation" href="https://costawess.github.io/Programming-Dashboard/web/simulations/course_topics_lab.html?topic=functions">Try simulation: Functions</a></p>
 <div class="highlight"><span class="filename">geometry.ino</span><pre><span></span><code><span class="c1">// PI is already defined by Arduino.h</span>
 <span class="kt">float</span><span class="w"> </span><span class="nf">circleArea</span><span class="p">(</span><span class="kt">float</span><span class="w"> </span><span class="n">r</span><span class="p">)</span><span class="w">             </span><span class="p">{</span><span class="w"> </span><span class="k">return</span><span class="w"> </span><span class="n">PI</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="n">r</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="n">r</span><span class="p">;</span><span class="w"> </span><span class="p">}</span>
 <span class="kt">float</span><span class="w"> </span><span class="nf">circleCircumference</span><span class="p">(</span><span class="kt">float</span><span class="w"> </span><span class="n">r</span><span class="p">)</span><span class="w">    </span><span class="p">{</span><span class="w"> </span><span class="k">return</span><span class="w"> </span><span class="mi">2</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="n">PI</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="n">r</span><span class="p">;</span><span class="w"> </span><span class="p">}</span>
@@ -3186,7 +3186,7 @@ several outputs & `void minMax(const float v[], int n,`
 <p>Short (fits on the screen), does <strong>one</strong> thing, has a name that says what.</p>
 </div>
 <h2 id="if-making-decisions">if: making decisions<a class="headerlink" href="#if-making-decisions" title="Permanent link">&para;</a></h2>
-<p><a class="md-button lecture-simulation" href="../../dashboard/?lab=simulations/course_topics_lab.html&amp;topic=conditionals">Try simulation: Conditionals</a></p>
+<p><a class="md-button lecture-simulation" href="https://costawess.github.io/Programming-Dashboard/web/simulations/course_topics_lab.html?topic=conditionals">Try simulation: Conditionals</a></p>
 <div class="highlight"><span class="filename">if.ino</span><pre><span></span><code><span class="c1">// if: do something only when true</span>
 <span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">temperature</span><span class="w"> </span><span class="o">&gt;</span><span class="w"> </span><span class="mi">30</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
 <span class="w">  </span><span class="n">digitalWrite</span><span class="p">(</span><span class="n">LED_RED</span><span class="p">,</span><span class="w"> </span><span class="n">HIGH</span><span class="p">);</span>
@@ -3229,8 +3229,8 @@ several outputs & `void minMax(const float v[], int n,`
 </div>
 <p><em>Sources: Examples from lecture 2 <a href="../references/#ep-lectures">Embedded Programming, lectures 1–6</a></em></p>
 <h2 id="flowcharts-if-if-else-and-else-if">Flowcharts: if, if / else and else if<a class="headerlink" href="#flowcharts-if-if-else-and-else-if" title="Permanent link">&para;</a></h2>
-<p><a class="md-button lecture-simulation" href="../../dashboard/?lab=simulations/course_topics_lab.html&amp;topic=conditionals">Try simulation: Conditionals</a></p>
-<p><a class="md-button lecture-simulation" href="../../dashboard/?lab=simulations/arduino_flowchart_converter.html">Try simulation: Arduino to flowchart</a></p>
+<p><a class="md-button lecture-simulation" href="https://costawess.github.io/Programming-Dashboard/web/simulations/course_topics_lab.html?topic=conditionals">Try simulation: Conditionals</a></p>
+<p><a class="md-button lecture-simulation" href="https://costawess.github.io/Programming-Dashboard/web/simulations/arduino_flowchart_converter.html">Try simulation: Arduino to flowchart</a></p>
 <p><img alt="Flowcharts: if, if / else and else if" class="lecture-figure" loading="lazy" src="../assets/diagrams/functions-decisions-045.png" /></p>
 <p>Every <code>if</code> is one <strong>decision diamond</strong>; <code>else if</code> is a new diamond on the <em>no</em> exit; all paths meet again below.</p>
 <h2 id="ternary-operator-choose-between-two-values">Ternary operator: choose between two values<a class="headerlink" href="#ternary-operator-choose-between-two-values" title="Permanent link">&para;</a></h2>
@@ -3283,7 +3283,7 @@ several outputs & `void minMax(const float v[], int n,`
 <p>Prefer <code>if/else</code> for complex choices. Avoid nested ternaries.</p>
 </div>
 <h2 id="comparison-and-logical-operators">Comparison and logical operators<a class="headerlink" href="#comparison-and-logical-operators" title="Permanent link">&para;</a></h2>
-<p><a class="md-button lecture-simulation" href="../../dashboard/?lab=simulations/course_topics_lab.html&amp;topic=conditionals">Try simulation: Conditionals</a></p>
+<p><a class="md-button lecture-simulation" href="https://costawess.github.io/Programming-Dashboard/web/simulations/course_topics_lab.html?topic=conditionals">Try simulation: Conditionals</a></p>
 <table>
 <thead>
 <tr>
@@ -3372,7 +3372,7 @@ several outputs & `void minMax(const float v[], int n,`
 </div>
 <p><em>Sources: <a href="../references/#ep-lectures">Embedded Programming, lectures 1–6</a></em></p>
 <h2 id="combining-conditions">Combining conditions<a class="headerlink" href="#combining-conditions" title="Permanent link">&para;</a></h2>
-<p><a class="md-button lecture-simulation" href="../../dashboard/?lab=simulations/course_topics_lab.html&amp;topic=conditionals">Try simulation: Conditionals</a></p>
+<p><a class="md-button lecture-simulation" href="https://costawess.github.io/Programming-Dashboard/web/simulations/course_topics_lab.html?topic=conditionals">Try simulation: Conditionals</a></p>
 <div class="highlight"><span class="filename">conditions.ino</span><pre><span></span><code><span class="c1">// inside a range: AND</span>
 <span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">temperature</span><span class="w"> </span><span class="o">&gt;</span><span class="w"> </span><span class="mi">20</span><span class="w"> </span><span class="o">&amp;&amp;</span><span class="w"> </span><span class="n">temperature</span><span class="w"> </span><span class="o">&lt;</span><span class="w"> </span><span class="mi">30</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
 <span class="w">  </span><span class="n">Serial</span><span class="p">.</span><span class="n">println</span><span class="p">(</span><span class="s">"comfortable"</span><span class="p">);</span>
@@ -3411,7 +3411,7 @@ several outputs & `void minMax(const float v[], int n,`
 <p><code>if (t &gt; 20 || t &lt; 30)</code> is <strong>always</strong> true: every number is above 20 or below 30.</p>
 </div>
 <h2 id="flowchart-combining-conditions-with-and">Flowchart: combining conditions with &amp;&amp; and ||<a class="headerlink" href="#flowchart-combining-conditions-with-and" title="Permanent link">&para;</a></h2>
-<p><a class="md-button lecture-simulation" href="../../dashboard/?lab=simulations/course_topics_lab.html&amp;topic=conditionals">Try simulation: Conditionals</a></p>
+<p><a class="md-button lecture-simulation" href="https://costawess.github.io/Programming-Dashboard/web/simulations/course_topics_lab.html?topic=conditionals">Try simulation: Conditionals</a></p>
 <p><img alt="Flowchart: combining conditions with &amp;&amp; and ||" class="lecture-figure" loading="lazy" src="../assets/diagrams/functions-decisions-046.png" /></p>
 <ul>
 <li>
@@ -3425,8 +3425,8 @@ several outputs & `void minMax(const float v[], int n,`
 </li>
 </ul>
 <h2 id="example-a-thermostat-with-hysteresis">Example: a thermostat with hysteresis<a class="headerlink" href="#example-a-thermostat-with-hysteresis" title="Permanent link">&para;</a></h2>
-<p><a class="md-button lecture-simulation" href="../../dashboard/?lab=simulations/hysteresis_lab.html">Try simulation: Hysteresis</a></p>
-<p><a class="md-button lecture-simulation" href="../../dashboard/?lab=experiments/heating_cooling_lab.html">Try simulation: Heating and cooling</a></p>
+<p><a class="md-button lecture-simulation" href="https://costawess.github.io/Programming-Dashboard/web/simulations/hysteresis_lab.html">Try simulation: Hysteresis</a></p>
+<p><a class="md-button lecture-simulation" href="https://costawess.github.io/Programming-Dashboard/web/experiments/heating_cooling_lab.html">Try simulation: Heating and cooling</a></p>
 <div class="highlight"><span class="filename">thermostat.ino</span><pre><span></span><code><span class="k">const</span><span class="w"> </span><span class="kt">int</span><span class="w"> </span><span class="n">POT_PIN</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">36</span><span class="p">;</span><span class="w">     </span><span class="c1">// pot simulates 0..30 C</span>
 <span class="k">const</span><span class="w"> </span><span class="kt">int</span><span class="w"> </span><span class="n">HEATER</span><span class="w">  </span><span class="o">=</span><span class="w"> </span><span class="mi">21</span><span class="p">;</span><span class="w">     </span><span class="c1">// red LED = heater</span>
 <span class="k">const</span><span class="w"> </span><span class="kt">float</span><span class="w"> </span><span class="n">T_ON</span><span class="w">  </span><span class="o">=</span><span class="w"> </span><span class="mf">19.0</span><span class="p">;</span><span class="w">   </span><span class="c1">// switch on below</span>
@@ -3465,8 +3465,8 @@ several outputs & `void minMax(const float v[], int n,`
 </li>
 </ul>
 <h2 id="flowchart-thermostat-with-hysteresis">Flowchart: thermostat with hysteresis<a class="headerlink" href="#flowchart-thermostat-with-hysteresis" title="Permanent link">&para;</a></h2>
-<p><a class="md-button lecture-simulation" href="../../dashboard/?lab=simulations/hysteresis_lab.html">Try simulation: Hysteresis</a></p>
-<p><a class="md-button lecture-simulation" href="../../dashboard/?lab=simulations/arduino_flowchart_converter.html">Try simulation: Arduino to flowchart</a></p>
+<p><a class="md-button lecture-simulation" href="https://costawess.github.io/Programming-Dashboard/web/simulations/hysteresis_lab.html">Try simulation: Hysteresis</a></p>
+<p><a class="md-button lecture-simulation" href="https://costawess.github.io/Programming-Dashboard/web/simulations/arduino_flowchart_converter.html">Try simulation: Arduino to flowchart</a></p>
 <p><img alt="Flowchart: thermostat with hysteresis" class="lecture-figure" loading="lazy" src="../assets/diagrams/functions-decisions-048.png" /></p>
 <ul>
 <li>
@@ -3503,8 +3503,8 @@ several outputs & `void minMax(const float v[], int n,`
 </li>
 </ol>
 <h2 id="exercises-functions-and-decisions-12">Exercises: functions and decisions (1/2)<a class="headerlink" href="#exercises-functions-and-decisions-12" title="Permanent link">&para;</a></h2>
-<p><a class="md-button lecture-simulation" href="../../dashboard/?lab=simulations/hysteresis_lab.html">Try simulation: Hysteresis</a></p>
-<p><a class="md-button lecture-simulation" href="../../dashboard/?lab=experiments/heating_cooling_lab.html">Try simulation: Heating and cooling</a></p>
+<p><a class="md-button lecture-simulation" href="https://costawess.github.io/Programming-Dashboard/web/simulations/hysteresis_lab.html">Try simulation: Hysteresis</a></p>
+<p><a class="md-button lecture-simulation" href="https://costawess.github.io/Programming-Dashboard/web/experiments/heating_cooling_lab.html">Try simulation: Heating and cooling</a></p>
 <div class="admonition example">
 <p class="admonition-title">Exercise 1 – Battery indicator</p>
 <p>The potentiometer simulates a battery (0–3.3 V). Light 4 LEDs as a level bar: <span class="arithmatex">\(&gt;\)</span> 3.0 V all, <span class="arithmatex">\(&gt;\)</span> 2.5 V three, <span class="arithmatex">\(&gt;\)</span> 2.0 V two, <span class="arithmatex">\(&gt;\)</span> 1.5 V one, else blink red.</p>
@@ -3548,16 +3548,16 @@ several outputs & `void minMax(const float v[], int n,`
 <h3 id="try-it">Try it<a class="headerlink" href="#try-it" title="Permanent link">&para;</a></h3>
 <ul>
 <li>
-<p><a href="../../dashboard/?lab=simulations/course_topics_lab.html&amp;topic=functions">Functions</a></p>
+<p><a href="https://costawess.github.io/Programming-Dashboard/web/simulations/course_topics_lab.html?topic=functions">Functions</a></p>
 </li>
 <li>
-<p><a href="../../dashboard/?lab=simulations/course_topics_lab.html&amp;topic=conditionals">Conditionals</a></p>
+<p><a href="https://costawess.github.io/Programming-Dashboard/web/simulations/course_topics_lab.html?topic=conditionals">Conditionals</a></p>
 </li>
 <li>
-<p><a href="../../dashboard/?lab=simulations/hysteresis_lab.html">Hysteresis</a></p>
+<p><a href="https://costawess.github.io/Programming-Dashboard/web/simulations/hysteresis_lab.html">Hysteresis</a></p>
 </li>
 <li>
-<p><a href="../../dashboard/?lab=experiments/heating_cooling_lab.html">Experiment: heating &amp; cooling</a></p>
+<p><a href="https://costawess.github.io/Programming-Dashboard/web/experiments/heating_cooling_lab.html">Experiment: heating &amp; cooling</a></p>
 </li>
 </ul>
 
@@ -3670,8 +3670,6 @@ several outputs & `void minMax(const float v[], int n,`
         <script src="../../javascripts/mathjax.js"></script>
       
         <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
-      
-        <script src="../../javascripts/dashboard.js"></script>
       
     
   </body>

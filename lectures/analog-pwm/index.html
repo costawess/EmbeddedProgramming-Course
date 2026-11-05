@@ -283,7 +283,7 @@
   
   
     <li class="md-tabs__item">
-      <a href="../../dashboard/" class="md-tabs__link">
+      <a href="https://costawess.github.io/Programming-Dashboard/web/index.html" class="md-tabs__link">
         
   
   
@@ -2300,7 +2300,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../dashboard/" class="md-nav__link">
+      <a href="https://costawess.github.io/Programming-Dashboard/web/index.html" class="md-nav__link">
         
   
   
@@ -2616,7 +2616,7 @@
 
 <h1 id="analog-input-pwm-and-dac">Analog Input, PWM and DAC<a class="headerlink" href="#analog-input-pwm-and-dac" title="Permanent link">&para;</a></h1>
 <h2 id="from-voltage-to-number-the-adc">From voltage to number: the ADC<a class="headerlink" href="#from-voltage-to-number-the-adc" title="Permanent link">&para;</a></h2>
-<p><a class="md-button lecture-simulation" href="../../dashboard/?lab=simulations/course_topics_lab.html&amp;topic=adc">Try simulation: ADC</a></p>
+<p><a class="md-button lecture-simulation" href="https://costawess.github.io/Programming-Dashboard/web/simulations/course_topics_lab.html?topic=adc">Try simulation: ADC</a></p>
 <ul>
 <li>
 <p>Many sensors produce a <strong>voltage</strong> that tells <strong>how much</strong>: light, temperature, position, humidity.</p>
@@ -2639,7 +2639,7 @@
 <p><img alt="From voltage to number: the ADC" class="lecture-figure" loading="lazy" src="../assets/diagrams/analog-pwm-063.png" /></p>
 <p><em>Sources: <a href="../references/#ep-lectures">Embedded Programming, lectures 1–6</a>; <a href="../references/#arduino-esp32-docs">Arduino ESP32 Core Documentation</a>; <a href="https://docs.espressif.com/projects/arduino-esp32/en/latest/tutorials/io_mux.html">Espressif: GPIO Matrix and Pin Mux</a></em></p>
 <h2 id="sampling-reading-a-changing-signal">Sampling: reading a changing signal<a class="headerlink" href="#sampling-reading-a-changing-signal" title="Permanent link">&para;</a></h2>
-<p><a class="md-button lecture-simulation" href="../../dashboard/?lab=simulations/course_topics_lab.html&amp;topic=adc">Try simulation: ADC</a></p>
+<p><a class="md-button lecture-simulation" href="https://costawess.github.io/Programming-Dashboard/web/simulations/course_topics_lab.html?topic=adc">Try simulation: ADC</a></p>
 <p><img alt="Sampling: reading a changing signal" class="lecture-figure" loading="lazy" src="../assets/figures/analog/adc-sampling.png" /></p>
 <ul>
 <li>
@@ -2659,7 +2659,7 @@
 </div>
 <p><em>Sources: Figures: lecture 2 <a href="../references/#ep-lectures">Embedded Programming, lectures 1–6</a></em></p>
 <h2 id="connecting-a-potentiometer">Connecting a potentiometer<a class="headerlink" href="#connecting-a-potentiometer" title="Permanent link">&para;</a></h2>
-<p><a class="md-button lecture-simulation" href="../../dashboard/?lab=simulations/course_topics_lab.html&amp;topic=adc">Try simulation: ADC</a></p>
+<p><a class="md-button lecture-simulation" href="https://costawess.github.io/Programming-Dashboard/web/simulations/course_topics_lab.html?topic=adc">Try simulation: ADC</a></p>
 <p><img alt="Connecting a potentiometer" class="lecture-figure" loading="lazy" src="../assets/diagrams/analog-pwm-064.png" /></p>
 <ul>
 <li>
@@ -2684,7 +2684,7 @@
 </div>
 <p><em>Sources: <a href="../references/#ep-lectures">Embedded Programming, lectures 1–6</a></em></p>
 <h2 id="from-adc-value-to-voltage-step-by-step">From ADC value to voltage, step by step<a class="headerlink" href="#from-adc-value-to-voltage-step-by-step" title="Permanent link">&para;</a></h2>
-<p><a class="md-button lecture-simulation" href="../../dashboard/?lab=simulations/course_topics_lab.html&amp;topic=adc">Try simulation: ADC</a></p>
+<p><a class="md-button lecture-simulation" href="https://costawess.github.io/Programming-Dashboard/web/simulations/course_topics_lab.html?topic=adc">Try simulation: ADC</a></p>
 <p><strong>The steps</strong></p>
 <ol>
 <li>
@@ -2747,7 +2747,7 @@
 <p>The ESP32 ADC is not perfectly linear: <code>analogReadMilliVolts()</code> applies the factory calibration (following sections).</p>
 </div>
 <h2 id="code-read-the-potentiometer-and-convert-to-volts">Code: read the potentiometer and convert to volts<a class="headerlink" href="#code-read-the-potentiometer-and-convert-to-volts" title="Permanent link">&para;</a></h2>
-<p><a class="md-button lecture-simulation" href="../../dashboard/?lab=simulations/course_topics_lab.html&amp;topic=adc">Try simulation: ADC</a></p>
+<p><a class="md-button lecture-simulation" href="https://costawess.github.io/Programming-Dashboard/web/simulations/course_topics_lab.html?topic=adc">Try simulation: ADC</a></p>
 <div class="highlight"><span class="filename">pot_voltage.ino</span><pre><span></span><code><span class="k">const</span><span class="w"> </span><span class="kt">int</span><span class="w"> </span><span class="n">POT_PIN</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">36</span><span class="p">;</span><span class="w">            </span><span class="c1">// AD1 terminal (wiper)</span>
 <span class="k">const</span><span class="w"> </span><span class="kt">float</span><span class="w"> </span><span class="n">VREF</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mf">3.3</span><span class="p">;</span><span class="w">            </span><span class="c1">// full-scale voltage</span>
 <span class="k">const</span><span class="w"> </span><span class="kt">int</span><span class="w"> </span><span class="n">ADC_MAX</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">4095</span><span class="p">;</span><span class="w">          </span><span class="c1">// 12-bit ADC</span>
@@ -2789,7 +2789,7 @@
 <p>Near the ends the calculated volts and the calibrated mV differ: that is the ADC non-linearity.</p>
 </div>
 <h2 id="analog-input-the-12-bit-adc">Analog input: the 12-bit ADC<a class="headerlink" href="#analog-input-the-12-bit-adc" title="Permanent link">&para;</a></h2>
-<p><a class="md-button lecture-simulation" href="../../dashboard/?lab=simulations/course_topics_lab.html&amp;topic=adc">Try simulation: ADC</a></p>
+<p><a class="md-button lecture-simulation" href="https://costawess.github.io/Programming-Dashboard/web/simulations/course_topics_lab.html?topic=adc">Try simulation: ADC</a></p>
 <div class="highlight"><span class="filename">adc.ino</span><pre><span></span><code><span class="k">const</span><span class="w"> </span><span class="kt">int</span><span class="w"> </span><span class="n">POT_PIN</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">36</span><span class="p">;</span><span class="w">    </span><span class="c1">// AD1 terminal: ADC1, OK with Wi-Fi</span>
 
 <span class="kt">void</span><span class="w"> </span><span class="nf">setup</span><span class="p">()</span><span class="w"> </span><span class="p">{</span>
@@ -3228,7 +3228,7 @@ On the ESP32: <code>raw * 3.3 / 4095.0</code>, or better <code>analogReadMilliVo
 <h3 id="try-it">Try it<a class="headerlink" href="#try-it" title="Permanent link">&para;</a></h3>
 <ul>
 <li>
-<p><a href="../../dashboard/?lab=simulations/course_topics_lab.html&amp;topic=adc">ADC simulation</a></p>
+<p><a href="https://costawess.github.io/Programming-Dashboard/web/simulations/course_topics_lab.html?topic=adc">ADC simulation</a></p>
 </li>
 <li>
 <p><a href="https://learn.sparkfun.com/tutorials/pulse-width-modulation">Pulse width modulation (SparkFun)</a></p>
@@ -3344,8 +3344,6 @@ On the ESP32: <code>raw * 3.3 / 4095.0</code>, or better <code>analogReadMilliVo
         <script src="../../javascripts/mathjax.js"></script>
       
         <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
-      
-        <script src="../../javascripts/dashboard.js"></script>
       
     
   </body>

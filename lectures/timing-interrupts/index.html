@@ -283,7 +283,7 @@
   
   
     <li class="md-tabs__item">
-      <a href="../../dashboard/" class="md-tabs__link">
+      <a href="https://costawess.github.io/Programming-Dashboard/web/index.html" class="md-tabs__link">
         
   
   
@@ -2454,7 +2454,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../dashboard/" class="md-nav__link">
+      <a href="https://costawess.github.io/Programming-Dashboard/web/index.html" class="md-nav__link">
         
   
   
@@ -2924,7 +2924,7 @@
 
 <h1 id="time-and-interrupts">Time and Interrupts<a class="headerlink" href="#time-and-interrupts" title="Permanent link">&para;</a></h1>
 <h2 id="delay-vs-millis">delay() vs millis()<a class="headerlink" href="#delay-vs-millis" title="Permanent link">&para;</a></h2>
-<p><a class="md-button lecture-simulation" href="../../dashboard/?lab=simulations/course_topics_lab.html&amp;topic=timers">Try simulation: Timers</a></p>
+<p><a class="md-button lecture-simulation" href="https://costawess.github.io/Programming-Dashboard/web/simulations/course_topics_lab.html?topic=timers">Try simulation: Timers</a></p>
 <div class="admonition warning">
 <p class="admonition-title">delay(ms)</p>
 <ul>
@@ -2956,7 +2956,7 @@
 <p><img alt="delay() vs millis()" class="lecture-figure" loading="lazy" src="../assets/diagrams/timing-interrupts-071.png" /></p>
 <p><em>Sources: <a href="../references/#ep-lectures">Embedded Programming, lectures 1–6</a></em></p>
 <h2 id="non-blocking-timing-with-millis">Non-blocking timing with millis()<a class="headerlink" href="#non-blocking-timing-with-millis" title="Permanent link">&para;</a></h2>
-<p><a class="md-button lecture-simulation" href="../../dashboard/?lab=simulations/course_topics_lab.html&amp;topic=timers">Try simulation: Timers</a></p>
+<p><a class="md-button lecture-simulation" href="https://costawess.github.io/Programming-Dashboard/web/simulations/course_topics_lab.html?topic=timers">Try simulation: Timers</a></p>
 <div class="highlight"><span class="filename">nonblocking.ino</span><pre><span></span><code><span class="k">const</span><span class="w"> </span><span class="kt">int</span><span class="w"> </span><span class="n">LED_PIN</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">2</span><span class="p">;</span>
 <span class="k">const</span><span class="w"> </span><span class="kt">unsigned</span><span class="w"> </span><span class="kt">long</span><span class="w"> </span><span class="n">PERIOD_MS</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">250</span><span class="p">;</span>
 <span class="kt">unsigned</span><span class="w"> </span><span class="kt">long</span><span class="w"> </span><span class="n">lastToggle</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">0</span><span class="p">;</span>
@@ -2995,8 +2995,8 @@
 </li>
 </ul>
 <h2 id="flowchart-non-blocking-timing-with-millis">Flowchart: non-blocking timing with millis()<a class="headerlink" href="#flowchart-non-blocking-timing-with-millis" title="Permanent link">&para;</a></h2>
-<p><a class="md-button lecture-simulation" href="../../dashboard/?lab=simulations/course_topics_lab.html&amp;topic=timers">Try simulation: Timers</a></p>
-<p><a class="md-button lecture-simulation" href="../../dashboard/?lab=simulations/arduino_flowchart_converter.html">Try simulation: Arduino to flowchart</a></p>
+<p><a class="md-button lecture-simulation" href="https://costawess.github.io/Programming-Dashboard/web/simulations/course_topics_lab.html?topic=timers">Try simulation: Timers</a></p>
+<p><a class="md-button lecture-simulation" href="https://costawess.github.io/Programming-Dashboard/web/simulations/arduino_flowchart_converter.html">Try simulation: Arduino to flowchart</a></p>
 <p><img alt="Flowchart: non-blocking timing with millis()" class="lecture-figure" loading="lazy" src="../assets/diagrams/timing-interrupts-072.png" /></p>
 <ul>
 <li>
@@ -3014,8 +3014,8 @@
 <p>A <code>delay(250)</code> would be a box that blocks: during it, the other work never happens.</p>
 </div>
 <h2 id="several-independent-timers">Several independent timers<a class="headerlink" href="#several-independent-timers" title="Permanent link">&para;</a></h2>
-<p><a class="md-button lecture-simulation" href="../../dashboard/?lab=simulations/course_topics_lab.html&amp;topic=timers">Try simulation: Timers</a></p>
-<p><a class="md-button lecture-simulation" href="../../dashboard/?lab=experiments/real_time_challenge.html">Try simulation: Real-time challenge</a></p>
+<p><a class="md-button lecture-simulation" href="https://costawess.github.io/Programming-Dashboard/web/simulations/course_topics_lab.html?topic=timers">Try simulation: Timers</a></p>
+<p><a class="md-button lecture-simulation" href="https://costawess.github.io/Programming-Dashboard/web/experiments/real_time_challenge.html">Try simulation: Real-time challenge</a></p>
 <div class="highlight"><span class="filename">three_timers.ino</span><pre><span></span><code><span class="k">const</span><span class="w"> </span><span class="kt">int</span><span class="w"> </span><span class="n">LED_BLUE</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">23</span><span class="p">,</span><span class="w"> </span><span class="n">LED_RED</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">21</span><span class="p">;</span>
 <span class="kt">unsigned</span><span class="w"> </span><span class="kt">long</span><span class="w"> </span><span class="n">lastBlue</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">0</span><span class="p">,</span><span class="w"> </span><span class="n">lastRed</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">0</span><span class="p">,</span><span class="w"> </span><span class="n">lastPrint</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">0</span><span class="p">;</span>
 <span class="kt">bool</span><span class="w"> </span><span class="n">blueOn</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nb">false</span><span class="p">,</span><span class="w"> </span><span class="n">redOn</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nb">false</span><span class="p">;</span>
@@ -3057,7 +3057,7 @@
 </div>
 <p><em>Sources: Lecture 2: function-specific timers <a href="../references/#ep-lectures">Embedded Programming, lectures 1–6</a></em></p>
 <h2 id="polling-vs-interrupts">Polling vs interrupts<a class="headerlink" href="#polling-vs-interrupts" title="Permanent link">&para;</a></h2>
-<p><a class="md-button lecture-simulation" href="../../dashboard/?lab=simulations/interrupts.html">Try simulation: Interrupts</a></p>
+<p><a class="md-button lecture-simulation" href="https://costawess.github.io/Programming-Dashboard/web/simulations/interrupts.html">Try simulation: Interrupts</a></p>
 <p><strong>Polling: “has it happened yet?”</strong></p>
 <ul>
 <li>
@@ -3088,7 +3088,7 @@
 </div>
 <p><em>Sources: <a href="../references/#ep-lectures">Embedded Programming, lectures 1–6</a></em></p>
 <h2 id="attachinterrupt-connecting-a-pin-to-a-function">attachInterrupt(): connecting a pin to a function<a class="headerlink" href="#attachinterrupt-connecting-a-pin-to-a-function" title="Permanent link">&para;</a></h2>
-<p><a class="md-button lecture-simulation" href="../../dashboard/?lab=simulations/interrupts.html">Try simulation: Interrupts</a></p>
+<p><a class="md-button lecture-simulation" href="https://costawess.github.io/Programming-Dashboard/web/simulations/interrupts.html">Try simulation: Interrupts</a></p>
 <p>(digitalPinToInterrupt(pin), <strong>isrName</strong>, mode);<br />
 (digitalPinToInterrupt(34), buttonISR, RISING);  </p>
 <ul>
@@ -3227,7 +3227,7 @@ NC & pull-up; contact to GND & LOW & HIGH & `RISING` & `FALLING`
 </div>
 <p><em>Sources: GPIO and interrupt configuration <a href="../references/#arduino-esp32-docs">Arduino ESP32 Core Documentation</a>; <a href="../references/#esp-idf-gpio">ESP-IDF Programming Guide: GPIO &amp; RTC GPIO (ESP32)</a></em></p>
 <h2 id="what-happens-when-an-interrupt-fires">What happens when an interrupt fires<a class="headerlink" href="#what-happens-when-an-interrupt-fires" title="Permanent link">&para;</a></h2>
-<p><a class="md-button lecture-simulation" href="../../dashboard/?lab=simulations/interrupts.html">Try simulation: Interrupts</a></p>
+<p><a class="md-button lecture-simulation" href="https://costawess.github.io/Programming-Dashboard/web/simulations/interrupts.html">Try simulation: Interrupts</a></p>
 <p><img alt="What happens when an interrupt fires" class="lecture-figure" loading="lazy" src="../assets/diagrams/timing-interrupts-077.png" /></p>
 <ol>
 <li>
@@ -3290,7 +3290,7 @@ buttonPressed = true;<br />
 </div>
 <p><em>Sources: <a href="../references/#ep-lectures">Embedded Programming, lectures 1–6</a>; <a href="../references/#esp-idf-gpio">ESP-IDF Programming Guide: GPIO &amp; RTC GPIO (ESP32)</a></em></p>
 <h2 id="example-a-button-interrupt-on-the-course-board">Example: a button interrupt on the course board<a class="headerlink" href="#example-a-button-interrupt-on-the-course-board" title="Permanent link">&para;</a></h2>
-<p><a class="md-button lecture-simulation" href="../../dashboard/?lab=simulations/interrupts.html">Try simulation: Interrupts</a></p>
+<p><a class="md-button lecture-simulation" href="https://costawess.github.io/Programming-Dashboard/web/simulations/interrupts.html">Try simulation: Interrupts</a></p>
 <div class="highlight"><span class="filename">button_interrupt.ino</span><pre><span></span><code><span class="k">const</span><span class="w"> </span><span class="kt">int</span><span class="w"> </span><span class="n">KEY1</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">34</span><span class="p">;</span><span class="w">               </span><span class="c1">// active HIGH</span>
 <span class="k">const</span><span class="w"> </span><span class="kt">int</span><span class="w"> </span><span class="n">LED_GREEN</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">22</span><span class="p">;</span>
 <span class="k">volatile</span><span class="w"> </span><span class="kt">bool</span><span class="w"> </span><span class="n">pressedFlag</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nb">false</span><span class="p">;</span>
@@ -3334,12 +3334,12 @@ buttonPressed = true;<br />
 <p>Press several times during the delay: compare the edge count with the number of LED toggles. The Boolean flag merges events; debounce is still needed.</p>
 </div>
 <h2 id="flowchart-main-loop-and-interrupt">Flowchart: main loop and interrupt<a class="headerlink" href="#flowchart-main-loop-and-interrupt" title="Permanent link">&para;</a></h2>
-<p><a class="md-button lecture-simulation" href="../../dashboard/?lab=simulations/interrupts.html">Try simulation: Interrupts</a></p>
-<p><a class="md-button lecture-simulation" href="../../dashboard/?lab=simulations/arduino_flowchart_converter.html">Try simulation: Arduino to flowchart</a></p>
+<p><a class="md-button lecture-simulation" href="https://costawess.github.io/Programming-Dashboard/web/simulations/interrupts.html">Try simulation: Interrupts</a></p>
+<p><a class="md-button lecture-simulation" href="https://costawess.github.io/Programming-Dashboard/web/simulations/arduino_flowchart_converter.html">Try simulation: Arduino to flowchart</a></p>
 <p><img alt="Flowchart: main loop and interrupt" class="lecture-figure" loading="lazy" src="../assets/diagrams/timing-interrupts-078.png" /></p>
 <p>The ISR is a <strong>separate, short</strong> flowchart started by the hardware. It only sets a flag; the main program does the slow work.</p>
 <h2 id="bouncing-one-press-many-edges">Bouncing: one press, many edges<a class="headerlink" href="#bouncing-one-press-many-edges" title="Permanent link">&para;</a></h2>
-<p><a class="md-button lecture-simulation" href="../../dashboard/?lab=simulations/debouncing_lab.html">Try simulation: Button debouncing</a></p>
+<p><a class="md-button lecture-simulation" href="https://costawess.github.io/Programming-Dashboard/web/simulations/debouncing_lab.html">Try simulation: Button debouncing</a></p>
 <p><img alt="Bouncing: one press, many edges" class="lecture-figure" loading="lazy" src="../assets/figures/interrupts/switch-bouncing.jpg" /></p>
 <ul>
 <li>
@@ -3357,7 +3357,7 @@ buttonPressed = true;<br />
 </ul>
 <p><em>Sources: Figure: electrosome.com, via lecture 3 <a href="../references/#ep-lectures">Embedded Programming, lectures 1–6</a></em></p>
 <h2 id="debouncing-in-software">Debouncing in software<a class="headerlink" href="#debouncing-in-software" title="Permanent link">&para;</a></h2>
-<p><a class="md-button lecture-simulation" href="../../dashboard/?lab=simulations/debouncing_lab.html">Try simulation: Button debouncing</a></p>
+<p><a class="md-button lecture-simulation" href="https://costawess.github.io/Programming-Dashboard/web/simulations/debouncing_lab.html">Try simulation: Button debouncing</a></p>
 <p><strong>In the ISR (time stamp)</strong></p>
 <div class="highlight"><span class="filename">debounce_isr.ino</span><pre><span></span><code><span class="k">const</span><span class="w"> </span><span class="kt">unsigned</span><span class="w"> </span><span class="kt">long</span><span class="w"> </span><span class="n">DEBOUNCE_MS</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">50</span><span class="p">;</span>
 <span class="k">volatile</span><span class="w"> </span><span class="kt">unsigned</span><span class="w"> </span><span class="kt">long</span><span class="w"> </span><span class="n">lastPressTime</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">0</span><span class="p">;</span>
@@ -3394,8 +3394,8 @@ buttonPressed = true;<br />
 </div>
 <p><em>Sources: <a href="../references/#ep-lectures">Embedded Programming, lectures 1–6</a>; <a href="../references/#arduino-reference">Arduino Language Reference</a></em></p>
 <h2 id="flowchart-software-debounce">Flowchart: software debounce<a class="headerlink" href="#flowchart-software-debounce" title="Permanent link">&para;</a></h2>
-<p><a class="md-button lecture-simulation" href="../../dashboard/?lab=simulations/debouncing_lab.html">Try simulation: Button debouncing</a></p>
-<p><a class="md-button lecture-simulation" href="../../dashboard/?lab=simulations/arduino_flowchart_converter.html">Try simulation: Arduino to flowchart</a></p>
+<p><a class="md-button lecture-simulation" href="https://costawess.github.io/Programming-Dashboard/web/simulations/debouncing_lab.html">Try simulation: Button debouncing</a></p>
+<p><a class="md-button lecture-simulation" href="https://costawess.github.io/Programming-Dashboard/web/simulations/arduino_flowchart_converter.html">Try simulation: Arduino to flowchart</a></p>
 <p><img alt="Flowchart: software debounce" class="lecture-figure" loading="lazy" src="../assets/diagrams/timing-interrupts-079.png" /></p>
 <ul>
 <li>
@@ -3409,7 +3409,7 @@ buttonPressed = true;<br />
 </li>
 </ul>
 <h2 id="hardware-timers-interrupts-from-the-clock">Hardware timers: interrupts from the clock<a class="headerlink" href="#hardware-timers-interrupts-from-the-clock" title="Permanent link">&para;</a></h2>
-<p><a class="md-button lecture-simulation" href="../../dashboard/?lab=simulations/course_topics_lab.html&amp;topic=timers">Try simulation: Timers</a></p>
+<p><a class="md-button lecture-simulation" href="https://costawess.github.io/Programming-Dashboard/web/simulations/course_topics_lab.html?topic=timers">Try simulation: Timers</a></p>
 <ul>
 <li>
 <p>A <strong>timer</strong> counts clock ticks, independent of <code>loop()</code>.</p>
@@ -3607,7 +3607,7 @@ buttonPressed = true;<br />
 </div>
 <p><em>Sources: <a href="../references/#arduino-esp32-migration">Migration from Arduino ESP32 Core 2.x to 3.0</a></em></p>
 <h2 id="ticker-timers-made-easy">Ticker: timers made easy<a class="headerlink" href="#ticker-timers-made-easy" title="Permanent link">&para;</a></h2>
-<p><a class="md-button lecture-simulation" href="../../dashboard/?lab=simulations/course_topics_lab.html&amp;topic=timers">Try simulation: Timers</a></p>
+<p><a class="md-button lecture-simulation" href="https://costawess.github.io/Programming-Dashboard/web/simulations/course_topics_lab.html?topic=timers">Try simulation: Timers</a></p>
 <div class="highlight"><span class="filename">ticker.ino</span><pre><span></span><code><span class="cp">#include</span><span class="w"> </span><span class="cpf">&lt;Ticker.h&gt;</span>
 
 <span class="n">Ticker</span><span class="w"> </span><span class="n">sensorTicker</span><span class="p">;</span>
@@ -3768,8 +3768,8 @@ buttonPressed = true;<br />
 </li>
 </ol>
 <h2 id="exercises-time-and-interrupts">Exercises: time and interrupts<a class="headerlink" href="#exercises-time-and-interrupts" title="Permanent link">&para;</a></h2>
-<p><a class="md-button lecture-simulation" href="../../dashboard/?lab=experiments/kitchen_timer.html">Try simulation: Kitchen timer</a></p>
-<p><a class="md-button lecture-simulation" href="../../dashboard/?lab=experiments/real_time_challenge.html">Try simulation: Real-time challenge</a></p>
+<p><a class="md-button lecture-simulation" href="https://costawess.github.io/Programming-Dashboard/web/experiments/kitchen_timer.html">Try simulation: Kitchen timer</a></p>
+<p><a class="md-button lecture-simulation" href="https://costawess.github.io/Programming-Dashboard/web/experiments/real_time_challenge.html">Try simulation: Real-time challenge</a></p>
 <div class="admonition example">
 <p class="admonition-title">Exercise 1 – Two blinkers, one button</p>
 <p>Blue blinks at 2 Hz, red at 0.5 Hz, and KEY1 toggles the green LED immediately: no <code>delay()</code> allowed.</p>
@@ -3811,16 +3811,16 @@ buttonPressed = true;<br />
 <h3 id="try-it">Try it<a class="headerlink" href="#try-it" title="Permanent link">&para;</a></h3>
 <ul>
 <li>
-<p><a href="../../dashboard/?lab=simulations/interrupts.html">Interrupts</a></p>
+<p><a href="https://costawess.github.io/Programming-Dashboard/web/simulations/interrupts.html">Interrupts</a></p>
 </li>
 <li>
-<p><a href="../../dashboard/?lab=simulations/course_topics_lab.html&amp;topic=timers">Timers</a></p>
+<p><a href="https://costawess.github.io/Programming-Dashboard/web/simulations/course_topics_lab.html?topic=timers">Timers</a></p>
 </li>
 <li>
-<p><a href="../../dashboard/?lab=simulations/debouncing_lab.html">Button debouncing</a></p>
+<p><a href="https://costawess.github.io/Programming-Dashboard/web/simulations/debouncing_lab.html">Button debouncing</a></p>
 </li>
 <li>
-<p><a href="../../dashboard/?lab=experiments/kitchen_timer.html">Experiment: kitchen timer</a></p>
+<p><a href="https://costawess.github.io/Programming-Dashboard/web/experiments/kitchen_timer.html">Experiment: kitchen timer</a></p>
 </li>
 </ul>
 <h2 id="complete-project-sketches">Complete project sketches<a class="headerlink" href="#complete-project-sketches" title="Permanent link">&para;</a></h2>
@@ -3938,8 +3938,6 @@ buttonPressed = true;<br />
         <script src="../../javascripts/mathjax.js"></script>
       
         <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
-      
-        <script src="../../javascripts/dashboard.js"></script>
       
     
   </body>
