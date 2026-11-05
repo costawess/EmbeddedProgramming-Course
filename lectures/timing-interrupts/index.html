@@ -1,0 +1,3946 @@
+
+<!doctype html>
+<html lang="en" class="no-js">
+  <head>
+    
+      <meta charset="utf-8">
+      <meta name="viewport" content="width=device-width,initial-scale=1">
+      
+        <meta name="description" content="Embedded Programming lectures, practical tutorials, and interactive ESP32 simulations at Hanze.">
+      
+      
+      
+        <link rel="canonical" href="https://costawess.github.io/EmbeddedProgramming-Course/lectures/timing-interrupts/">
+      
+      
+        <link rel="prev" href="../analog-pwm/">
+      
+      
+        <link rel="next" href="../breadboard-libraries/">
+      
+      
+        
+      
+      
+      <link rel="icon" href="../../assets/images/favicon.png">
+      <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.8.0">
+    
+    
+      
+        <title>Time and Interrupts - Embedded Programming</title>
+      
+    
+    
+      <link rel="stylesheet" href="../../assets/stylesheets/main.57a0d79d.min.css">
+      
+        
+        <link rel="stylesheet" href="../../assets/stylesheets/palette.fb2fffe2.min.css">
+      
+      
+
+
+    
+    
+      
+    
+    
+      
+        
+        
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,300i,400,400i,700,700i%7CRoboto+Mono:400,400i,700,700i&display=fallback">
+        <style>:root{--md-text-font:"Roboto";--md-code-font:"Roboto Mono"}</style>
+      
+    
+    
+      <link rel="stylesheet" href="../../stylesheets/extra.css">
+    
+    <script>__md_scope=new URL("../..",location),__md_hash=e=>[...e].reduce(((e,_)=>(e<<5)-e+_.charCodeAt(0)),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
+    
+      
+
+    
+    
+  </head>
+  
+  
+    
+    
+      
+    
+    
+    
+    
+    <body dir="ltr" data-md-color-scheme="slate" data-md-color-primary="indigo" data-md-color-accent="indigo">
+  
+    
+    <input class="md-toggle" data-md-toggle="drawer" type="checkbox" id="__drawer" autocomplete="off">
+    <input class="md-toggle" data-md-toggle="search" type="checkbox" id="__search" autocomplete="off">
+    <label class="md-overlay" for="__drawer"></label>
+    <div data-md-component="skip">
+      
+        
+        <a href="#time-and-interrupts" class="md-skip">
+          Skip to content
+        </a>
+      
+    </div>
+    <div data-md-component="announce">
+      
+    </div>
+    
+    
+      
+
+  
+
+<header class="md-header md-header--shadow md-header--lifted" data-md-component="header">
+  <nav class="md-header__inner md-grid" aria-label="Header">
+    <a href="../.." title="Embedded Programming" class="md-header__button md-logo" aria-label="Embedded Programming" data-md-component="logo">
+      
+  <img src="../../assets/hanze_logo.png" alt="logo">
+
+    </a>
+    <label class="md-header__button md-icon" for="__drawer">
+      
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M3 6h18v2H3zm0 5h18v2H3zm0 5h18v2H3z"/></svg>
+    </label>
+    <div class="md-header__title" data-md-component="header-title">
+      <div class="md-header__ellipsis">
+        <div class="md-header__topic">
+          <span class="md-ellipsis">
+            Embedded Programming
+          </span>
+        </div>
+        <div class="md-header__topic" data-md-component="header-topic">
+          <span class="md-ellipsis">
+            
+              Time and Interrupts
+            
+          </span>
+        </div>
+      </div>
+    </div>
+    
+      
+        <form class="md-header__option" data-md-component="palette">
+  
+    
+    
+    
+    <input class="md-option" data-md-color-media="" data-md-color-scheme="slate" data-md-color-primary="indigo" data-md-color-accent="indigo"  aria-label="Switch to light mode"  type="radio" name="__palette" id="__palette_0">
+    
+      <label class="md-header__button md-icon" title="Switch to light mode" for="__palette_1" hidden>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 7a5 5 0 0 1 5 5 5 5 0 0 1-5 5 5 5 0 0 1-5-5 5 5 0 0 1 5-5m0 2a3 3 0 0 0-3 3 3 3 0 0 0 3 3 3 3 0 0 0 3-3 3 3 0 0 0-3-3m0-7 2.39 3.42C13.65 5.15 12.84 5 12 5s-1.65.15-2.39.42zM3.34 7l4.16-.35A7.2 7.2 0 0 0 5.94 8.5c-.44.74-.69 1.5-.83 2.29zm.02 10 1.76-3.77a7.131 7.131 0 0 0 2.38 4.14zM20.65 7l-1.77 3.79a7.02 7.02 0 0 0-2.38-4.15zm-.01 10-4.14.36c.59-.51 1.12-1.14 1.54-1.86.42-.73.69-1.5.83-2.29zM12 22l-2.41-3.44c.74.27 1.55.44 2.41.44.82 0 1.63-.17 2.37-.44z"/></svg>
+      </label>
+    
+  
+    
+    
+    
+    <input class="md-option" data-md-color-media="" data-md-color-scheme="default" data-md-color-primary="indigo" data-md-color-accent="indigo"  aria-label="Switch to dark mode"  type="radio" name="__palette" id="__palette_1">
+    
+      <label class="md-header__button md-icon" title="Switch to dark mode" for="__palette_0" hidden>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="m17.75 4.09-2.53 1.94.91 3.06-2.63-1.81-2.63 1.81.91-3.06-2.53-1.94L12.44 4l1.06-3 1.06 3zm3.5 6.91-1.64 1.25.59 1.98-1.7-1.17-1.7 1.17.59-1.98L15.75 11l2.06-.05L18.5 9l.69 1.95zm-2.28 4.95c.83-.08 1.72 1.1 1.19 1.85-.32.45-.66.87-1.08 1.27C15.17 23 8.84 23 4.94 19.07c-3.91-3.9-3.91-10.24 0-14.14.4-.4.82-.76 1.27-1.08.75-.53 1.93.36 1.85 1.19-.27 2.86.69 5.83 2.89 8.02a9.96 9.96 0 0 0 8.02 2.89m-1.64 2.02a12.08 12.08 0 0 1-7.8-3.47c-2.17-2.19-3.33-5-3.49-7.82-2.81 3.14-2.7 7.96.31 10.98 3.02 3.01 7.84 3.12 10.98.31"/></svg>
+      </label>
+    
+  
+</form>
+      
+    
+    
+      <script>var palette=__md_get("__palette");if(palette&&palette.color){if("(prefers-color-scheme)"===palette.color.media){var media=matchMedia("(prefers-color-scheme: light)"),input=document.querySelector(media.matches?"[data-md-color-media='(prefers-color-scheme: light)']":"[data-md-color-media='(prefers-color-scheme: dark)']");palette.color.media=input.getAttribute("data-md-color-media"),palette.color.scheme=input.getAttribute("data-md-color-scheme"),palette.color.primary=input.getAttribute("data-md-color-primary"),palette.color.accent=input.getAttribute("data-md-color-accent")}for(var[key,value]of Object.entries(palette.color))document.body.setAttribute("data-md-color-"+key,value)}</script>
+    
+    
+    
+      
+      
+        <label class="md-header__button md-icon" for="__search">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+        </label>
+        <div class="md-search" data-md-component="search" role="dialog">
+  <label class="md-search__overlay" for="__search"></label>
+  <div class="md-search__inner" role="search">
+    <form class="md-search__form" name="search">
+      <input type="text" class="md-search__input" name="query" aria-label="Search" placeholder="Search" autocapitalize="off" autocorrect="off" autocomplete="off" spellcheck="false" data-md-component="search-query" required>
+      <label class="md-search__icon md-icon" for="__search">
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11z"/></svg>
+      </label>
+      <nav class="md-search__options" aria-label="Search">
+        
+        <button type="reset" class="md-search__icon md-icon" title="Clear" aria-label="Clear" tabindex="-1">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M19 6.41 17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/></svg>
+        </button>
+      </nav>
+      
+        <div class="md-search__suggest" data-md-component="search-suggest"></div>
+      
+    </form>
+    <div class="md-search__output">
+      <div class="md-search__scrollwrap" tabindex="0" data-md-scrollfix>
+        <div class="md-search-result" data-md-component="search-result">
+          <div class="md-search-result__meta">
+            Initializing search
+          </div>
+          <ol class="md-search-result__list" role="presentation"></ol>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+      
+    
+    
+      <div class="md-header__source">
+        <a href="https://github.com/costawess/EmbeddedProgramming-Course" title="Go to repository" class="md-source" data-md-component="source">
+  <div class="md-source__icon md-icon">
+    
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--! Font Awesome Free 7.1.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2025 Fonticons, Inc.--><path d="M439.6 236.1 244 40.5c-5.4-5.5-12.8-8.5-20.4-8.5s-15 3-20.4 8.4L162.5 81l51.5 51.5c27.1-9.1 52.7 16.8 43.4 43.7l49.7 49.7c34.2-11.8 61.2 31 35.5 56.7-26.5 26.5-70.2-2.9-56-37.3L240.3 199v121.9c25.3 12.5 22.3 41.8 9.1 55-6.4 6.4-15.2 10.1-24.3 10.1s-17.8-3.6-24.3-10.1c-17.6-17.6-11.1-46.9 11.2-56v-123c-20.8-8.5-24.6-30.7-18.6-45L142.6 101 8.5 235.1C3 240.6 0 247.9 0 255.5s3 15 8.5 20.4l195.6 195.7c5.4 5.4 12.7 8.4 20.4 8.4s15-3 20.4-8.4l194.7-194.7c5.4-5.4 8.4-12.8 8.4-20.4s-3-15-8.4-20.4"/></svg>
+  </div>
+  <div class="md-source__repository">
+    EmbeddedProgramming-Course
+  </div>
+</a>
+      </div>
+    
+  </nav>
+  
+    
+      
+<nav class="md-tabs" aria-label="Tabs" data-md-component="tabs">
+  <div class="md-grid">
+    <ul class="md-tabs__list">
+      
+        
+  
+  
+  
+  
+    <li class="md-tabs__item">
+      <a href="../.." class="md-tabs__link">
+        
+  
+  
+    
+  
+  Home
+
+      </a>
+    </li>
+  
+
+      
+        
+  
+  
+  
+    
+  
+  
+    
+    
+      <li class="md-tabs__item md-tabs__item--active">
+        <a href="../" class="md-tabs__link">
+          
+  
+  
+  Lectures
+
+        </a>
+      </li>
+    
+  
+
+      
+        
+  
+  
+  
+  
+    
+    
+      <li class="md-tabs__item">
+        <a href="../../tutorials/" class="md-tabs__link">
+          
+  
+  
+  Tutorials
+
+        </a>
+      </li>
+    
+  
+
+      
+        
+  
+  
+  
+  
+    <li class="md-tabs__item">
+      <a href="../../dashboard/" class="md-tabs__link">
+        
+  
+  
+    
+  
+  Dashboard
+
+      </a>
+    </li>
+  
+
+      
+    </ul>
+  </div>
+</nav>
+    
+  
+</header>
+    
+    <div class="md-container" data-md-component="container">
+      
+      
+        
+      
+      <main class="md-main" data-md-component="main">
+        <div class="md-main__inner md-grid">
+          
+            
+              
+              <div class="md-sidebar md-sidebar--primary" data-md-component="sidebar" data-md-type="navigation" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+
+  
+
+
+<nav class="md-nav md-nav--primary md-nav--lifted" aria-label="Navigation" data-md-level="0">
+  <label class="md-nav__title" for="__drawer">
+    <a href="../.." title="Embedded Programming" class="md-nav__button md-logo" aria-label="Embedded Programming" data-md-component="logo">
+      
+  <img src="../../assets/hanze_logo.png" alt="logo">
+
+    </a>
+    Embedded Programming
+  </label>
+  
+    <div class="md-nav__source">
+      <a href="https://github.com/costawess/EmbeddedProgramming-Course" title="Go to repository" class="md-source" data-md-component="source">
+  <div class="md-source__icon md-icon">
+    
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--! Font Awesome Free 7.1.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2025 Fonticons, Inc.--><path d="M439.6 236.1 244 40.5c-5.4-5.5-12.8-8.5-20.4-8.5s-15 3-20.4 8.4L162.5 81l51.5 51.5c27.1-9.1 52.7 16.8 43.4 43.7l49.7 49.7c34.2-11.8 61.2 31 35.5 56.7-26.5 26.5-70.2-2.9-56-37.3L240.3 199v121.9c25.3 12.5 22.3 41.8 9.1 55-6.4 6.4-15.2 10.1-24.3 10.1s-17.8-3.6-24.3-10.1c-17.6-17.6-11.1-46.9 11.2-56v-123c-20.8-8.5-24.6-30.7-18.6-45L142.6 101 8.5 235.1C3 240.6 0 247.9 0 255.5s3 15 8.5 20.4l195.6 195.7c5.4 5.4 12.7 8.4 20.4 8.4s15-3 20.4-8.4l194.7-194.7c5.4-5.4 8.4-12.8 8.4-20.4s-3-15-8.4-20.4"/></svg>
+  </div>
+  <div class="md-source__repository">
+    EmbeddedProgramming-Course
+  </div>
+</a>
+    </div>
+  
+  <ul class="md-nav__list" data-md-scrollfix>
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../.." class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Home
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+    
+  
+  
+  
+    
+    
+    
+    
+      
+        
+        
+      
+      
+    
+    
+    <li class="md-nav__item md-nav__item--active md-nav__item--section md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_2" checked>
+        
+          
+          <label class="md-nav__link" for="__nav_2" id="__nav_2_label" tabindex="">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Lectures
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_2_label" aria-expanded="true">
+          <label class="md-nav__title" for="__nav_2">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Lectures
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Overview
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+    
+    
+      
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_2_2" >
+        
+          
+          <label class="md-nav__link" for="__nav_2_2" id="__nav_2_2_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Course & foundations
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_2_2_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_2_2">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Course & foundations
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../course/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Course organisation
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../how-programs-run/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    How programs run
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../esp32-introduction/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    The ESP32 family
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../architecture/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Architecture & memory
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+    
+    
+      
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_2_3" >
+        
+          
+          <label class="md-nav__link" for="__nav_2_3" id="__nav_2_3_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Hardware & setup
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_2_3_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_2_3">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Hardware & setup
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../pinout/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Pinout & electrical limits
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../course-board/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    The course board
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../arduino-ide/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Arduino IDE & first sketch
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+    
+    
+      
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_2_4" >
+        
+          
+          <label class="md-nav__link" for="__nav_2_4" id="__nav_2_4_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Programming
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_2_4_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_2_4">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Programming
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../variables-types/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Variables, types & numbers
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../flowcharts/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Flowcharts
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../functions-decisions/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Functions & decisions
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../loops-arrays/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Loops & arrays
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../structs/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Structs
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../code-quality-debugging/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Code quality & debugging
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+    
+  
+  
+  
+    
+    
+    
+    
+      
+      
+    
+    
+    <li class="md-nav__item md-nav__item--active md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_2_5" checked>
+        
+          
+          <label class="md-nav__link" for="__nav_2_5" id="__nav_2_5_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Inputs, outputs & timing
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_2_5_label" aria-expanded="true">
+          <label class="md-nav__title" for="__nav_2_5">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Inputs, outputs & timing
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../digital-io/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Digital inputs & outputs
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../analog-pwm/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Analog input, PWM & DAC
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+    
+  
+  
+  
+    <li class="md-nav__item md-nav__item--active">
+      
+      <input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
+      
+      
+        
+      
+      
+        <label class="md-nav__link md-nav__link--active" for="__toc">
+          
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Timing, interrupts & timers
+  
+
+    
+  </span>
+  
+  
+
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <a href="./" class="md-nav__link md-nav__link--active">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Timing, interrupts & timers
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+      
+        
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#delay-vs-millis" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        delay() vs millis()
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#non-blocking-timing-with-millis" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Non-blocking timing with millis()
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#flowchart-non-blocking-timing-with-millis" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Flowchart: non-blocking timing with millis()
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#several-independent-timers" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Several independent timers
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#polling-vs-interrupts" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Polling vs interrupts
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#attachinterrupt-connecting-a-pin-to-a-function" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        attachInterrupt(): connecting a pin to a function
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#two-button-circuits-the-same-press-opposite-edges" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Two button circuits: the same press, opposite edges
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#choose-the-mode-from-contact-type-and-wiring" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Choose the mode from contact type and wiring
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#read-the-waveform-press-release-or-both" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Read the waveform: press, release or both?
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#configure-the-input-and-the-interrupt-separately" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Configure the input and the interrupt separately
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#what-happens-when-an-interrupt-fires" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        What happens when an interrupt fires
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#writing-a-good-isr-volatile-and-iram_attr" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Writing a good ISR: volatile and IRAM_ATTR
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#example-a-button-interrupt-on-the-course-board" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Example: a button interrupt on the course board
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#flowchart-main-loop-and-interrupt" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Flowchart: main loop and interrupt
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#bouncing-one-press-many-edges" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Bouncing: one press, many edges
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#debouncing-in-software" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Debouncing in software
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#flowchart-software-debounce" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Flowchart: software debounce
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#hardware-timers-interrupts-from-the-clock" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Hardware timers: interrupts from the clock
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#core-3x-timerbegin-allocates-an-available-timer" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Core 3.x: timerBegin() allocates an available timer
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#prescaler-divide-the-timer-clock-not-the-cpu-clock" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Prescaler: divide the timer clock, not the CPU clock
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#prescaler-trade-off-resolution-versus-counter-range" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Prescaler trade-off: resolution versus counter range
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#ticks-frequency-and-timer-intervals" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Ticks, frequency and timer intervals
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#the-timer-counter-a-sawtooth-an-alarm-and-an-isr" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        The timer counter: a sawtooth, an alarm and an ISR
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#timerstop-timerrestart-and-timerstart" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        timerStop(), timerRestart() and timerStart()
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#hardware-timers" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Hardware timers
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#ticker-timers-made-easy" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Ticker: timers made easy
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#how-precise-is-time" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        How precise is time?
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#priorities-watchdogs-and-race-conditions" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Priorities, watchdogs and race conditions
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#example-a-race-condition-and-its-fix" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Example: a race condition and its fix
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#quiz-time-and-interrupts" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Quiz: time and interrupts
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#exercises-time-and-interrupts" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Exercises: time and interrupts
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#further-material-time-and-interrupts" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Further material: time and interrupts
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Further material: time and interrupts">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#read" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Read
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#watch" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Watch
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#try-it" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Try it
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#complete-project-sketches" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Complete project sketches
+      
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../breadboard-libraries/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Breadboards & libraries
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+    
+    
+      
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_2_6" >
+        
+          
+          <label class="md-nav__link" for="__nav_2_6" id="__nav_2_6_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Communication & behaviour
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_2_6_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_2_6">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Communication & behaviour
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../serial-uart/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Serial communication & UART
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../i2c/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    I2C
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../spi-logic-analyzer/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    SPI & logic analysis
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../state-machines/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    State machines
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+    
+    
+      
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_2_7" >
+        
+          
+          <label class="md-nav__link" for="__nav_2_7" id="__nav_2_7_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Connected systems & projects
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_2_7_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_2_7">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Connected systems & projects
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../wifi-web/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Wi-Fi & web
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../iot-mqtt-ble/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    IoT, MQTT & BLE
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../storage-low-power-ota/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Storage, low power & OTA
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../projects-best-practices/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Projects & best practices
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../references/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    References
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+    
+    
+      
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_3" >
+        
+          
+          <label class="md-nav__link" for="__nav_3" id="__nav_3_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Tutorials
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_3_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_3">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Tutorials
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../tutorials/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Overview
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+    
+    
+      
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_3_2" >
+        
+          
+          <label class="md-nav__link" for="__nav_3_2" id="__nav_3_2_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Getting started
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_3_2_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_3_2">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Getting started
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../tutorials/arduino-setup-gpio/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Arduino setup & GPIO
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+    
+    
+      
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_3_3" >
+        
+          
+          <label class="md-nav__link" for="__nav_3_3" id="__nav_3_3_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Programming fundamentals
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_3_3_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_3_3">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Programming fundamentals
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../tutorials/variables-types/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Variables & data types
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../tutorials/conditionals-loops/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Conditionals, switch & while
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+    
+    
+      
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_3_4" >
+        
+          
+          <label class="md-nav__link" for="__nav_3_4" id="__nav_3_4_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Serial communication
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_3_4_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_3_4">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Serial communication
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../tutorials/serial-input/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Reading serial input
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+    
+    
+      
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_3_5" >
+        
+          
+          <label class="md-nav__link" for="__nav_3_5" id="__nav_3_5_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Timing
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_3_5_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_3_5">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Timing
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../tutorials/hardware-timers/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Hardware timer interrupts
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../dashboard/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Dashboard
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+  </ul>
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+            
+              
+              <div class="md-sidebar md-sidebar--secondary" data-md-component="sidebar" data-md-type="toc" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#delay-vs-millis" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        delay() vs millis()
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#non-blocking-timing-with-millis" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Non-blocking timing with millis()
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#flowchart-non-blocking-timing-with-millis" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Flowchart: non-blocking timing with millis()
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#several-independent-timers" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Several independent timers
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#polling-vs-interrupts" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Polling vs interrupts
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#attachinterrupt-connecting-a-pin-to-a-function" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        attachInterrupt(): connecting a pin to a function
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#two-button-circuits-the-same-press-opposite-edges" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Two button circuits: the same press, opposite edges
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#choose-the-mode-from-contact-type-and-wiring" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Choose the mode from contact type and wiring
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#read-the-waveform-press-release-or-both" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Read the waveform: press, release or both?
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#configure-the-input-and-the-interrupt-separately" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Configure the input and the interrupt separately
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#what-happens-when-an-interrupt-fires" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        What happens when an interrupt fires
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#writing-a-good-isr-volatile-and-iram_attr" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Writing a good ISR: volatile and IRAM_ATTR
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#example-a-button-interrupt-on-the-course-board" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Example: a button interrupt on the course board
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#flowchart-main-loop-and-interrupt" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Flowchart: main loop and interrupt
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#bouncing-one-press-many-edges" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Bouncing: one press, many edges
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#debouncing-in-software" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Debouncing in software
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#flowchart-software-debounce" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Flowchart: software debounce
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#hardware-timers-interrupts-from-the-clock" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Hardware timers: interrupts from the clock
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#core-3x-timerbegin-allocates-an-available-timer" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Core 3.x: timerBegin() allocates an available timer
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#prescaler-divide-the-timer-clock-not-the-cpu-clock" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Prescaler: divide the timer clock, not the CPU clock
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#prescaler-trade-off-resolution-versus-counter-range" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Prescaler trade-off: resolution versus counter range
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#ticks-frequency-and-timer-intervals" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Ticks, frequency and timer intervals
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#the-timer-counter-a-sawtooth-an-alarm-and-an-isr" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        The timer counter: a sawtooth, an alarm and an ISR
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#timerstop-timerrestart-and-timerstart" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        timerStop(), timerRestart() and timerStart()
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#hardware-timers" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Hardware timers
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#ticker-timers-made-easy" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Ticker: timers made easy
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#how-precise-is-time" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        How precise is time?
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#priorities-watchdogs-and-race-conditions" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Priorities, watchdogs and race conditions
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#example-a-race-condition-and-its-fix" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Example: a race condition and its fix
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#quiz-time-and-interrupts" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Quiz: time and interrupts
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#exercises-time-and-interrupts" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Exercises: time and interrupts
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#further-material-time-and-interrupts" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Further material: time and interrupts
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Further material: time and interrupts">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#read" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Read
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#watch" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Watch
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#try-it" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Try it
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#complete-project-sketches" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Complete project sketches
+      
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+          
+          
+            <div class="md-content" data-md-component="content">
+              
+              <article class="md-content__inner md-typeset">
+                
+                  
+
+
+  
+  
+
+
+<h1 id="time-and-interrupts">Time and Interrupts<a class="headerlink" href="#time-and-interrupts" title="Permanent link">&para;</a></h1>
+<h2 id="delay-vs-millis">delay() vs millis()<a class="headerlink" href="#delay-vs-millis" title="Permanent link">&para;</a></h2>
+<p><a class="md-button lecture-simulation" href="../../dashboard/?lab=simulations/course_topics_lab.html&amp;topic=timers">Try simulation: Timers</a></p>
+<div class="admonition warning">
+<p class="admonition-title">delay(ms)</p>
+<ul>
+<li>
+<p>The program <strong>stops</strong> for that time: it is <strong>blocking</strong>.</p>
+</li>
+<li>
+<p>During <code>delay(1000)</code> a button press is simply missed.</p>
+</li>
+<li>
+<p>Fine for tiny examples, a problem in real systems.</p>
+</li>
+</ul>
+</div>
+<div class="admonition info">
+<p class="admonition-title">millis()</p>
+<ul>
+<li>
+<p>Returns the number of <strong>milliseconds since start-up</strong> (<code>unsigned long</code>).</p>
+</li>
+<li>
+<p>Like a clock on the wall: you <strong>look</strong> at it and continue working.</p>
+</li>
+<li>
+<p>Wraps to 0 after <span class="arithmatex">\(\approx\)</span> 49.7 days (<code>micros()</code>: after 71 minutes).</p>
+</li>
+</ul>
+</div>
+<p><img alt="delay() vs millis()" class="lecture-figure" loading="lazy" src="../assets/diagrams/timing-interrupts-071.png" /></p>
+<p><em>Sources: <a href="../references/#ep-lectures">Embedded Programming, lectures 1–6</a></em></p>
+<h2 id="non-blocking-timing-with-millis">Non-blocking timing with millis()<a class="headerlink" href="#non-blocking-timing-with-millis" title="Permanent link">&para;</a></h2>
+<p><a class="md-button lecture-simulation" href="../../dashboard/?lab=simulations/course_topics_lab.html&amp;topic=timers">Try simulation: Timers</a></p>
+<div class="highlight"><span class="filename">nonblocking.ino</span><pre><span></span><code><span class="k">const</span><span class="w"> </span><span class="kt">int</span><span class="w"> </span><span class="n">LED_PIN</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">2</span><span class="p">;</span>
+<span class="k">const</span><span class="w"> </span><span class="kt">unsigned</span><span class="w"> </span><span class="kt">long</span><span class="w"> </span><span class="n">PERIOD_MS</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">250</span><span class="p">;</span>
+<span class="kt">unsigned</span><span class="w"> </span><span class="kt">long</span><span class="w"> </span><span class="n">lastToggle</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">0</span><span class="p">;</span>
+<span class="kt">bool</span><span class="w"> </span><span class="n">ledOn</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nb">false</span><span class="p">;</span>
+
+<span class="kt">void</span><span class="w"> </span><span class="nf">setup</span><span class="p">()</span><span class="w"> </span><span class="p">{</span>
+<span class="w">  </span><span class="n">pinMode</span><span class="p">(</span><span class="n">LED_PIN</span><span class="p">,</span><span class="w"> </span><span class="n">OUTPUT</span><span class="p">);</span>
+<span class="w">  </span><span class="n">Serial</span><span class="p">.</span><span class="n">begin</span><span class="p">(</span><span class="mi">115200</span><span class="p">);</span>
+<span class="p">}</span>
+
+<span class="kt">void</span><span class="w"> </span><span class="nf">loop</span><span class="p">()</span><span class="w"> </span><span class="p">{</span>
+<span class="w">  </span><span class="kt">unsigned</span><span class="w"> </span><span class="kt">long</span><span class="w"> </span><span class="n">now</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">millis</span><span class="p">();</span>
+<span class="w">  </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">now</span><span class="w"> </span><span class="o">-</span><span class="w"> </span><span class="n">lastToggle</span><span class="w"> </span><span class="o">&gt;=</span><span class="w"> </span><span class="n">PERIOD_MS</span><span class="p">)</span><span class="w"> </span><span class="p">{</span><span class="w">  </span><span class="c1">// overflow-safe</span>
+<span class="w">    </span><span class="n">lastToggle</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">now</span><span class="p">;</span>
+<span class="w">    </span><span class="n">ledOn</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="o">!</span><span class="n">ledOn</span><span class="p">;</span>
+<span class="w">    </span><span class="n">digitalWrite</span><span class="p">(</span><span class="n">LED_PIN</span><span class="p">,</span><span class="w"> </span><span class="n">ledOn</span><span class="p">);</span>
+<span class="w">  </span><span class="p">}</span>
+<span class="w">  </span><span class="c1">// loop stays free for other work: echo serial input</span>
+<span class="w">  </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">Serial</span><span class="p">.</span><span class="n">available</span><span class="p">())</span><span class="w"> </span><span class="n">Serial</span><span class="p">.</span><span class="n">write</span><span class="p">(</span><span class="n">Serial</span><span class="p">.</span><span class="n">read</span><span class="p">());</span>
+<span class="p">}</span>
+</code></pre></div>
+<p><a download="download" href="../examples/timing-interrupts/nonblocking.ino">Download this example</a></p>
+<div class="admonition info">
+<p class="admonition-title">Why?</p>
+<p><code>delay()</code> freezes <code>loop()</code>: buttons, sensors and network are ignored meanwhile.</p>
+</div>
+<ul>
+<li>
+<p>Pattern: <em>“has enough time passed?”</em></p>
+</li>
+<li>
+<p><code>now - last &gt;= period</code> works even when <code>millis()</code> wraps after <span class="arithmatex">\(\approx\)</span> 49 days.</p>
+</li>
+<li>
+<p>Several independent “timers” in one <code>loop()</code>.</p>
+</li>
+</ul>
+<h2 id="flowchart-non-blocking-timing-with-millis">Flowchart: non-blocking timing with millis()<a class="headerlink" href="#flowchart-non-blocking-timing-with-millis" title="Permanent link">&para;</a></h2>
+<p><a class="md-button lecture-simulation" href="../../dashboard/?lab=simulations/course_topics_lab.html&amp;topic=timers">Try simulation: Timers</a></p>
+<p><a class="md-button lecture-simulation" href="../../dashboard/?lab=simulations/arduino_flowchart_converter.html">Try simulation: Arduino to flowchart</a></p>
+<p><img alt="Flowchart: non-blocking timing with millis()" class="lecture-figure" loading="lazy" src="../assets/diagrams/timing-interrupts-072.png" /></p>
+<ul>
+<li>
+<p>There is <strong>no waiting box</strong>: if it is not time yet, the <em>no</em> exit simply continues.</p>
+</li>
+<li>
+<p>The whole loop takes microseconds and runs thousands of times per second.</p>
+</li>
+<li>
+<p>Several timers = several of these diamonds, each with its own <code>last</code> variable.</p>
+</li>
+</ul>
+<div class="admonition warning">
+<p class="admonition-title">Compare with delay()</p>
+<p>A <code>delay(250)</code> would be a box that blocks: during it, the other work never happens.</p>
+</div>
+<h2 id="several-independent-timers">Several independent timers<a class="headerlink" href="#several-independent-timers" title="Permanent link">&para;</a></h2>
+<p><a class="md-button lecture-simulation" href="../../dashboard/?lab=simulations/course_topics_lab.html&amp;topic=timers">Try simulation: Timers</a></p>
+<p><a class="md-button lecture-simulation" href="../../dashboard/?lab=experiments/real_time_challenge.html">Try simulation: Real-time challenge</a></p>
+<div class="highlight"><span class="filename">three_timers.ino</span><pre><span></span><code><span class="k">const</span><span class="w"> </span><span class="kt">int</span><span class="w"> </span><span class="n">LED_BLUE</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">23</span><span class="p">,</span><span class="w"> </span><span class="n">LED_RED</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">21</span><span class="p">;</span>
+<span class="kt">unsigned</span><span class="w"> </span><span class="kt">long</span><span class="w"> </span><span class="n">lastBlue</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">0</span><span class="p">,</span><span class="w"> </span><span class="n">lastRed</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">0</span><span class="p">,</span><span class="w"> </span><span class="n">lastPrint</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">0</span><span class="p">;</span>
+<span class="kt">bool</span><span class="w"> </span><span class="n">blueOn</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nb">false</span><span class="p">,</span><span class="w"> </span><span class="n">redOn</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nb">false</span><span class="p">;</span>
+<span class="kt">void</span><span class="w"> </span><span class="nf">setup</span><span class="p">()</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="n">Serial</span><span class="p">.</span><span class="n">begin</span><span class="p">(</span><span class="mi">115200</span><span class="p">);</span>
+<span class="w">  </span><span class="n">pinMode</span><span class="p">(</span><span class="n">LED_BLUE</span><span class="p">,</span><span class="w"> </span><span class="n">OUTPUT</span><span class="p">);</span><span class="w"> </span><span class="n">pinMode</span><span class="p">(</span><span class="n">LED_RED</span><span class="p">,</span><span class="w"> </span><span class="n">OUTPUT</span><span class="p">);</span><span class="w"> </span><span class="p">}</span>
+<span class="kt">void</span><span class="w"> </span><span class="nf">loop</span><span class="p">()</span><span class="w"> </span><span class="p">{</span>
+<span class="w">  </span><span class="kt">unsigned</span><span class="w"> </span><span class="kt">long</span><span class="w"> </span><span class="n">now</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">millis</span><span class="p">();</span>
+<span class="w">  </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">now</span><span class="w"> </span><span class="o">-</span><span class="w"> </span><span class="n">lastBlue</span><span class="w"> </span><span class="o">&gt;=</span><span class="w"> </span><span class="mi">300</span><span class="p">)</span><span class="w"> </span><span class="p">{</span><span class="w">          </span><span class="c1">// every 300 ms</span>
+<span class="w">    </span><span class="n">lastBlue</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">now</span><span class="p">;</span>
+<span class="w">    </span><span class="n">blueOn</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="o">!</span><span class="n">blueOn</span><span class="p">;</span>
+<span class="w">    </span><span class="n">digitalWrite</span><span class="p">(</span><span class="n">LED_BLUE</span><span class="p">,</span><span class="w"> </span><span class="n">blueOn</span><span class="p">);</span>
+<span class="w">  </span><span class="p">}</span>
+<span class="w">  </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">now</span><span class="w"> </span><span class="o">-</span><span class="w"> </span><span class="n">lastRed</span><span class="w"> </span><span class="o">&gt;=</span><span class="w"> </span><span class="mi">1000</span><span class="p">)</span><span class="w"> </span><span class="p">{</span><span class="w">          </span><span class="c1">// every 1 s</span>
+<span class="w">    </span><span class="n">lastRed</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">now</span><span class="p">;</span>
+<span class="w">    </span><span class="n">redOn</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="o">!</span><span class="n">redOn</span><span class="p">;</span>
+<span class="w">    </span><span class="n">digitalWrite</span><span class="p">(</span><span class="n">LED_RED</span><span class="p">,</span><span class="w"> </span><span class="n">redOn</span><span class="p">);</span>
+<span class="w">  </span><span class="p">}</span>
+<span class="w">  </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">now</span><span class="w"> </span><span class="o">-</span><span class="w"> </span><span class="n">lastPrint</span><span class="w"> </span><span class="o">&gt;=</span><span class="w"> </span><span class="mi">2000</span><span class="p">)</span><span class="w"> </span><span class="p">{</span><span class="w">        </span><span class="c1">// every 2 s</span>
+<span class="w">    </span><span class="n">lastPrint</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">now</span><span class="p">;</span>
+<span class="w">    </span><span class="n">Serial</span><span class="p">.</span><span class="n">printf</span><span class="p">(</span><span class="s">"uptime: %lu s</span><span class="se">\n</span><span class="s">"</span><span class="p">,</span><span class="w"> </span><span class="n">now</span><span class="w"> </span><span class="o">/</span><span class="w"> </span><span class="mi">1000</span><span class="p">);</span>
+<span class="w">  </span><span class="p">}</span>
+<span class="p">}</span>
+</code></pre></div>
+<p><a download="download" href="../examples/timing-interrupts/three_timers.ino">Download this example</a></p>
+<ul>
+<li>
+<p>Each job has its <strong>own</strong> “last time” variable.</p>
+</li>
+<li>
+<p>The jobs do not wait for each other: impossible with <code>delay()</code>.</p>
+</li>
+<li>
+<p><code>loop()</code> runs thousands of times per second and every round asks “is it time?”.</p>
+</li>
+</ul>
+<div class="admonition tip">
+<p class="admonition-title">Pattern to memorise</p>
+<p><code>if (now - last &gt;= interval) { last = now; \dots{} }</code></p>
+</div>
+<p><em>Sources: Lecture 2: function-specific timers <a href="../references/#ep-lectures">Embedded Programming, lectures 1–6</a></em></p>
+<h2 id="polling-vs-interrupts">Polling vs interrupts<a class="headerlink" href="#polling-vs-interrupts" title="Permanent link">&para;</a></h2>
+<p><a class="md-button lecture-simulation" href="../../dashboard/?lab=simulations/interrupts.html">Try simulation: Interrupts</a></p>
+<p><strong>Polling: “has it happened yet?”</strong></p>
+<ul>
+<li>
+<p>The program checks the input every round: <code>if (digitalRead(pin)) { \dots{} }</code></p>
+</li>
+<li>
+<p>Simple, but if <code>loop()</code> is busy the event can be <strong>missed</strong> or handled <strong>late</strong>.</p>
+</li>
+<li>
+<p>Like checking the door every minute to see if someone is there.</p>
+</li>
+</ul>
+<p><strong>Interrupt: “handle this <em>now</em>!”</strong></p>
+<ul>
+<li>
+<p>The <strong>hardware</strong> watches the pin and <strong>interrupts</strong> the CPU when it changes.</p>
+</li>
+<li>
+<p>The CPU pauses <code>loop()</code>, runs a short function (the ISR), and continues.</p>
+</li>
+<li>
+<p>Like a doorbell: you react only when it rings.</p>
+</li>
+</ul>
+<div class="admonition info">
+<p class="admonition-title">Event-driven programming</p>
+<p>Interrupts are used for fast or rare events: pulses from a sensor, a button that must never be missed, a timer tick, received data.</p>
+</div>
+<p><em>Sources: <a href="../references/#ep-lectures">Embedded Programming, lectures 1–6</a></em></p>
+<h2 id="attachinterrupt-connecting-a-pin-to-a-function">attachInterrupt(): connecting a pin to a function<a class="headerlink" href="#attachinterrupt-connecting-a-pin-to-a-function" title="Permanent link">&para;</a></h2>
+<p><a class="md-button lecture-simulation" href="../../dashboard/?lab=simulations/interrupts.html">Try simulation: Interrupts</a></p>
+<p>(digitalPinToInterrupt(pin), <strong>isrName</strong>, mode);<br />
+(digitalPinToInterrupt(34), buttonISR, RISING);  </p>
+<ul>
+<li>
+<p>“When pin 34 goes from LOW to HIGH, immediately run <code>buttonISR()</code>.”</p>
+</li>
+<li>
+<p>Notice: <strong>no parentheses</strong> after <code>buttonISR</code>! We pass the <strong>address</strong> of the function, we do not call it ourselves (<code>&amp;buttonISR</code> means the same).</p>
+</li>
+<li>
+<p>Any GPIO of the ESP32 can trigger an interrupt.</p>
+</li>
+</ul>
+<p><img alt="attachInterrupt(): connecting a pin to a function" class="lecture-figure" loading="lazy" src="../assets/diagrams/timing-interrupts-073.png" /></p>
+<table>
+<thead>
+<tr>
+<th style="text-align: left;"></th>
+<th style="text-align: left;"></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: left;"><code>RISING</code></td>
+<td style="text-align: left;">LOW <span class="arithmatex">\(\rightarrow\)</span> HIGH</td>
+</tr>
+<tr>
+<td style="text-align: left;"><code>FALLING</code></td>
+<td style="text-align: left;">HIGH <span class="arithmatex">\(\rightarrow\)</span> LOW</td>
+</tr>
+<tr>
+<td style="text-align: left;"><code>CHANGE</code></td>
+<td style="text-align: left;">any edge</td>
+</tr>
+</tbody>
+</table>
+<p><em>Sources: <a href="../references/#ep-lectures">Embedded Programming, lectures 1–6</a></em></p>
+<h2 id="two-button-circuits-the-same-press-opposite-edges">Two button circuits: the same press, opposite edges<a class="headerlink" href="#two-button-circuits-the-same-press-opposite-edges" title="Permanent link">&para;</a></h2>
+<p><strong>Pull-down: active HIGH</strong></p>
+<p><img alt="Two button circuits: the same press, opposite edges" class="lecture-figure" loading="lazy" src="../assets/diagrams/timing-interrupts-074.png" /></p>
+<ul>
+<li>
+<p>Released: resistor holds the input <code>LOW</code>.</p>
+</li>
+<li>
+<p>Pressed: contact connects it to 3.3 V, so <code>HIGH</code>.</p>
+</li>
+<li>
+<p>Press = <code>RISING</code>; release = <code>FALLING</code>.</p>
+</li>
+</ul>
+<p><strong>Pull-up: active LOW</strong></p>
+<p><img alt="Two button circuits: the same press, opposite edges" class="lecture-figure" loading="lazy" src="../assets/diagrams/timing-interrupts-075.png" /></p>
+<ul>
+<li>
+<p>Released: resistor holds the input <code>HIGH</code>.</p>
+</li>
+<li>
+<p>Pressed: contact connects it to GND, so <code>LOW</code>.</p>
+</li>
+<li>
+<p>Press = <code>FALLING</code>; release = <code>RISING</code>.</p>
+</li>
+</ul>
+<div class="admonition info">
+<p class="admonition-title">NO = normally open</p>
+<p>These contacts are open when the button is released. The course board uses the left-hand arrangement: KEY1/KEY2 are active HIGH.</p>
+</div>
+<p><em>Sources: Course-board schematic; GPIO API <a href="../references/#ep-lectures">Embedded Programming, lectures 1–6</a>; <a href="../references/#arduino-esp32-docs">Arduino ESP32 Core Documentation</a></em></p>
+<h2 id="choose-the-mode-from-contact-type-and-wiring">Choose the mode from contact type and wiring<a class="headerlink" href="#choose-the-mode-from-contact-type-and-wiring" title="Permanent link">&para;</a></h2>
+<p><strong>Normal</strong> means the button is released: NO = open, NC = closed.</p>
+<div class="tabular">
+
+@l L3.5cm c c l l@ **Contact** & **Circuit** & **Released** & **Pressed** & **Press** & **Release**  
+NO & pull-down; contact to 3V3 & LOW & HIGH & `RISING` & `FALLING`  
+NO & pull-up; contact to GND & HIGH & LOW & `FALLING` & `RISING`  
+NC & pull-down; contact to 3V3 & HIGH & LOW & `FALLING` & `RISING`  
+NC & pull-up; contact to GND & LOW & HIGH & `RISING` & `FALLING`  
+
+</div>
+
+<div class="admonition tip">
+<p class="admonition-title">Choose in this order</p>
+<p>Identify the contact and resistor, determine the released and pressed levels, then select the edge for the event you want. A press does not always mean <code>FALLING</code>.</p>
+</div>
+<div class="admonition info">
+<p class="admonition-title">Momentary versus latching</p>
+<p>A momentary push button returns when released. A latching switch holds its new position; interrupt edges still follow the resulting GPIO voltage changes.</p>
+</div>
+<h2 id="read-the-waveform-press-release-or-both">Read the waveform: press, release or both?<a class="headerlink" href="#read-the-waveform-press-release-or-both" title="Permanent link">&para;</a></h2>
+<p><img alt="Read the waveform: press, release or both?" class="lecture-figure" loading="lazy" src="../assets/diagrams/timing-interrupts-076.png" /></p>
+<div class="admonition warning">
+<p class="admonition-title">CHANGE detects both edges</p>
+<p>An ideal press-and-release cycle produces two events with <code>CHANGE</code>. Holding the button produces no further edges. Contact bounce can produce extra events in any edge mode: choosing <code>RISING</code> or <code>FALLING</code> is not debounce.</p>
+</div>
+<h2 id="configure-the-input-and-the-interrupt-separately">Configure the input and the interrupt separately<a class="headerlink" href="#configure-the-input-and-the-interrupt-separately" title="Permanent link">&para;</a></h2>
+<p><strong>Course board: KEY1 (GPIO34)</strong></p>
+<div class="highlight"><span class="filename">course_button_setup.ino</span><pre><span></span><code><span class="c1">// Configuration fragment: NO button to 3V3,</span>
+<span class="c1">// external pull-down already on the board.</span>
+<span class="kt">void</span><span class="w"> </span><span class="nf">setup</span><span class="p">()</span><span class="w"> </span><span class="p">{</span>
+<span class="w">  </span><span class="n">pinMode</span><span class="p">(</span><span class="mi">34</span><span class="p">,</span><span class="w"> </span><span class="n">INPUT</span><span class="p">);</span>
+<span class="w">  </span><span class="n">attachInterrupt</span><span class="p">(</span><span class="n">digitalPinToInterrupt</span><span class="p">(</span><span class="mi">34</span><span class="p">),</span>
+<span class="w">                  </span><span class="n">onPress</span><span class="p">,</span><span class="w"> </span><span class="n">RISING</span><span class="p">);</span>
+<span class="p">}</span>
+</code></pre></div>
+<p><a download="download" href="../examples/timing-interrupts/course_button_setup.ino">Download this example</a></p>
+<ul>
+<li>
+<p>External pull-down: use <code>INPUT</code>. GPIO34/35 have no internal pull resistors.</p>
+</li>
+<li>
+<p>To handle release instead, choose <code>FALLING</code>.</p>
+</li>
+</ul>
+<p><strong>Breadboard: GPIO25 to GND</strong></p>
+<div class="highlight"><span class="filename">pullup_button_setup.ino</span><pre><span></span><code><span class="c1">// Alternative configuration fragment:</span>
+<span class="c1">// use an internal pull-up on GPIO25.</span>
+<span class="kt">void</span><span class="w"> </span><span class="nf">setup</span><span class="p">()</span><span class="w"> </span><span class="p">{</span>
+<span class="w">  </span><span class="n">pinMode</span><span class="p">(</span><span class="mi">25</span><span class="p">,</span><span class="w"> </span><span class="n">INPUT_PULLUP</span><span class="p">);</span>
+<span class="w">  </span><span class="n">attachInterrupt</span><span class="p">(</span><span class="n">digitalPinToInterrupt</span><span class="p">(</span><span class="mi">25</span><span class="p">),</span>
+<span class="w">                  </span><span class="n">onPress</span><span class="p">,</span><span class="w"> </span><span class="n">FALLING</span><span class="p">);</span>
+<span class="p">}</span>
+</code></pre></div>
+<p><a download="download" href="../examples/timing-interrupts/pullup_button_setup.ino">Download this example</a></p>
+<ul>
+<li>
+<p><code>INPUT_PULLUP</code>: released HIGH; pressing connects the input to GND.</p>
+</li>
+<li>
+<p>To handle release instead, choose <code>RISING</code>.</p>
+</li>
+</ul>
+<div class="admonition info">
+<p class="admonition-title">Two different choices</p>
+<p>An external pull-up/down already supplies the bias: use <code>INPUT</code>. <code>INPUT_PULLUP</code> and <code>INPUT_PULLDOWN</code> enable internal resistors; <code>attachInterrupt()</code> selects the edge. These alternative setup fragments assume a short ISR named <code>onPress</code>. Pass its name without parentheses; handle the signalled work in <code>loop()</code>.</p>
+</div>
+<p><em>Sources: GPIO and interrupt configuration <a href="../references/#arduino-esp32-docs">Arduino ESP32 Core Documentation</a>; <a href="../references/#esp-idf-gpio">ESP-IDF Programming Guide: GPIO &amp; RTC GPIO (ESP32)</a></em></p>
+<h2 id="what-happens-when-an-interrupt-fires">What happens when an interrupt fires<a class="headerlink" href="#what-happens-when-an-interrupt-fires" title="Permanent link">&para;</a></h2>
+<p><a class="md-button lecture-simulation" href="../../dashboard/?lab=simulations/interrupts.html">Try simulation: Interrupts</a></p>
+<p><img alt="What happens when an interrupt fires" class="lecture-figure" loading="lazy" src="../assets/diagrams/timing-interrupts-077.png" /></p>
+<ol>
+<li>
+<p>The event happens (edge on the pin).</p>
+</li>
+<li>
+<p>The CPU finishes the current instruction and <strong>stops</strong> <code>loop()</code>.</p>
+</li>
+<li>
+<p>It saves where it was and runs the <strong>ISR</strong> (Interrupt Service Routine).</p>
+</li>
+<li>
+<p>It <strong>returns</strong> to exactly the next instruction of <code>loop()</code>.</p>
+</li>
+</ol>
+<p><img alt="What happens when an interrupt fires" class="lecture-figure" loading="lazy" src="../assets/figures/interrupts/interrupt-program-flow.jpg" /></p>
+<p><em>Sources: Figure: The Engineering Projects <a href="../references/#tep-interrupts">ESP32 Interrupts</a>, via lecture 3</em></p>
+<h2 id="writing-a-good-isr-volatile-and-iram_attr">Writing a good ISR: volatile and IRAM_ATTR<a class="headerlink" href="#writing-a-good-isr-volatile-and-iram_attr" title="Permanent link">&para;</a></h2>
+<p>volatile bool buttonPressed = false;<br />
+void IRAM_ATTR buttonISR() {<br />
+buttonPressed = true;<br />
+}<br />
+<strong>volatile</strong></p>
+<ul>
+<li>
+<p>Tells the compiler: this variable can change <strong>unexpectedly</strong> (in the ISR).</p>
+</li>
+<li>
+<p>Without it, the compiler may keep a copy in a register and <code>loop()</code> never sees the change.</p>
+</li>
+<li>
+<p>Not the same as “volatile memory” (RAM)!</p>
+</li>
+</ul>
+<p><strong>IRAM_ATTR</strong></p>
+<ul>
+<li>
+<p>Puts the ISR in <strong>internal RAM</strong> instead of flash: it can run immediately, even while flash is busy.</p>
+</li>
+<li>
+<p>IRAM is small: only ISRs, not everything.</p>
+</li>
+</ul>
+<div class="admonition warning">
+<p class="admonition-title">Keep ISRs short!</p>
+<ul>
+<li>
+<p>Other code (and other interrupts) is waiting.</p>
+</li>
+<li>
+<p>Timing of the rest may go wrong.</p>
+</li>
+<li>
+<p>Long ISRs can <strong>crash</strong> the board (watchdog).</p>
+</li>
+<li>
+<p>No <code>Serial.print()</code>, no <code>delay()</code>: set a flag, do the work in <code>loop()</code>.</p>
+</li>
+</ul>
+</div>
+<p><em>Sources: <a href="../references/#ep-lectures">Embedded Programming, lectures 1–6</a>; <a href="../references/#esp-idf-gpio">ESP-IDF Programming Guide: GPIO &amp; RTC GPIO (ESP32)</a></em></p>
+<h2 id="example-a-button-interrupt-on-the-course-board">Example: a button interrupt on the course board<a class="headerlink" href="#example-a-button-interrupt-on-the-course-board" title="Permanent link">&para;</a></h2>
+<p><a class="md-button lecture-simulation" href="../../dashboard/?lab=simulations/interrupts.html">Try simulation: Interrupts</a></p>
+<div class="highlight"><span class="filename">button_interrupt.ino</span><pre><span></span><code><span class="k">const</span><span class="w"> </span><span class="kt">int</span><span class="w"> </span><span class="n">KEY1</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">34</span><span class="p">;</span><span class="w">               </span><span class="c1">// active HIGH</span>
+<span class="k">const</span><span class="w"> </span><span class="kt">int</span><span class="w"> </span><span class="n">LED_GREEN</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">22</span><span class="p">;</span>
+<span class="k">volatile</span><span class="w"> </span><span class="kt">bool</span><span class="w"> </span><span class="n">pressedFlag</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nb">false</span><span class="p">;</span>
+<span class="k">volatile</span><span class="w"> </span><span class="kt">uint32_t</span><span class="w"> </span><span class="n">pressCount</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">0</span><span class="p">;</span>
+<span class="kt">void</span><span class="w"> </span><span class="n">IRAM_ATTR</span><span class="w"> </span><span class="nf">onKey1</span><span class="p">()</span><span class="w"> </span><span class="p">{</span>
+<span class="w">  </span><span class="n">pressedFlag</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nb">true</span><span class="p">;</span><span class="w">              </span><span class="c1">// short!</span>
+<span class="w">  </span><span class="n">pressCount</span><span class="o">++</span><span class="p">;</span>
+<span class="p">}</span>
+<span class="kt">void</span><span class="w"> </span><span class="nf">setup</span><span class="p">()</span><span class="w"> </span><span class="p">{</span>
+<span class="w">  </span><span class="n">Serial</span><span class="p">.</span><span class="n">begin</span><span class="p">(</span><span class="mi">115200</span><span class="p">);</span>
+<span class="w">  </span><span class="n">pinMode</span><span class="p">(</span><span class="n">KEY1</span><span class="p">,</span><span class="w"> </span><span class="n">INPUT</span><span class="p">);</span>
+<span class="w">  </span><span class="n">pinMode</span><span class="p">(</span><span class="n">LED_GREEN</span><span class="p">,</span><span class="w"> </span><span class="n">OUTPUT</span><span class="p">);</span>
+<span class="w">  </span><span class="n">attachInterrupt</span><span class="p">(</span><span class="n">digitalPinToInterrupt</span><span class="p">(</span><span class="n">KEY1</span><span class="p">),</span><span class="w"> </span><span class="n">onKey1</span><span class="p">,</span><span class="w"> </span><span class="n">RISING</span><span class="p">);</span>
+<span class="p">}</span>
+<span class="kt">void</span><span class="w"> </span><span class="nf">loop</span><span class="p">()</span><span class="w"> </span><span class="p">{</span>
+<span class="w">  </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">pressedFlag</span><span class="p">)</span><span class="w"> </span><span class="p">{</span><span class="w">               </span><span class="c1">// handle the event here</span>
+<span class="w">    </span><span class="n">pressedFlag</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nb">false</span><span class="p">;</span>
+<span class="w">    </span><span class="n">digitalWrite</span><span class="p">(</span><span class="n">LED_GREEN</span><span class="p">,</span><span class="w"> </span><span class="o">!</span><span class="n">digitalRead</span><span class="p">(</span><span class="n">LED_GREEN</span><span class="p">));</span>
+<span class="w">    </span><span class="n">Serial</span><span class="p">.</span><span class="n">printf</span><span class="p">(</span><span class="s">"presses: %lu</span><span class="se">\n</span><span class="s">"</span><span class="p">,</span><span class="w"> </span><span class="p">(</span><span class="kt">unsigned</span><span class="w"> </span><span class="kt">long</span><span class="p">)</span><span class="w"> </span><span class="n">pressCount</span><span class="p">);</span>
+<span class="w">  </span><span class="p">}</span>
+<span class="w">  </span><span class="n">delay</span><span class="p">(</span><span class="mi">2000</span><span class="p">);</span><span class="w">   </span><span class="c1">// ISR still counts rising edges while loop waits</span>
+<span class="p">}</span>
+</code></pre></div>
+<p><a download="download" href="../examples/timing-interrupts/button_interrupt.ino">Download this example</a></p>
+<ul>
+<li>
+<p><code>RISING</code>: the course-board buttons are active HIGH.</p>
+</li>
+<li>
+<p>The ISR only sets a flag and counts.</p>
+</li>
+<li>
+<p><code>loop()</code> does the slow work (Serial, LED).</p>
+</li>
+<li>
+<p>The counter records <strong>rising edges</strong>, including bounce, during <code>delay(2000)</code>.</p>
+</li>
+</ul>
+<div class="admonition tip">
+<p class="admonition-title">Experiment</p>
+<p>Press several times during the delay: compare the edge count with the number of LED toggles. The Boolean flag merges events; debounce is still needed.</p>
+</div>
+<h2 id="flowchart-main-loop-and-interrupt">Flowchart: main loop and interrupt<a class="headerlink" href="#flowchart-main-loop-and-interrupt" title="Permanent link">&para;</a></h2>
+<p><a class="md-button lecture-simulation" href="../../dashboard/?lab=simulations/interrupts.html">Try simulation: Interrupts</a></p>
+<p><a class="md-button lecture-simulation" href="../../dashboard/?lab=simulations/arduino_flowchart_converter.html">Try simulation: Arduino to flowchart</a></p>
+<p><img alt="Flowchart: main loop and interrupt" class="lecture-figure" loading="lazy" src="../assets/diagrams/timing-interrupts-078.png" /></p>
+<p>The ISR is a <strong>separate, short</strong> flowchart started by the hardware. It only sets a flag; the main program does the slow work.</p>
+<h2 id="bouncing-one-press-many-edges">Bouncing: one press, many edges<a class="headerlink" href="#bouncing-one-press-many-edges" title="Permanent link">&para;</a></h2>
+<p><a class="md-button lecture-simulation" href="../../dashboard/?lab=simulations/debouncing_lab.html">Try simulation: Button debouncing</a></p>
+<p><img alt="Bouncing: one press, many edges" class="lecture-figure" loading="lazy" src="../assets/figures/interrupts/switch-bouncing.jpg" /></p>
+<ul>
+<li>
+<p>Mechanical contacts <strong>bounce</strong> for 1–20 ms when pressed or released.</p>
+</li>
+<li>
+<p>An interrupt sees <strong>every</strong> bounce: one press can count as 3, 5, 10 presses.</p>
+</li>
+<li>
+<p>Hardware fix: RC filter (the course board has 220 pF; often 10 k<span class="arithmatex">\(\Omega\)</span> + 100 nF).</p>
+</li>
+<li>
+<p>Software fix: ignore new edges for a short time after an accepted one.</p>
+</li>
+</ul>
+<p><em>Sources: Figure: electrosome.com, via lecture 3 <a href="../references/#ep-lectures">Embedded Programming, lectures 1–6</a></em></p>
+<h2 id="debouncing-in-software">Debouncing in software<a class="headerlink" href="#debouncing-in-software" title="Permanent link">&para;</a></h2>
+<p><a class="md-button lecture-simulation" href="../../dashboard/?lab=simulations/debouncing_lab.html">Try simulation: Button debouncing</a></p>
+<p><strong>In the ISR (time stamp)</strong></p>
+<div class="highlight"><span class="filename">debounce_isr.ino</span><pre><span></span><code><span class="k">const</span><span class="w"> </span><span class="kt">unsigned</span><span class="w"> </span><span class="kt">long</span><span class="w"> </span><span class="n">DEBOUNCE_MS</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">50</span><span class="p">;</span>
+<span class="k">volatile</span><span class="w"> </span><span class="kt">unsigned</span><span class="w"> </span><span class="kt">long</span><span class="w"> </span><span class="n">lastPressTime</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">0</span><span class="p">;</span>
+<span class="k">volatile</span><span class="w"> </span><span class="kt">uint32_t</span><span class="w"> </span><span class="n">presses</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">0</span><span class="p">;</span>
+<span class="kt">void</span><span class="w"> </span><span class="n">IRAM_ATTR</span><span class="w"> </span><span class="nf">onKey1</span><span class="p">()</span><span class="w"> </span><span class="p">{</span>
+<span class="w">  </span><span class="kt">unsigned</span><span class="w"> </span><span class="kt">long</span><span class="w"> </span><span class="n">now</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">millis</span><span class="p">();</span>
+<span class="w">  </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">now</span><span class="w"> </span><span class="o">-</span><span class="w"> </span><span class="n">lastPressTime</span><span class="w"> </span><span class="o">&gt;</span><span class="w"> </span><span class="n">DEBOUNCE_MS</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="n">lastPressTime</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">now</span><span class="p">;</span>
+<span class="w">    </span><span class="n">presses</span><span class="o">++</span><span class="p">;</span><span class="w">          </span><span class="c1">// valid press</span>
+<span class="w">  </span><span class="p">}</span>
+<span class="p">}</span>
+</code></pre></div>
+<p><a download="download" href="../examples/timing-interrupts/debounce_isr.ino">Download this example</a></p>
+<p><strong>Polling (stable for 30 ms)</strong></p>
+<div class="highlight"><span class="filename">debounce_poll.ino</span><pre><span></span><code><span class="k">const</span><span class="w"> </span><span class="kt">int</span><span class="w"> </span><span class="n">KEY1</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">34</span><span class="p">;</span>
+<span class="kt">int</span><span class="w"> </span><span class="n">stable</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">LOW</span><span class="p">,</span><span class="w"> </span><span class="n">lastRead</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">LOW</span><span class="p">;</span>
+<span class="kt">unsigned</span><span class="w"> </span><span class="kt">long</span><span class="w"> </span><span class="n">lastChange</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">0</span><span class="p">;</span>
+<span class="kt">void</span><span class="w"> </span><span class="nf">loop</span><span class="p">()</span><span class="w"> </span><span class="p">{</span>
+<span class="w">  </span><span class="kt">int</span><span class="w"> </span><span class="n">r</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">digitalRead</span><span class="p">(</span><span class="n">KEY1</span><span class="p">);</span>
+<span class="w">  </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">r</span><span class="w"> </span><span class="o">!=</span><span class="w"> </span><span class="n">lastRead</span><span class="p">)</span><span class="w"> </span><span class="p">{</span><span class="w">             </span><span class="c1">// moved</span>
+<span class="w">    </span><span class="n">lastChange</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">millis</span><span class="p">();</span>
+<span class="w">    </span><span class="n">lastRead</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">r</span><span class="p">;</span>
+<span class="w">  </span><span class="p">}</span>
+<span class="w">  </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">millis</span><span class="p">()</span><span class="w"> </span><span class="o">-</span><span class="w"> </span><span class="n">lastChange</span><span class="w"> </span><span class="o">&gt;</span><span class="w"> </span><span class="mi">30</span><span class="w"> </span><span class="o">&amp;&amp;</span><span class="w"> </span><span class="n">r</span><span class="w"> </span><span class="o">!=</span><span class="w"> </span><span class="n">stable</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="n">stable</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">r</span><span class="p">;</span><span class="w">                    </span><span class="c1">// accepted</span>
+<span class="w">    </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">stable</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="n">HIGH</span><span class="p">)</span><span class="w"> </span><span class="n">Serial</span><span class="p">.</span><span class="n">println</span><span class="p">(</span><span class="s">"press"</span><span class="p">);</span>
+<span class="w">  </span><span class="p">}</span>
+<span class="p">}</span>
+</code></pre></div>
+<p><a download="download" href="../examples/timing-interrupts/debounce_poll.ino">Download this example</a></p>
+<div class="admonition info">
+<p class="admonition-title">Choose</p>
+<p>ISR version: reacts instantly, ignores bounces after the first edge. Polling version: accepts a new state only after it has been stable for a while.</p>
+</div>
+<p><em>Sources: <a href="../references/#ep-lectures">Embedded Programming, lectures 1–6</a>; <a href="../references/#arduino-reference">Arduino Language Reference</a></em></p>
+<h2 id="flowchart-software-debounce">Flowchart: software debounce<a class="headerlink" href="#flowchart-software-debounce" title="Permanent link">&para;</a></h2>
+<p><a class="md-button lecture-simulation" href="../../dashboard/?lab=simulations/debouncing_lab.html">Try simulation: Button debouncing</a></p>
+<p><a class="md-button lecture-simulation" href="../../dashboard/?lab=simulations/arduino_flowchart_converter.html">Try simulation: Arduino to flowchart</a></p>
+<p><img alt="Flowchart: software debounce" class="lecture-figure" loading="lazy" src="../assets/diagrams/timing-interrupts-079.png" /></p>
+<ul>
+<li>
+<p>First diamond: did the contact <strong>move</strong>? Then restart the stopwatch.</p>
+</li>
+<li>
+<p>Second diamond: has it been <strong>stable</strong> long enough <strong>and</strong> is it a new state?</p>
+</li>
+<li>
+<p>Only then count the press: the bounces never reach the third diamond.</p>
+</li>
+</ul>
+<h2 id="hardware-timers-interrupts-from-the-clock">Hardware timers: interrupts from the clock<a class="headerlink" href="#hardware-timers-interrupts-from-the-clock" title="Permanent link">&para;</a></h2>
+<p><a class="md-button lecture-simulation" href="../../dashboard/?lab=simulations/course_topics_lab.html&amp;topic=timers">Try simulation: Timers</a></p>
+<ul>
+<li>
+<p>A <strong>timer</strong> counts clock ticks, independent of <code>loop()</code>.</p>
+</li>
+<li>
+<p>When it reaches an alarm value, it fires an <strong>interrupt</strong>.</p>
+</li>
+<li>
+<p>Precise periodic events: sample a sensor exactly every 1 ms, generate a signal, a clock tick.</p>
+</li>
+<li>
+<p>The classic ESP32 used in this course has <strong>4</strong> general-purpose 64-bit hardware timers.</p>
+</li>
+</ul>
+<div class="tabular">
+
+@L4.4cm L3.4cm@ **Call** & **Meaning**  
+`hw_timer_t *timer;` & pointer to a timer object  
+`timerBegin(1000000)` & claim a timer, tick frequency in Hz (1 MHz = 1 μs)  
+`timerAttachInterrupt(timer, &onTimer)` & run `onTimer()` at the alarm  
+`timerAlarm(timer, 500000, true, 0)` & alarm at 500 000 ticks, auto-reload, repeat forever (0)  
+
+</div>
+
+<div class="admonition info">
+<p class="admonition-title">Period</p>
+<p>period <span class="arithmatex">\(=\)</span> alarm value <span class="arithmatex">\(/\)</span> tick frequency <span class="arithmatex">\(= 500\,000 / 1\,000\,000 = 0.5\)</span> s</p>
+</div>
+<p><em>Sources: <a href="../references/#ep-lectures">Embedded Programming, lectures 1–6</a>; <a href="../references/#arduino-esp32-docs">Arduino ESP32 Core Documentation</a>; <a href="https://docs.espressif.com/projects/arduino-esp32/en/latest/api/timer.html">Espressif Timer API: 4 timers on ESP32</a></em></p>
+<h2 id="core-3x-timerbegin-allocates-an-available-timer">Core 3.x: timerBegin() allocates an available timer<a class="headerlink" href="#core-3x-timerbegin-allocates-an-available-timer" title="Permanent link">&para;</a></h2>
+<div class="highlight"><span class="filename">four_timers.ino</span><pre><span></span><code><span class="n">hw_timer_t</span><span class="w"> </span><span class="o">*</span><span class="n">timer1</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nb">nullptr</span><span class="p">;</span>
+<span class="n">hw_timer_t</span><span class="w"> </span><span class="o">*</span><span class="n">timer2</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nb">nullptr</span><span class="p">;</span>
+<span class="n">hw_timer_t</span><span class="w"> </span><span class="o">*</span><span class="n">timer3</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nb">nullptr</span><span class="p">;</span>
+<span class="n">hw_timer_t</span><span class="w"> </span><span class="o">*</span><span class="n">timer4</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nb">nullptr</span><span class="p">;</span>
+
+<span class="kt">void</span><span class="w"> </span><span class="nf">setup</span><span class="p">()</span><span class="w"> </span><span class="p">{</span>
+<span class="w">  </span><span class="n">Serial</span><span class="p">.</span><span class="n">begin</span><span class="p">(</span><span class="mi">115200</span><span class="p">);</span>
+
+<span class="w">  </span><span class="n">timer1</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">timerBegin</span><span class="p">(</span><span class="mi">1000000</span><span class="p">);</span>
+<span class="w">  </span><span class="n">timer2</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">timerBegin</span><span class="p">(</span><span class="mi">1000000</span><span class="p">);</span>
+<span class="w">  </span><span class="n">timer3</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">timerBegin</span><span class="p">(</span><span class="mi">1000000</span><span class="p">);</span>
+<span class="w">  </span><span class="n">timer4</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">timerBegin</span><span class="p">(</span><span class="mi">1000000</span><span class="p">);</span>
+<span class="p">}</span>
+
+<span class="kt">void</span><span class="w"> </span><span class="nf">loop</span><span class="p">()</span><span class="w"> </span><span class="p">{}</span>
+</code></pre></div>
+<p><a download="download" href="../examples/timing-interrupts/four_timers.ino">Download this example</a></p>
+<ul>
+<li>
+<p>In <strong>Arduino-ESP32 Core 3.x</strong>, you do not manually select Timer 0, 1, 2 or 3. Each <code>timerBegin()</code> allocates an available timer.</p>
+</li>
+<li>
+<p><code>1000000</code> is the <strong>tick frequency in Hz</strong>, not a timer number: 1 MHz, or 1 <span class="arithmatex">\(\mu\)</span>s per tick.</p>
+</li>
+<li>
+<p><code>timer1</code> to <code>timer4</code> are variable names, <strong>not hardware timer IDs</strong>.</p>
+</li>
+<li>
+<p>This example targets the <strong>classic ESP32 with 4 timers</strong>; all four must be available. Other ESP32 variants may have fewer.</p>
+</li>
+</ul>
+<div class="admonition info">
+<p class="admonition-title">Allocation is separate from configuring an alarm</p>
+<p>Check each returned pointer for <code>nullptr</code>: allocation can fail. Successful calls start the counters; no ISR runs until you configure an alarm and attach a handler. <code>timerEnd(timer1)</code> releases that timer for reuse.</p>
+</div>
+<p><em>Sources: <a href="https://docs.espressif.com/projects/arduino-esp32/en/latest/api/timer.html">Espressif Timer API</a>; <a href="https://github.com/espressif/arduino-esp32/blob/3.3.11/cores/esp32/esp32-hal-timer.c">Core 3.3.11: timerBegin() implementation</a></em></p>
+<h2 id="prescaler-divide-the-timer-clock-not-the-cpu-clock">Prescaler: divide the timer clock, not the CPU clock<a class="headerlink" href="#prescaler-divide-the-timer-clock-not-the-cpu-clock" title="Permanent link">&para;</a></h2>
+<p><strong>Classic ESP32: 4 hardware timers</strong>, each with a 64-bit counter and a 16-bit prescaler.</p>
+<p><span class="arithmatex">\(f_{\rm tick}=\dfrac{f_{\rm clock}}{P}
+    \qquad T_{\rm tick}=\dfrac{P}{f_{\rm clock}}\)</span></p>
+<p><img alt="Prescaler: divide the timer clock, not the CPU clock" class="lecture-figure" loading="lazy" src="../assets/diagrams/timing-interrupts-080.png" /></p>
+<p>Arduino-ESP32 core 3.x: <code>timerBegin(1000000)</code> requests a 1 MHz tick rate; the driver selects the clock/divider. Here, an 80 MHz source gives <span class="arithmatex">\(P=80\)</span>.</p>
+<div class="admonition info">
+<p class="admonition-title">The CPU keeps its own clock</p>
+<p>The prescaler divides the clock <strong>received by the timer peripheral</strong>. It does <strong>not</strong> change the ESP32 CPU frequency.</p>
+</div>
+<p><em>Sources: <a href="https://docs.espressif.com/projects/arduino-esp32/en/latest/api/timer.html">Espressif Timer API: timer count, counter and prescaler</a>; classic ESP32, APB-clock example</em></p>
+<h2 id="prescaler-trade-off-resolution-versus-counter-range">Prescaler trade-off: resolution versus counter range<a class="headerlink" href="#prescaler-trade-off-resolution-versus-counter-range" title="Permanent link">&para;</a></h2>
+<p>Same 80 MHz source and same counter width; only the prescaler changes.</p>
+<table>
+<thead>
+<tr>
+<th style="text-align: right;"><strong><span class="arithmatex">\(P\)</span></strong></th>
+<th style="text-align: right;"><strong>Tick frequency</strong></th>
+<th style="text-align: right;"><strong>Time resolution</strong></th>
+<th style="text-align: right;"><strong>Time to wrap (relative)</strong></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: right;">8</td>
+<td style="text-align: right;">10 MHz</td>
+<td style="text-align: right;">0.1 <span class="arithmatex">\(\mu\)</span>s</td>
+<td style="text-align: right;"><span class="arithmatex">\(1\times\)</span></td>
+</tr>
+<tr>
+<td style="text-align: right;">80</td>
+<td style="text-align: right;">1 MHz</td>
+<td style="text-align: right;">1 <span class="arithmatex">\(\mu\)</span>s</td>
+<td style="text-align: right;"><span class="arithmatex">\(10\times\)</span></td>
+</tr>
+<tr>
+<td style="text-align: right;">800</td>
+<td style="text-align: right;">100 kHz</td>
+<td style="text-align: right;">10 <span class="arithmatex">\(\mu\)</span>s</td>
+<td style="text-align: right;"><span class="arithmatex">\(100\times\)</span></td>
+</tr>
+</tbody>
+</table>
+<div class="admonition info">
+<p class="admonition-title">Small prescaler</p>
+<p>Fast counting, short ticks: <strong>finer time resolution</strong>. The counter reaches its maximum sooner.</p>
+</div>
+<div class="admonition tip">
+<p class="admonition-title">Large prescaler</p>
+<p>Slow counting, long ticks: <strong>coarser time resolution</strong>, but a longer interval before the counter reaches its limit.</p>
+</div>
+<p>For a <span class="arithmatex">\(B\)</span>-bit up-counter starting at zero: <span class="arithmatex">\(\displaystyle T_{\rm wrap}=2^B T_{\rm tick}=\frac{2^B P}{f_{\rm clock}}\)</span>.</p>
+<p><strong>Wrap is not an alarm:</strong> wrap follows the largest counter value (<span class="arithmatex">\(2^B-1\)</span>). A configured alarm can trigger and auto-reload much earlier, at <span class="arithmatex">\(N\)</span> ticks: <span class="arithmatex">\(T_{\rm alarm}=N T_{\rm tick}\)</span>. The classic ESP32 counter has <span class="arithmatex">\(B=64\)</span>.</p>
+<p><em>Sources: <a href="https://docs.espressif.com/projects/arduino-esp32/en/latest/api/timer.html">Espressif Timer API</a>; calculated examples for an 80 MHz timer clock</em></p>
+<h2 id="ticks-frequency-and-timer-intervals">Ticks, frequency and timer intervals<a class="headerlink" href="#ticks-frequency-and-timer-intervals" title="Permanent link">&para;</a></h2>
+<p><img alt="Ticks, frequency and timer intervals" class="lecture-figure" loading="lazy" src="../assets/diagrams/timing-interrupts-081.png" /></p>
+<div class="admonition info">
+<p class="admonition-title">Info</p>
+<p><code>timerBegin()</code> sets the <strong>timer tick frequency</strong>, not the CPU clock. If an LED toggles once per alarm, one full blink needs two alarms: <span class="arithmatex">\(f_{\rm LED}=f_{\rm alarm}/2=1\,\mathrm{Hz}\)</span> in this example.</p>
+</div>
+<p><em>Sources: <a href="https://docs.espressif.com/projects/arduino-esp32/en/latest/api/timer.html">Arduino-ESP32 Timer API (core 3.x)</a></em></p>
+<h2 id="the-timer-counter-a-sawtooth-an-alarm-and-an-isr">The timer counter: a sawtooth, an alarm and an ISR<a class="headerlink" href="#the-timer-counter-a-sawtooth-an-alarm-and-an-isr" title="Permanent link">&para;</a></h2>
+<p><span class="arithmatex">\(f_{\rm tick}=2000\,\mathrm{Hz}\)</span>; <span class="arithmatex">\(N=2000\)</span> ticks</p>
+<p><span class="arithmatex">\(T_{\rm alarm}=N/f_{\rm tick}=1\,\mathrm{s}\)</span>; <span class="arithmatex">\(f_{\rm ISR}=1\,\mathrm{Hz}\)</span>.</p>
+<p><img alt="The timer counter: a sawtooth, an alarm and an ISR" class="lecture-figure" loading="lazy" src="../assets/diagrams/timing-interrupts-082.png" /></p>
+<div class="admonition info">
+<p class="admonition-title">What happens at the top?</p>
+<p>Reaching 2000 triggers the alarm: hardware reloads 0 and requests the ISR. The ISR does <strong>not</strong> reset the counter. Ramps are simplified; interrupt latency is not drawn.</p>
+</div>
+<p>Open <strong>Serial Plotter</strong>, 115200 baud. <strong>Count</strong> climbs once per second; <strong>ISR</strong> is a short marker printed by the next <code>loop()</code> iteration.</p>
+<p><em>Sources: <a href="https://docs.espressif.com/projects/arduino-esp32/en/latest/api/timer.html">Arduino-ESP32 Timer API</a>; classic ESP32, core 3.x; illustrative timing</em></p>
+<h2 id="timerstop-timerrestart-and-timerstart">timerStop(), timerRestart() and timerStart()<a class="headerlink" href="#timerstop-timerrestart-and-timerstart" title="Permanent link">&para;</a></h2>
+<p>Example: 1 MHz; alarm = 500 000 ticks = 0.5 s of <strong>counting after a reset</strong>.</p>
+<p><img alt="timerStop(), timerRestart() and timerStart()" class="lecture-figure" loading="lazy" src="../assets/diagrams/timing-interrupts-083.png" /></p>
+<div class="tabular">
+
+@l L9.5cm@ **Call** & **Effect**  
+`timerStop(timer);` & Pause counting; retain the current count and timer configuration.  
+`timerStart(timer);` & Resume from the saved count; it does not reset the counter.  
+`timerRestart(timer);` & Set the count to zero. A stopped timer still needs `timerStart()`.  
+
+</div>
+
+<div class="admonition info">
+<p class="admonition-title">Start at the right moment</p>
+<p><code>timerBegin()</code> starts counting immediately. To configure before running: <strong>begin <span class="arithmatex">\(\rightarrow\)</span> stop <span class="arithmatex">\(\rightarrow\)</span> configure <span class="arithmatex">\(\rightarrow\)</span> restart <span class="arithmatex">\(\rightarrow\)</span> start</strong>. Paused time does not count towards the next alarm.</p>
+</div>
+<p><em>Sources: <a href="https://docs.espressif.com/projects/arduino-esp32/en/latest/api/timer.html">Timer API</a>; <a href="https://github.com/espressif/arduino-esp32/blob/3.3.11/cores/esp32/esp32-hal-timer.c">Arduino-ESP32 3.3.11 implementation</a>; illustrative timing</em></p>
+<h2 id="hardware-timers">Hardware timers<a class="headerlink" href="#hardware-timers" title="Permanent link">&para;</a></h2>
+<div class="highlight"><span class="filename">hw_timer.ino</span><pre><span></span><code><span class="n">hw_timer_t</span><span class="w"> </span><span class="o">*</span><span class="n">timer</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nb">nullptr</span><span class="p">;</span>
+<span class="k">volatile</span><span class="w"> </span><span class="kt">bool</span><span class="w"> </span><span class="n">tick</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nb">false</span><span class="p">;</span>
+<span class="k">const</span><span class="w"> </span><span class="kt">int</span><span class="w"> </span><span class="n">LED_PIN</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">2</span><span class="p">;</span>
+<span class="kt">bool</span><span class="w"> </span><span class="n">ledOn</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nb">false</span><span class="p">;</span>
+<span class="kt">void</span><span class="w"> </span><span class="n">ARDUINO_ISR_ATTR</span><span class="w"> </span><span class="nf">onTimer</span><span class="p">()</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="n">tick</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nb">true</span><span class="p">;</span><span class="w"> </span><span class="p">}</span>
+<span class="kt">void</span><span class="w"> </span><span class="nf">setup</span><span class="p">()</span><span class="w"> </span><span class="p">{</span>
+<span class="w">  </span><span class="n">pinMode</span><span class="p">(</span><span class="n">LED_PIN</span><span class="p">,</span><span class="w"> </span><span class="n">OUTPUT</span><span class="p">);</span>
+<span class="w">  </span><span class="n">timer</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">timerBegin</span><span class="p">(</span><span class="mi">1000000</span><span class="p">);</span><span class="w">           </span><span class="c1">// 1 MHz: 1 tick = 1 us</span>
+<span class="w">  </span><span class="n">timerStop</span><span class="p">(</span><span class="n">timer</span><span class="p">);</span><span class="w">                     </span><span class="c1">// pause while configuring</span>
+<span class="w">  </span><span class="n">timerAttachInterrupt</span><span class="p">(</span><span class="n">timer</span><span class="p">,</span><span class="w"> </span><span class="o">&amp;</span><span class="n">onTimer</span><span class="p">);</span>
+<span class="w">  </span><span class="c1">// 0.5 s alarm, auto-reload, repeat forever:</span>
+<span class="w">  </span><span class="n">timerAlarm</span><span class="p">(</span><span class="n">timer</span><span class="p">,</span><span class="w"> </span><span class="mi">500000</span><span class="p">,</span><span class="w"> </span><span class="nb">true</span><span class="p">,</span><span class="w"> </span><span class="mi">0</span><span class="p">);</span>
+<span class="w">  </span><span class="n">timerRestart</span><span class="p">(</span><span class="n">timer</span><span class="p">);</span><span class="w">                  </span><span class="c1">// reset count to zero</span>
+<span class="w">  </span><span class="n">timerStart</span><span class="p">(</span><span class="n">timer</span><span class="p">);</span><span class="w">                    </span><span class="c1">// start counting now</span>
+<span class="p">}</span>
+
+<span class="kt">void</span><span class="w"> </span><span class="nf">loop</span><span class="p">()</span><span class="w"> </span><span class="p">{</span>
+<span class="w">  </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">tick</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="n">tick</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nb">false</span><span class="p">;</span>
+<span class="w">    </span><span class="n">ledOn</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="o">!</span><span class="n">ledOn</span><span class="p">;</span>
+<span class="w">    </span><span class="n">digitalWrite</span><span class="p">(</span><span class="n">LED_PIN</span><span class="p">,</span><span class="w"> </span><span class="n">ledOn</span><span class="p">);</span>
+<span class="w">  </span><span class="p">}</span>
+<span class="p">}</span>
+</code></pre></div>
+<p><a download="download" href="../examples/timing-interrupts/hw_timer.ino">Download this example</a></p>
+<ul>
+<li>
+<p>4 general-purpose 64-bit timers.</p>
+</li>
+<li>
+<p>Precise, jitter-free periodic events: sampling an ADC at a fixed rate, generating signals.</p>
+</li>
+<li>
+<p>Period <span class="arithmatex">\(= \text{alarm} / f_{\text{timer}}\)</span>.</p>
+</li>
+</ul>
+<div class="admonition note">
+<p class="admonition-title">API changed in core 3.x</p>
+<p>Old: <code>timerBegin(0, 80, true)</code> + <code>timerAlarmWrite()</code> + <code>timerAlarmEnable()</code>.</p>
+</div>
+<p><em>Sources: <a href="../references/#arduino-esp32-migration">Migration from Arduino ESP32 Core 2.x to 3.0</a></em></p>
+<h2 id="ticker-timers-made-easy">Ticker: timers made easy<a class="headerlink" href="#ticker-timers-made-easy" title="Permanent link">&para;</a></h2>
+<p><a class="md-button lecture-simulation" href="../../dashboard/?lab=simulations/course_topics_lab.html&amp;topic=timers">Try simulation: Timers</a></p>
+<div class="highlight"><span class="filename">ticker.ino</span><pre><span></span><code><span class="cp">#include</span><span class="w"> </span><span class="cpf">&lt;Ticker.h&gt;</span>
+
+<span class="n">Ticker</span><span class="w"> </span><span class="n">sensorTicker</span><span class="p">;</span>
+<span class="n">Ticker</span><span class="w"> </span><span class="n">ledTicker</span><span class="p">;</span>
+<span class="k">const</span><span class="w"> </span><span class="kt">int</span><span class="w"> </span><span class="n">LED_BLUE</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">23</span><span class="p">;</span>
+<span class="kt">bool</span><span class="w"> </span><span class="n">ledOn</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nb">false</span><span class="p">;</span>
+
+<span class="kt">void</span><span class="w"> </span><span class="nf">blinkLed</span><span class="p">()</span><span class="w"> </span><span class="p">{</span>
+<span class="w">  </span><span class="n">ledOn</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="o">!</span><span class="n">ledOn</span><span class="p">;</span>
+<span class="w">  </span><span class="n">digitalWrite</span><span class="p">(</span><span class="n">LED_BLUE</span><span class="p">,</span><span class="w"> </span><span class="n">ledOn</span><span class="p">);</span>
+<span class="p">}</span>
+
+<span class="kt">void</span><span class="w"> </span><span class="nf">readSensor</span><span class="p">()</span><span class="w"> </span><span class="p">{</span>
+<span class="w">  </span><span class="n">Serial</span><span class="p">.</span><span class="n">println</span><span class="p">(</span><span class="n">analogRead</span><span class="p">(</span><span class="mi">36</span><span class="p">));</span>
+<span class="p">}</span>
+
+<span class="kt">void</span><span class="w"> </span><span class="nf">setup</span><span class="p">()</span><span class="w"> </span><span class="p">{</span>
+<span class="w">  </span><span class="n">Serial</span><span class="p">.</span><span class="n">begin</span><span class="p">(</span><span class="mi">115200</span><span class="p">);</span>
+<span class="w">  </span><span class="n">pinMode</span><span class="p">(</span><span class="n">LED_BLUE</span><span class="p">,</span><span class="w"> </span><span class="n">OUTPUT</span><span class="p">);</span>
+<span class="w">  </span><span class="n">ledTicker</span><span class="p">.</span><span class="n">attach</span><span class="p">(</span><span class="mf">0.5</span><span class="p">,</span><span class="w"> </span><span class="n">blinkLed</span><span class="p">);</span><span class="w">       </span><span class="c1">// every 0.5 s</span>
+<span class="w">  </span><span class="n">sensorTicker</span><span class="p">.</span><span class="n">attach_ms</span><span class="p">(</span><span class="mi">100</span><span class="p">,</span><span class="w"> </span><span class="n">readSensor</span><span class="p">);</span><span class="w"> </span><span class="c1">// every 100 ms</span>
+<span class="p">}</span>
+
+<span class="kt">void</span><span class="w"> </span><span class="nf">loop</span><span class="p">()</span><span class="w"> </span><span class="p">{}</span><span class="w">       </span><span class="c1">// empty: the tickers do the work</span>
+</code></pre></div>
+<p><a download="download" href="../examples/timing-interrupts/ticker.ino">Download this example</a></p>
+<ul>
+<li>
+<p><code>Ticker</code> is part of the ESP32 core: no installation.</p>
+</li>
+<li>
+<p><code>attach(seconds, fn)</code>, <code>attach_ms(ms, fn)</code>: repeat.</p>
+</li>
+<li>
+<p><code>once(seconds, fn)</code>: run once, e.g. a timeout.</p>
+</li>
+<li>
+<p><code>detach()</code>: stop.</p>
+</li>
+</ul>
+<div class="admonition warning">
+<p class="admonition-title">Still keep them short</p>
+<p>Ticker callbacks run in a shared timer context: no long <code>delay()</code> inside, or other tickers are delayed.</p>
+</div>
+<p><em>Sources: Example from lecture 3 <a href="../references/#ep-lectures">Embedded Programming, lectures 1–6</a></em></p>
+<h2 id="how-precise-is-time">How precise is time?<a class="headerlink" href="#how-precise-is-time" title="Permanent link">&para;</a></h2>
+<ul>
+<li>
+<p>All timing comes from a <strong>40 MHz quartz crystal</strong>.</p>
+</li>
+<li>
+<p>A typical crystal has a tolerance of <span class="arithmatex">\(\pm\)</span><!-- -->10–20 ppm (parts per million).</p>
+</li>
+<li>
+<p><span class="arithmatex">\(20 \cdot 10^{-6} \times 86\,400\)</span> s <span class="arithmatex">\(\approx\)</span> <strong>1.7 s per day</strong>.</p>
+</li>
+<li>
+<p>Prescalers, clock synchronisation and temperature effects: out of scope for this course.</p>
+</li>
+</ul>
+<div class="admonition info">
+<p class="admonition-title">Need real clock time?</p>
+<p>Use NTP over Wi-Fi (<code>configTime()</code>) or an external RTC chip (DS3231) instead of counting <code>millis()</code>.</p>
+</div>
+<div class="admonition tip">
+<p class="admonition-title">millis() vs timer</p>
+<p><code>millis()</code>: good to <span class="arithmatex">\(\approx\)</span> 1 ms, depends on how often <code>loop()</code> checks. Hardware timer: <strong>μs precise</strong>, independent of <code>loop()</code>.</p>
+</div>
+<p><em>Sources: <a href="../references/#ep-lectures">Embedded Programming, lectures 1–6</a>; <a href="../references/#esp32-datasheet">ESP32 Series Datasheet</a></em></p>
+<h2 id="priorities-watchdogs-and-race-conditions">Priorities, watchdogs and race conditions<a class="headerlink" href="#priorities-watchdogs-and-race-conditions" title="Permanent link">&para;</a></h2>
+<p><strong>Priorities and watchdogs</strong></p>
+<ul>
+<li>
+<p>Several interrupts can be pending: they are handled in order of <strong>priority</strong>.</p>
+</li>
+<li>
+<p>A <strong>watchdog</strong> timer checks that the system is still alive and that ISRs are not too long. If not: <strong>reset</strong>.</p>
+</li>
+<li>
+<p>Message: <code>Interrupt wdt timeout on CPU1</code> <span class="arithmatex">\(\Rightarrow\)</span> your ISR was too long or blocked.</p>
+</li>
+</ul>
+<p><strong>Race conditions</strong></p>
+<ul>
+<li>
+<p>The result depends on the <strong>timing or order</strong> of events that use <strong>shared data</strong>.</p>
+</li>
+<li>
+<p>Two interrupts update the same variable.</p>
+</li>
+<li>
+<p>A timer event occurs while <code>loop()</code> is changing the state.</p>
+</li>
+<li>
+<p>Hard to find: the bug appears “sometimes”.</p>
+</li>
+</ul>
+<div class="admonition info">
+<p class="admonition-title">Simple rules</p>
+<p>Let <strong>one</strong> side write a shared variable; keep shared variables small (<code>bool</code>, 32-bit); use flags; do all real work in <code>loop()</code>.</p>
+</div>
+<p><em>Sources: <a href="../references/#ep-lectures">Embedded Programming, lectures 1–6</a></em></p>
+<h2 id="example-a-race-condition-and-its-fix">Example: a race condition and its fix<a class="headerlink" href="#example-a-race-condition-and-its-fix" title="Permanent link">&para;</a></h2>
+<p><strong>Bug: a pulse can be lost</strong></p>
+<div class="highlight"><span class="filename">race_bug.ino</span><pre><span></span><code><span class="k">volatile</span><span class="w"> </span><span class="kt">uint32_t</span><span class="w"> </span><span class="n">pulses</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">0</span><span class="p">;</span>
+<span class="kt">void</span><span class="w"> </span><span class="n">IRAM_ATTR</span><span class="w"> </span><span class="nf">onPulse</span><span class="p">()</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="n">pulses</span><span class="o">++</span><span class="p">;</span><span class="w"> </span><span class="p">}</span>
+
+<span class="kt">void</span><span class="w"> </span><span class="nf">loop</span><span class="p">()</span><span class="w"> </span><span class="p">{</span>
+<span class="w">  </span><span class="n">delay</span><span class="p">(</span><span class="mi">1000</span><span class="p">);</span>
+<span class="w">  </span><span class="n">Serial</span><span class="p">.</span><span class="n">println</span><span class="p">(</span><span class="n">pulses</span><span class="p">);</span><span class="w">  </span><span class="c1">// ISR may fire...</span>
+<span class="w">  </span><span class="n">pulses</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">0</span><span class="p">;</span><span class="w">              </span><span class="c1">// ...here: lost!</span>
+<span class="p">}</span>
+</code></pre></div>
+<p><a download="download" href="../examples/timing-interrupts/race_bug.ino">Download this example</a></p>
+<p><strong>Fix: only the ISR writes</strong></p>
+<div class="highlight"><span class="filename">race_fixed.ino</span><pre><span></span><code><span class="k">volatile</span><span class="w"> </span><span class="kt">uint32_t</span><span class="w"> </span><span class="n">pulses</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">0</span><span class="p">;</span>
+<span class="kt">uint32_t</span><span class="w"> </span><span class="n">lastPulses</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">0</span><span class="p">;</span>
+<span class="kt">void</span><span class="w"> </span><span class="n">IRAM_ATTR</span><span class="w"> </span><span class="nf">onPulse</span><span class="p">()</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="n">pulses</span><span class="o">++</span><span class="p">;</span><span class="w"> </span><span class="p">}</span>
+
+<span class="kt">void</span><span class="w"> </span><span class="nf">loop</span><span class="p">()</span><span class="w"> </span><span class="p">{</span>
+<span class="w">  </span><span class="n">delay</span><span class="p">(</span><span class="mi">1000</span><span class="p">);</span>
+<span class="w">  </span><span class="kt">uint32_t</span><span class="w"> </span><span class="n">now</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">pulses</span><span class="p">;</span><span class="w">          </span><span class="c1">// 1 read</span>
+<span class="w">  </span><span class="n">Serial</span><span class="p">.</span><span class="n">println</span><span class="p">(</span><span class="n">now</span><span class="w"> </span><span class="o">-</span><span class="w"> </span><span class="n">lastPulses</span><span class="p">);</span>
+<span class="w">  </span><span class="n">lastPulses</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">now</span><span class="p">;</span><span class="w">               </span><span class="c1">// our copy</span>
+<span class="p">}</span>
+</code></pre></div>
+<p><a download="download" href="../examples/timing-interrupts/race_fixed.ino">Download this example</a></p>
+<ul>
+<li>
+<p>Left: between printing and resetting, an interrupt can increment <code>pulses</code>; the reset erases it.</p>
+</li>
+<li>
+<p>Right: <code>loop()</code> never writes <code>pulses</code>. It reads it once (a 32-bit read is atomic on the ESP32) and works with the difference.</p>
+</li>
+</ul>
+<p><em>Sources: Race conditions: lecture 6 <a href="../references/#ep-lectures">Embedded Programming, lectures 1–6</a></em></p>
+<h2 id="quiz-time-and-interrupts">Quiz: time and interrupts<a class="headerlink" href="#quiz-time-and-interrupts" title="Permanent link">&para;</a></h2>
+<ol>
+<li>
+<p>Why is <code>now - last &gt;= interval</code> better than <code>now &gt;= last + interval</code>?</p>
+<p><details class="lecture-answer"><summary>Check your answer</summary><p>The subtraction keeps working when <code>millis()</code> wraps around after 49.7 days.</p></details></p>
+</li>
+<li>
+<p>What goes wrong if the ISR variable is not <code>volatile</code>?</p>
+<p><details class="lecture-answer"><summary>Check your answer</summary><p>The compiler may cache it: <code>loop()</code> never sees the ISR's change.</p></details></p>
+</li>
+<li>
+<p><code>attachInterrupt(digitalPinToInterrupt(34), onKey(), RISING);</code> does not compile. Why?</p>
+<p><details class="lecture-answer"><summary>Check your answer</summary><p><code>onKey()</code> calls the function; pass its address: <code>onKey</code>.</p></details></p>
+</li>
+<li>
+<p>One press on the button gives 4 counts. Name two fixes.</p>
+<p><details class="lecture-answer"><summary>Check your answer</summary><p>RC filter in hardware; software debounce (ignore edges for <span class="arithmatex"><span class="arithmatex">\(\approx\)</span></span> 50 ms).</p></details></p>
+</li>
+<li>
+<p>Timer with <code>timerBegin(1000000)</code> and <code>timerAlarm(timer, 250000, true, 0)</code>: frequency?</p>
+<p><details class="lecture-answer"><summary>Check your answer</summary><p>Period 0.25 s <span class="arithmatex"><span class="arithmatex">\(\Rightarrow\)</span></span> 4 Hz.</p></details></p>
+</li>
+</ol>
+<h2 id="exercises-time-and-interrupts">Exercises: time and interrupts<a class="headerlink" href="#exercises-time-and-interrupts" title="Permanent link">&para;</a></h2>
+<p><a class="md-button lecture-simulation" href="../../dashboard/?lab=experiments/kitchen_timer.html">Try simulation: Kitchen timer</a></p>
+<p><a class="md-button lecture-simulation" href="../../dashboard/?lab=experiments/real_time_challenge.html">Try simulation: Real-time challenge</a></p>
+<div class="admonition example">
+<p class="admonition-title">Exercise 1 – Two blinkers, one button</p>
+<p>Blue blinks at 2 Hz, red at 0.5 Hz, and KEY1 toggles the green LED immediately: no <code>delay()</code> allowed.</p>
+</div>
+<div class="admonition example">
+<p class="admonition-title">Exercise 2 – Reaction-time game</p>
+<p>After a random wait (2–5 s) the orange LED lights. Measure the time until KEY1 is pressed (interrupt + <code>millis()</code>); detect cheating (press before the LED).</p>
+</div>
+<div class="admonition example">
+<p class="admonition-title">Exercise 3 – Frequency counter</p>
+<p>Count rising edges on a GPIO with an interrupt and print the frequency every second using a hardware timer. Test it with a PWM output of a second pin.</p>
+</div>
+<div class="admonition example">
+<p class="admonition-title">Exercise 4 – Kitchen timer</p>
+<p>KEY1 adds 10 s, KEY2 starts/stops; LEDs show progress; the red LED blinks when time is up. Compare with the dashboard experiment.</p>
+</div>
+<h2 id="further-material-time-and-interrupts">Further material: time and interrupts<a class="headerlink" href="#further-material-time-and-interrupts" title="Permanent link">&para;</a></h2>
+<h3 id="read">Read<a class="headerlink" href="#read" title="Permanent link">&para;</a></h3>
+<ul>
+<li>
+<p><a href="https://www.theengineeringprojects.com/2021/12/esp32-interrupts.html">ESP32 interrupts</a></p>
+</li>
+<li>
+<p><a href="https://docs.espressif.com/projects/arduino-esp32/en/latest/api/timer.html">Arduino-ESP32 Timer API</a></p>
+</li>
+<li>
+<p><a href="https://docs.arduino.cc/built-in-examples/digital/BlinkWithoutDelay/">Blink without delay (Arduino)</a></p>
+</li>
+</ul>
+<h3 id="watch">Watch<a class="headerlink" href="#watch" title="Permanent link">&para;</a></h3>
+<ul>
+<li>
+<p><a href="https://www.youtube.com/results?search_query=arduino+millis+vs+delay">YouTube: millis vs delay</a></p>
+</li>
+<li>
+<p><a href="https://www.youtube.com/results?search_query=esp32+interrupts+arduino+ide">YouTube: ESP32 interrupts</a></p>
+</li>
+</ul>
+<h3 id="try-it">Try it<a class="headerlink" href="#try-it" title="Permanent link">&para;</a></h3>
+<ul>
+<li>
+<p><a href="../../dashboard/?lab=simulations/interrupts.html">Interrupts</a></p>
+</li>
+<li>
+<p><a href="../../dashboard/?lab=simulations/course_topics_lab.html&amp;topic=timers">Timers</a></p>
+</li>
+<li>
+<p><a href="../../dashboard/?lab=simulations/debouncing_lab.html">Button debouncing</a></p>
+</li>
+<li>
+<p><a href="../../dashboard/?lab=experiments/kitchen_timer.html">Experiment: kitchen timer</a></p>
+</li>
+</ul>
+<h2 id="complete-project-sketches">Complete project sketches<a class="headerlink" href="#complete-project-sketches" title="Permanent link">&para;</a></h2>
+<ul>
+<li><a download="download" href="../examples/projects/timers/sawtooth/sawtooth.ino">Sawtooth</a></li>
+<li><a download="download" href="../examples/projects/timers/start-stop/start-stop.ino">Start Stop</a></li>
+</ul>
+
+
+
+
+
+
+
+  
+  
+
+
+
+
+
+
+                
+              </article>
+            </div>
+          
+          
+  <script>var tabs=__md_get("__tabs");if(Array.isArray(tabs))e:for(var set of document.querySelectorAll(".tabbed-set")){var labels=set.querySelector(".tabbed-labels");for(var tab of tabs)for(var label of labels.getElementsByTagName("label"))if(label.innerText.trim()===tab){var input=document.getElementById(label.htmlFor);input.checked=!0;continue e}}</script>
+
+<script>var target=document.getElementById(location.hash.slice(1));target&&target.name&&(target.checked=target.name.startsWith("__tabbed_"))</script>
+        </div>
+        
+          <button type="button" class="md-top md-icon" data-md-component="top" hidden>
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M13 20h-2V8l-5.5 5.5-1.42-1.42L12 4.16l7.92 7.92-1.42 1.42L13 8z"/></svg>
+  Back to top
+</button>
+        
+      </main>
+      
+        <footer class="md-footer">
+  
+    
+      
+      <nav class="md-footer__inner md-grid" aria-label="Footer" >
+        
+          
+          <a href="../analog-pwm/" class="md-footer__link md-footer__link--prev" aria-label="Previous: Analog input, PWM &amp; DAC">
+            <div class="md-footer__button md-icon">
+              
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11z"/></svg>
+            </div>
+            <div class="md-footer__title">
+              <span class="md-footer__direction">
+                Previous
+              </span>
+              <div class="md-ellipsis">
+                Analog input, PWM & DAC
+              </div>
+            </div>
+          </a>
+        
+        
+          
+          <a href="../breadboard-libraries/" class="md-footer__link md-footer__link--next" aria-label="Next: Breadboards &amp; libraries">
+            <div class="md-footer__title">
+              <span class="md-footer__direction">
+                Next
+              </span>
+              <div class="md-ellipsis">
+                Breadboards & libraries
+              </div>
+            </div>
+            <div class="md-footer__button md-icon">
+              
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M4 11v2h12l-5.5 5.5 1.42 1.42L19.84 12l-7.92-7.92L10.5 5.5 16 11z"/></svg>
+            </div>
+          </a>
+        
+      </nav>
+    
+  
+  <div class="md-footer-meta md-typeset">
+    <div class="md-footer-meta__inner md-grid">
+      <div class="md-copyright">
+  
+  
+    Made with
+    <a href="https://squidfunk.github.io/mkdocs-material/" target="_blank" rel="noopener">
+      Material for MkDocs
+    </a>
+  
+</div>
+      
+    </div>
+  </div>
+</footer>
+      
+    </div>
+    <div class="md-dialog" data-md-component="dialog">
+      <div class="md-dialog__inner md-typeset"></div>
+    </div>
+    
+      <div class="md-progress" data-md-component="progress" role="progressbar"></div>
+    
+    
+    
+      
+      
+      <script id="__config" type="application/json">{"annotate": null, "base": "../..", "features": ["navigation.tabs", "navigation.tabs.sticky", "navigation.instant", "navigation.instant.progress", "navigation.tracking", "navigation.top", "navigation.footer", "content.code.copy", "content.tabs.link", "search.suggest", "search.highlight", "toc.follow"], "search": "../../assets/javascripts/workers/search.a7633da7.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": null}</script>
+    
+    
+      <script src="../../assets/javascripts/bundle.c21346df.min.js"></script>
+      
+        <script src="../../javascripts/mathjax.js"></script>
+      
+        <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+      
+        <script src="../../javascripts/dashboard.js"></script>
+      
+    
+  </body>
+</html>

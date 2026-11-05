@@ -1,0 +1,22 @@
+void setup() {
+  Serial.begin(115200);
+  for (int i = 0; i < 4; i++) pinMode(PINS[i], OUTPUT);
+  pinMode(KEY1, INPUT);
+  attachInterrupt(digitalPinToInterrupt(KEY1), onKey1, RISING);
+  enterState(CAR_GREEN);
+}
+
+void loop() {
+  unsigned long t = millis() - stateStart;    // time in state
+  switch (state) {
+    case CAR_GREEN:
+      if (requested && t >= 5000) enterState(CAR_YELLOW);
+      break;
+    case CAR_YELLOW: if (t >= 2000) enterState(ALL_RED);   break;
+    case ALL_RED:    if (t >= 1000) enterState(PED_GREEN); break;
+    case PED_GREEN:
+      if (t >= 5000) { requested = false; enterState(ALL_RED_2); }
+      break;
+    case ALL_RED_2:  if (t >= 1000) enterState(CAR_GREEN); break;
+  }
+}

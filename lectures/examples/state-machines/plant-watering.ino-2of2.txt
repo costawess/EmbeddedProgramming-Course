@@ -1,0 +1,22 @@
+void loop() {
+  unsigned long now = millis();
+  switch (state) {
+    case CHECK_SOIL: {
+      int moisture = map(analogRead(SENSOR), 0, 4095, 0, 100);
+      if (moisture < 30) enterState(WATERING, now);
+      break;
+    }
+    case WATERING:
+      if (now - enteredAt >= 10000UL)
+        enterState(SOAKING, now);
+      break;
+    case SOAKING:
+      if (now - enteredAt >= 60000UL)
+        enterState(CHECK_SOIL, now);
+      break;
+    default:
+      enterState(CHECK_SOIL, now);
+      break;
+  }
+  digitalWrite(PUMP_LED, state == WATERING ? HIGH : LOW);
+}

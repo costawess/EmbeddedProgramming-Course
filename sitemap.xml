@@ -9,35 +9,135 @@
          <lastmod>2026-11-05</lastmod>
     </url>
     <url>
-         <loc>https://costawess.github.io/EmbeddedProgramming-Course/tutorials/tutorial1/ReadMe/</loc>
+         <loc>https://costawess.github.io/EmbeddedProgramming-Course/lectures/</loc>
          <lastmod>2026-11-05</lastmod>
     </url>
     <url>
-         <loc>https://costawess.github.io/EmbeddedProgramming-Course/tutorials/tutorial2/ReadMe/</loc>
+         <loc>https://costawess.github.io/EmbeddedProgramming-Course/lectures/analog-pwm/</loc>
          <lastmod>2026-11-05</lastmod>
     </url>
     <url>
-         <loc>https://costawess.github.io/EmbeddedProgramming-Course/tutorials/tutorial3/ReadMe/</loc>
+         <loc>https://costawess.github.io/EmbeddedProgramming-Course/lectures/architecture/</loc>
          <lastmod>2026-11-05</lastmod>
     </url>
     <url>
-         <loc>https://costawess.github.io/EmbeddedProgramming-Course/tutorials/tutorial4/ReadMe/</loc>
+         <loc>https://costawess.github.io/EmbeddedProgramming-Course/lectures/arduino-ide/</loc>
          <lastmod>2026-11-05</lastmod>
     </url>
     <url>
-         <loc>https://costawess.github.io/EmbeddedProgramming-Course/tutorials/tutorial5/ReadMe/</loc>
+         <loc>https://costawess.github.io/EmbeddedProgramming-Course/lectures/breadboard-libraries/</loc>
          <lastmod>2026-11-05</lastmod>
     </url>
     <url>
-         <loc>https://costawess.github.io/EmbeddedProgramming-Course/tutorials/tutorial6/ReadMe/</loc>
+         <loc>https://costawess.github.io/EmbeddedProgramming-Course/lectures/code-quality-debugging/</loc>
          <lastmod>2026-11-05</lastmod>
     </url>
     <url>
-         <loc>https://costawess.github.io/EmbeddedProgramming-Course/tutorials/tutorial7/ReadMe/</loc>
+         <loc>https://costawess.github.io/EmbeddedProgramming-Course/lectures/course-board/</loc>
          <lastmod>2026-11-05</lastmod>
     </url>
     <url>
-         <loc>https://costawess.github.io/EmbeddedProgramming-Course/workshops/</loc>
+         <loc>https://costawess.github.io/EmbeddedProgramming-Course/lectures/course/</loc>
+         <lastmod>2026-11-05</lastmod>
+    </url>
+    <url>
+         <loc>https://costawess.github.io/EmbeddedProgramming-Course/lectures/digital-io/</loc>
+         <lastmod>2026-11-05</lastmod>
+    </url>
+    <url>
+         <loc>https://costawess.github.io/EmbeddedProgramming-Course/lectures/esp32-introduction/</loc>
+         <lastmod>2026-11-05</lastmod>
+    </url>
+    <url>
+         <loc>https://costawess.github.io/EmbeddedProgramming-Course/lectures/flowcharts/</loc>
+         <lastmod>2026-11-05</lastmod>
+    </url>
+    <url>
+         <loc>https://costawess.github.io/EmbeddedProgramming-Course/lectures/functions-decisions/</loc>
+         <lastmod>2026-11-05</lastmod>
+    </url>
+    <url>
+         <loc>https://costawess.github.io/EmbeddedProgramming-Course/lectures/how-programs-run/</loc>
+         <lastmod>2026-11-05</lastmod>
+    </url>
+    <url>
+         <loc>https://costawess.github.io/EmbeddedProgramming-Course/lectures/i2c/</loc>
+         <lastmod>2026-11-05</lastmod>
+    </url>
+    <url>
+         <loc>https://costawess.github.io/EmbeddedProgramming-Course/lectures/iot-mqtt-ble/</loc>
+         <lastmod>2026-11-05</lastmod>
+    </url>
+    <url>
+         <loc>https://costawess.github.io/EmbeddedProgramming-Course/lectures/loops-arrays/</loc>
+         <lastmod>2026-11-05</lastmod>
+    </url>
+    <url>
+         <loc>https://costawess.github.io/EmbeddedProgramming-Course/lectures/pinout/</loc>
+         <lastmod>2026-11-05</lastmod>
+    </url>
+    <url>
+         <loc>https://costawess.github.io/EmbeddedProgramming-Course/lectures/projects-best-practices/</loc>
+         <lastmod>2026-11-05</lastmod>
+    </url>
+    <url>
+         <loc>https://costawess.github.io/EmbeddedProgramming-Course/lectures/references/</loc>
+         <lastmod>2026-11-05</lastmod>
+    </url>
+    <url>
+         <loc>https://costawess.github.io/EmbeddedProgramming-Course/lectures/serial-uart/</loc>
+         <lastmod>2026-11-05</lastmod>
+    </url>
+    <url>
+         <loc>https://costawess.github.io/EmbeddedProgramming-Course/lectures/spi-logic-analyzer/</loc>
+         <lastmod>2026-11-05</lastmod>
+    </url>
+    <url>
+         <loc>https://costawess.github.io/EmbeddedProgramming-Course/lectures/state-machines/</loc>
+         <lastmod>2026-11-05</lastmod>
+    </url>
+    <url>
+         <loc>https://costawess.github.io/EmbeddedProgramming-Course/lectures/storage-low-power-ota/</loc>
+         <lastmod>2026-11-05</lastmod>
+    </url>
+    <url>
+         <loc>https://costawess.github.io/EmbeddedProgramming-Course/lectures/structs/</loc>
+         <lastmod>2026-11-05</lastmod>
+    </url>
+    <url>
+         <loc>https://costawess.github.io/EmbeddedProgramming-Course/lectures/timing-interrupts/</loc>
+         <lastmod>2026-11-05</lastmod>
+    </url>
+    <url>
+         <loc>https://costawess.github.io/EmbeddedProgramming-Course/lectures/variables-types/</loc>
+         <lastmod>2026-11-05</lastmod>
+    </url>
+    <url>
+         <loc>https://costawess.github.io/EmbeddedProgramming-Course/lectures/wifi-web/</loc>
+         <lastmod>2026-11-05</lastmod>
+    </url>
+    <url>
+         <loc>https://costawess.github.io/EmbeddedProgramming-Course/tutorials/</loc>
+         <lastmod>2026-11-05</lastmod>
+    </url>
+    <url>
+         <loc>https://costawess.github.io/EmbeddedProgramming-Course/tutorials/arduino-setup-gpio/</loc>
+         <lastmod>2026-11-05</lastmod>
+    </url>
+    <url>
+         <loc>https://costawess.github.io/EmbeddedProgramming-Course/tutorials/conditionals-loops/</loc>
+         <lastmod>2026-11-05</lastmod>
+    </url>
+    <url>
+         <loc>https://costawess.github.io/EmbeddedProgramming-Course/tutorials/hardware-timers/</loc>
+         <lastmod>2026-11-05</lastmod>
+    </url>
+    <url>
+         <loc>https://costawess.github.io/EmbeddedProgramming-Course/tutorials/serial-input/</loc>
+         <lastmod>2026-11-05</lastmod>
+    </url>
+    <url>
+         <loc>https://costawess.github.io/EmbeddedProgramming-Course/tutorials/variables-types/</loc>
          <lastmod>2026-11-05</lastmod>
     </url>
 </urlset>

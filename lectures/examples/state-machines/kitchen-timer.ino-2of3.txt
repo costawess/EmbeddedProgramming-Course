@@ -1,0 +1,14 @@
+void enterState(TimerState next, unsigned long now) {
+  state = next;
+  enteredAt = now;
+  Serial.printf("state=%d\n", (int)state);
+}
+
+void setup() {
+  Serial.begin(115200);
+  pinMode(BUTTON, INPUT);  // course-board external pull-down
+  pinMode(BLUE_LED, OUTPUT);
+  pinMode(RED_LED, OUTPUT);
+  digitalWrite(BLUE_LED, LOW);
+  digitalWrite(RED_LED, LOW);
+}

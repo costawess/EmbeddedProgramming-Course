@@ -1,0 +1,3049 @@
+
+<!doctype html>
+<html lang="en" class="no-js">
+  <head>
+    
+      <meta charset="utf-8">
+      <meta name="viewport" content="width=device-width,initial-scale=1">
+      
+        <meta name="description" content="Embedded Programming lectures, practical tutorials, and interactive ESP32 simulations at Hanze.">
+      
+      
+      
+        <link rel="canonical" href="https://costawess.github.io/EmbeddedProgramming-Course/lectures/digital-io/">
+      
+      
+        <link rel="prev" href="../code-quality-debugging/">
+      
+      
+        <link rel="next" href="../analog-pwm/">
+      
+      
+        
+      
+      
+      <link rel="icon" href="../../assets/images/favicon.png">
+      <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.8.0">
+    
+    
+      
+        <title>Digital Inputs and Outputs - Embedded Programming</title>
+      
+    
+    
+      <link rel="stylesheet" href="../../assets/stylesheets/main.57a0d79d.min.css">
+      
+        
+        <link rel="stylesheet" href="../../assets/stylesheets/palette.fb2fffe2.min.css">
+      
+      
+
+
+    
+    
+      
+    
+    
+      
+        
+        
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,300i,400,400i,700,700i%7CRoboto+Mono:400,400i,700,700i&display=fallback">
+        <style>:root{--md-text-font:"Roboto";--md-code-font:"Roboto Mono"}</style>
+      
+    
+    
+      <link rel="stylesheet" href="../../stylesheets/extra.css">
+    
+    <script>__md_scope=new URL("../..",location),__md_hash=e=>[...e].reduce(((e,_)=>(e<<5)-e+_.charCodeAt(0)),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
+    
+      
+
+    
+    
+  </head>
+  
+  
+    
+    
+      
+    
+    
+    
+    
+    <body dir="ltr" data-md-color-scheme="slate" data-md-color-primary="indigo" data-md-color-accent="indigo">
+  
+    
+    <input class="md-toggle" data-md-toggle="drawer" type="checkbox" id="__drawer" autocomplete="off">
+    <input class="md-toggle" data-md-toggle="search" type="checkbox" id="__search" autocomplete="off">
+    <label class="md-overlay" for="__drawer"></label>
+    <div data-md-component="skip">
+      
+        
+        <a href="#digital-inputs-and-outputs" class="md-skip">
+          Skip to content
+        </a>
+      
+    </div>
+    <div data-md-component="announce">
+      
+    </div>
+    
+    
+      
+
+  
+
+<header class="md-header md-header--shadow md-header--lifted" data-md-component="header">
+  <nav class="md-header__inner md-grid" aria-label="Header">
+    <a href="../.." title="Embedded Programming" class="md-header__button md-logo" aria-label="Embedded Programming" data-md-component="logo">
+      
+  <img src="../../assets/hanze_logo.png" alt="logo">
+
+    </a>
+    <label class="md-header__button md-icon" for="__drawer">
+      
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M3 6h18v2H3zm0 5h18v2H3zm0 5h18v2H3z"/></svg>
+    </label>
+    <div class="md-header__title" data-md-component="header-title">
+      <div class="md-header__ellipsis">
+        <div class="md-header__topic">
+          <span class="md-ellipsis">
+            Embedded Programming
+          </span>
+        </div>
+        <div class="md-header__topic" data-md-component="header-topic">
+          <span class="md-ellipsis">
+            
+              Digital Inputs and Outputs
+            
+          </span>
+        </div>
+      </div>
+    </div>
+    
+      
+        <form class="md-header__option" data-md-component="palette">
+  
+    
+    
+    
+    <input class="md-option" data-md-color-media="" data-md-color-scheme="slate" data-md-color-primary="indigo" data-md-color-accent="indigo"  aria-label="Switch to light mode"  type="radio" name="__palette" id="__palette_0">
+    
+      <label class="md-header__button md-icon" title="Switch to light mode" for="__palette_1" hidden>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 7a5 5 0 0 1 5 5 5 5 0 0 1-5 5 5 5 0 0 1-5-5 5 5 0 0 1 5-5m0 2a3 3 0 0 0-3 3 3 3 0 0 0 3 3 3 3 0 0 0 3-3 3 3 0 0 0-3-3m0-7 2.39 3.42C13.65 5.15 12.84 5 12 5s-1.65.15-2.39.42zM3.34 7l4.16-.35A7.2 7.2 0 0 0 5.94 8.5c-.44.74-.69 1.5-.83 2.29zm.02 10 1.76-3.77a7.131 7.131 0 0 0 2.38 4.14zM20.65 7l-1.77 3.79a7.02 7.02 0 0 0-2.38-4.15zm-.01 10-4.14.36c.59-.51 1.12-1.14 1.54-1.86.42-.73.69-1.5.83-2.29zM12 22l-2.41-3.44c.74.27 1.55.44 2.41.44.82 0 1.63-.17 2.37-.44z"/></svg>
+      </label>
+    
+  
+    
+    
+    
+    <input class="md-option" data-md-color-media="" data-md-color-scheme="default" data-md-color-primary="indigo" data-md-color-accent="indigo"  aria-label="Switch to dark mode"  type="radio" name="__palette" id="__palette_1">
+    
+      <label class="md-header__button md-icon" title="Switch to dark mode" for="__palette_0" hidden>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="m17.75 4.09-2.53 1.94.91 3.06-2.63-1.81-2.63 1.81.91-3.06-2.53-1.94L12.44 4l1.06-3 1.06 3zm3.5 6.91-1.64 1.25.59 1.98-1.7-1.17-1.7 1.17.59-1.98L15.75 11l2.06-.05L18.5 9l.69 1.95zm-2.28 4.95c.83-.08 1.72 1.1 1.19 1.85-.32.45-.66.87-1.08 1.27C15.17 23 8.84 23 4.94 19.07c-3.91-3.9-3.91-10.24 0-14.14.4-.4.82-.76 1.27-1.08.75-.53 1.93.36 1.85 1.19-.27 2.86.69 5.83 2.89 8.02a9.96 9.96 0 0 0 8.02 2.89m-1.64 2.02a12.08 12.08 0 0 1-7.8-3.47c-2.17-2.19-3.33-5-3.49-7.82-2.81 3.14-2.7 7.96.31 10.98 3.02 3.01 7.84 3.12 10.98.31"/></svg>
+      </label>
+    
+  
+</form>
+      
+    
+    
+      <script>var palette=__md_get("__palette");if(palette&&palette.color){if("(prefers-color-scheme)"===palette.color.media){var media=matchMedia("(prefers-color-scheme: light)"),input=document.querySelector(media.matches?"[data-md-color-media='(prefers-color-scheme: light)']":"[data-md-color-media='(prefers-color-scheme: dark)']");palette.color.media=input.getAttribute("data-md-color-media"),palette.color.scheme=input.getAttribute("data-md-color-scheme"),palette.color.primary=input.getAttribute("data-md-color-primary"),palette.color.accent=input.getAttribute("data-md-color-accent")}for(var[key,value]of Object.entries(palette.color))document.body.setAttribute("data-md-color-"+key,value)}</script>
+    
+    
+    
+      
+      
+        <label class="md-header__button md-icon" for="__search">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+        </label>
+        <div class="md-search" data-md-component="search" role="dialog">
+  <label class="md-search__overlay" for="__search"></label>
+  <div class="md-search__inner" role="search">
+    <form class="md-search__form" name="search">
+      <input type="text" class="md-search__input" name="query" aria-label="Search" placeholder="Search" autocapitalize="off" autocorrect="off" autocomplete="off" spellcheck="false" data-md-component="search-query" required>
+      <label class="md-search__icon md-icon" for="__search">
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11z"/></svg>
+      </label>
+      <nav class="md-search__options" aria-label="Search">
+        
+        <button type="reset" class="md-search__icon md-icon" title="Clear" aria-label="Clear" tabindex="-1">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M19 6.41 17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/></svg>
+        </button>
+      </nav>
+      
+        <div class="md-search__suggest" data-md-component="search-suggest"></div>
+      
+    </form>
+    <div class="md-search__output">
+      <div class="md-search__scrollwrap" tabindex="0" data-md-scrollfix>
+        <div class="md-search-result" data-md-component="search-result">
+          <div class="md-search-result__meta">
+            Initializing search
+          </div>
+          <ol class="md-search-result__list" role="presentation"></ol>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+      
+    
+    
+      <div class="md-header__source">
+        <a href="https://github.com/costawess/EmbeddedProgramming-Course" title="Go to repository" class="md-source" data-md-component="source">
+  <div class="md-source__icon md-icon">
+    
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--! Font Awesome Free 7.1.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2025 Fonticons, Inc.--><path d="M439.6 236.1 244 40.5c-5.4-5.5-12.8-8.5-20.4-8.5s-15 3-20.4 8.4L162.5 81l51.5 51.5c27.1-9.1 52.7 16.8 43.4 43.7l49.7 49.7c34.2-11.8 61.2 31 35.5 56.7-26.5 26.5-70.2-2.9-56-37.3L240.3 199v121.9c25.3 12.5 22.3 41.8 9.1 55-6.4 6.4-15.2 10.1-24.3 10.1s-17.8-3.6-24.3-10.1c-17.6-17.6-11.1-46.9 11.2-56v-123c-20.8-8.5-24.6-30.7-18.6-45L142.6 101 8.5 235.1C3 240.6 0 247.9 0 255.5s3 15 8.5 20.4l195.6 195.7c5.4 5.4 12.7 8.4 20.4 8.4s15-3 20.4-8.4l194.7-194.7c5.4-5.4 8.4-12.8 8.4-20.4s-3-15-8.4-20.4"/></svg>
+  </div>
+  <div class="md-source__repository">
+    EmbeddedProgramming-Course
+  </div>
+</a>
+      </div>
+    
+  </nav>
+  
+    
+      
+<nav class="md-tabs" aria-label="Tabs" data-md-component="tabs">
+  <div class="md-grid">
+    <ul class="md-tabs__list">
+      
+        
+  
+  
+  
+  
+    <li class="md-tabs__item">
+      <a href="../.." class="md-tabs__link">
+        
+  
+  
+    
+  
+  Home
+
+      </a>
+    </li>
+  
+
+      
+        
+  
+  
+  
+    
+  
+  
+    
+    
+      <li class="md-tabs__item md-tabs__item--active">
+        <a href="../" class="md-tabs__link">
+          
+  
+  
+  Lectures
+
+        </a>
+      </li>
+    
+  
+
+      
+        
+  
+  
+  
+  
+    
+    
+      <li class="md-tabs__item">
+        <a href="../../tutorials/" class="md-tabs__link">
+          
+  
+  
+  Tutorials
+
+        </a>
+      </li>
+    
+  
+
+      
+        
+  
+  
+  
+  
+    <li class="md-tabs__item">
+      <a href="../../dashboard/" class="md-tabs__link">
+        
+  
+  
+    
+  
+  Dashboard
+
+      </a>
+    </li>
+  
+
+      
+    </ul>
+  </div>
+</nav>
+    
+  
+</header>
+    
+    <div class="md-container" data-md-component="container">
+      
+      
+        
+      
+      <main class="md-main" data-md-component="main">
+        <div class="md-main__inner md-grid">
+          
+            
+              
+              <div class="md-sidebar md-sidebar--primary" data-md-component="sidebar" data-md-type="navigation" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+
+  
+
+
+<nav class="md-nav md-nav--primary md-nav--lifted" aria-label="Navigation" data-md-level="0">
+  <label class="md-nav__title" for="__drawer">
+    <a href="../.." title="Embedded Programming" class="md-nav__button md-logo" aria-label="Embedded Programming" data-md-component="logo">
+      
+  <img src="../../assets/hanze_logo.png" alt="logo">
+
+    </a>
+    Embedded Programming
+  </label>
+  
+    <div class="md-nav__source">
+      <a href="https://github.com/costawess/EmbeddedProgramming-Course" title="Go to repository" class="md-source" data-md-component="source">
+  <div class="md-source__icon md-icon">
+    
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--! Font Awesome Free 7.1.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2025 Fonticons, Inc.--><path d="M439.6 236.1 244 40.5c-5.4-5.5-12.8-8.5-20.4-8.5s-15 3-20.4 8.4L162.5 81l51.5 51.5c27.1-9.1 52.7 16.8 43.4 43.7l49.7 49.7c34.2-11.8 61.2 31 35.5 56.7-26.5 26.5-70.2-2.9-56-37.3L240.3 199v121.9c25.3 12.5 22.3 41.8 9.1 55-6.4 6.4-15.2 10.1-24.3 10.1s-17.8-3.6-24.3-10.1c-17.6-17.6-11.1-46.9 11.2-56v-123c-20.8-8.5-24.6-30.7-18.6-45L142.6 101 8.5 235.1C3 240.6 0 247.9 0 255.5s3 15 8.5 20.4l195.6 195.7c5.4 5.4 12.7 8.4 20.4 8.4s15-3 20.4-8.4l194.7-194.7c5.4-5.4 8.4-12.8 8.4-20.4s-3-15-8.4-20.4"/></svg>
+  </div>
+  <div class="md-source__repository">
+    EmbeddedProgramming-Course
+  </div>
+</a>
+    </div>
+  
+  <ul class="md-nav__list" data-md-scrollfix>
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../.." class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Home
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+    
+  
+  
+  
+    
+    
+    
+    
+      
+        
+        
+      
+      
+    
+    
+    <li class="md-nav__item md-nav__item--active md-nav__item--section md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_2" checked>
+        
+          
+          <label class="md-nav__link" for="__nav_2" id="__nav_2_label" tabindex="">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Lectures
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_2_label" aria-expanded="true">
+          <label class="md-nav__title" for="__nav_2">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Lectures
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Overview
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+    
+    
+      
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_2_2" >
+        
+          
+          <label class="md-nav__link" for="__nav_2_2" id="__nav_2_2_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Course & foundations
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_2_2_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_2_2">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Course & foundations
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../course/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Course organisation
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../how-programs-run/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    How programs run
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../esp32-introduction/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    The ESP32 family
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../architecture/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Architecture & memory
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+    
+    
+      
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_2_3" >
+        
+          
+          <label class="md-nav__link" for="__nav_2_3" id="__nav_2_3_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Hardware & setup
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_2_3_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_2_3">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Hardware & setup
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../pinout/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Pinout & electrical limits
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../course-board/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    The course board
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../arduino-ide/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Arduino IDE & first sketch
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+    
+    
+      
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_2_4" >
+        
+          
+          <label class="md-nav__link" for="__nav_2_4" id="__nav_2_4_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Programming
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_2_4_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_2_4">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Programming
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../variables-types/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Variables, types & numbers
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../flowcharts/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Flowcharts
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../functions-decisions/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Functions & decisions
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../loops-arrays/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Loops & arrays
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../structs/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Structs
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../code-quality-debugging/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Code quality & debugging
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+    
+  
+  
+  
+    
+    
+    
+    
+      
+      
+    
+    
+    <li class="md-nav__item md-nav__item--active md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_2_5" checked>
+        
+          
+          <label class="md-nav__link" for="__nav_2_5" id="__nav_2_5_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Inputs, outputs & timing
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_2_5_label" aria-expanded="true">
+          <label class="md-nav__title" for="__nav_2_5">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Inputs, outputs & timing
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+    
+  
+  
+  
+    <li class="md-nav__item md-nav__item--active">
+      
+      <input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
+      
+      
+        
+      
+      
+        <label class="md-nav__link md-nav__link--active" for="__toc">
+          
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Digital inputs & outputs
+  
+
+    
+  </span>
+  
+  
+
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <a href="./" class="md-nav__link md-nav__link--active">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Digital inputs & outputs
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+      
+        
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#digital-signals-only-two-values" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Digital signals: only two values
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#pinmode-configure-before-use" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        pinMode(): configure before use
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#digitalwrite-switching-an-output" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        digitalWrite(): switching an output
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#blink-digital-output" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Blink: digital output
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#example-all-four-leds-of-the-course-board" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Example: all four LEDs of the course board
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#digitalread-what-counts-as-high-or-low" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        digitalRead(): what counts as HIGH or LOW?
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#floating-inputs-and-pull-resistors" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Floating inputs and pull resistors
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#external-pull-resistor-configure-the-pin-as-input" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        External pull resistor? Configure the pin as INPUT
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#reading-the-course-board-buttons" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Reading the course-board buttons
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#level-vs-edge-toggling-an-led" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Level vs edge: toggling an LED
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#flowchart-edge-detection-toggle" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Flowchart: edge detection (toggle)
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#driving-bigger-loads-use-a-transistor" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Driving bigger loads: use a transistor
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#quiz-digital-io" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Quiz: digital I/O
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#exercises-digital-io" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Exercises: digital I/O
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#further-material-digital-io" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Further material: digital I/O
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Further material: digital I/O">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#read" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Read
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#watch" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Watch
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#try-it" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Try it
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../analog-pwm/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Analog input, PWM & DAC
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../timing-interrupts/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Timing, interrupts & timers
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../breadboard-libraries/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Breadboards & libraries
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+    
+    
+      
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_2_6" >
+        
+          
+          <label class="md-nav__link" for="__nav_2_6" id="__nav_2_6_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Communication & behaviour
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_2_6_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_2_6">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Communication & behaviour
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../serial-uart/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Serial communication & UART
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../i2c/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    I2C
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../spi-logic-analyzer/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    SPI & logic analysis
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../state-machines/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    State machines
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+    
+    
+      
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_2_7" >
+        
+          
+          <label class="md-nav__link" for="__nav_2_7" id="__nav_2_7_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Connected systems & projects
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_2_7_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_2_7">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Connected systems & projects
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../wifi-web/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Wi-Fi & web
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../iot-mqtt-ble/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    IoT, MQTT & BLE
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../storage-low-power-ota/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Storage, low power & OTA
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../projects-best-practices/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Projects & best practices
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../references/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    References
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+    
+    
+      
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_3" >
+        
+          
+          <label class="md-nav__link" for="__nav_3" id="__nav_3_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Tutorials
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_3_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_3">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Tutorials
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../tutorials/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Overview
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+    
+    
+      
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_3_2" >
+        
+          
+          <label class="md-nav__link" for="__nav_3_2" id="__nav_3_2_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Getting started
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_3_2_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_3_2">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Getting started
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../tutorials/arduino-setup-gpio/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Arduino setup & GPIO
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+    
+    
+      
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_3_3" >
+        
+          
+          <label class="md-nav__link" for="__nav_3_3" id="__nav_3_3_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Programming fundamentals
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_3_3_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_3_3">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Programming fundamentals
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../tutorials/variables-types/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Variables & data types
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../tutorials/conditionals-loops/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Conditionals, switch & while
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+    
+    
+      
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_3_4" >
+        
+          
+          <label class="md-nav__link" for="__nav_3_4" id="__nav_3_4_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Serial communication
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_3_4_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_3_4">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Serial communication
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../tutorials/serial-input/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Reading serial input
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+    
+    
+      
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_3_5" >
+        
+          
+          <label class="md-nav__link" for="__nav_3_5" id="__nav_3_5_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Timing
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_3_5_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_3_5">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Timing
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../tutorials/hardware-timers/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Hardware timer interrupts
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../dashboard/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Dashboard
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+  </ul>
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+            
+              
+              <div class="md-sidebar md-sidebar--secondary" data-md-component="sidebar" data-md-type="toc" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#digital-signals-only-two-values" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Digital signals: only two values
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#pinmode-configure-before-use" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        pinMode(): configure before use
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#digitalwrite-switching-an-output" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        digitalWrite(): switching an output
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#blink-digital-output" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Blink: digital output
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#example-all-four-leds-of-the-course-board" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Example: all four LEDs of the course board
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#digitalread-what-counts-as-high-or-low" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        digitalRead(): what counts as HIGH or LOW?
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#floating-inputs-and-pull-resistors" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Floating inputs and pull resistors
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#external-pull-resistor-configure-the-pin-as-input" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        External pull resistor? Configure the pin as INPUT
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#reading-the-course-board-buttons" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Reading the course-board buttons
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#level-vs-edge-toggling-an-led" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Level vs edge: toggling an LED
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#flowchart-edge-detection-toggle" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Flowchart: edge detection (toggle)
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#driving-bigger-loads-use-a-transistor" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Driving bigger loads: use a transistor
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#quiz-digital-io" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Quiz: digital I/O
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#exercises-digital-io" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Exercises: digital I/O
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#further-material-digital-io" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Further material: digital I/O
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Further material: digital I/O">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#read" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Read
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#watch" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Watch
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#try-it" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Try it
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+          
+          
+            <div class="md-content" data-md-component="content">
+              
+              <article class="md-content__inner md-typeset">
+                
+                  
+
+
+  
+  
+
+
+<h1 id="digital-inputs-and-outputs">Digital Inputs and Outputs<a class="headerlink" href="#digital-inputs-and-outputs" title="Permanent link">&para;</a></h1>
+<h2 id="digital-signals-only-two-values">Digital signals: only two values<a class="headerlink" href="#digital-signals-only-two-values" title="Permanent link">&para;</a></h2>
+<p><a class="md-button lecture-simulation" href="../../dashboard/?lab=simulations/course_topics_lab.html&amp;topic=foundations">Try simulation: Digital I/O</a></p>
+<ul>
+<li>
+<p>A <strong>digital</strong> signal is either <code>HIGH</code> (1, 3.3 V) or <code>LOW</code> (0, 0 V).</p>
+</li>
+<li>
+<p>It tells you <strong>yes or no</strong>, not <strong>how much</strong>: a button is pressed or not.</p>
+</li>
+<li>
+<p>Three functions do almost all the work:</p>
+</li>
+<li>
+<p><code>pinMode(pin, mode)</code>: configure the pin</p>
+</li>
+<li>
+<p><code>digitalWrite(pin, value)</code>: set an output</p>
+</li>
+<li>
+<p><code>digitalRead(pin)</code>: read an input</p>
+</li>
+</ul>
+<p><img alt="Digital signals: only two values" class="lecture-figure" loading="lazy" src="../assets/diagrams/digital-io-033.png" /></p>
+<div class="admonition info">
+<p class="admonition-title">Digital vs analog</p>
+<p>Analog: any voltage between 0 and 3.3 V (next chapters). Digital: we only care whether it is low or high.</p>
+</div>
+<p><em>Sources: <a href="../references/#ep-lectures">Embedded Programming, lectures 1–6</a></em></p>
+<h2 id="pinmode-configure-before-use">pinMode(): configure before use<a class="headerlink" href="#pinmode-configure-before-use" title="Permanent link">&para;</a></h2>
+<div class="tabular">
+
+l L5.2cm L5.4cm **Mode** & **What the pin does** & **Use it for**  
+`OUTPUT` & drives 0 V or 3.3 V & LEDs, transistor bases, relay modules, buzzers  
+`INPUT` & high impedance: only listens & signals that are always driven; buttons **with** an external resistor (course board)  
+`INPUT_PULLUP` & listens + internal $\approx$<!-- -->45 k$\Omega$ resistor to 3.3 V & a button to GND without external resistor (pressed = LOW)  
+`INPUT_PULLDOWN` & listens + internal resistor to GND & a button to 3.3 V without external resistor (pressed = HIGH)  
+
+</div>
+
+<div class="admonition tip">
+<p class="admonition-title">Where?</p>
+<p>Call <code>pinMode()</code> once in <code>setup()</code> for every pin you use.</p>
+</div>
+<div class="admonition warning">
+<p class="admonition-title">GPIO 34–39</p>
+<p>Input only, <strong>no</strong> internal pull-up or pull-down: <code>INPUT_PULLUP</code> silently does nothing.</p>
+</div>
+<p><em>Sources: <a href="../references/#arduino-reference">Arduino Language Reference</a>; <a href="../references/#esp-idf-gpio">ESP-IDF Programming Guide: GPIO &amp; RTC GPIO (ESP32)</a></em></p>
+<h2 id="digitalwrite-switching-an-output">digitalWrite(): switching an output<a class="headerlink" href="#digitalwrite-switching-an-output" title="Permanent link">&para;</a></h2>
+<p><a class="md-button lecture-simulation" href="../../dashboard/?lab=simulations/course_topics_lab.html&amp;topic=foundations">Try simulation: Digital I/O</a></p>
+<div class="highlight"><span class="filename">led_on.ino</span><pre><span></span><code><span class="c1">// Version 1: magic numbers</span>
+<span class="kt">void</span><span class="w"> </span><span class="nf">setup</span><span class="p">()</span><span class="w"> </span><span class="p">{</span>
+<span class="w">  </span><span class="n">pinMode</span><span class="p">(</span><span class="mi">23</span><span class="p">,</span><span class="w"> </span><span class="n">OUTPUT</span><span class="p">);</span>
+<span class="w">  </span><span class="n">digitalWrite</span><span class="p">(</span><span class="mi">23</span><span class="p">,</span><span class="w"> </span><span class="n">HIGH</span><span class="p">);</span>
+<span class="p">}</span>
+<span class="kt">void</span><span class="w"> </span><span class="nf">loop</span><span class="p">()</span><span class="w"> </span><span class="p">{}</span>
+</code></pre></div>
+<p><a download="download" href="../examples/digital-io/led_on.ino">Download this example</a></p>
+<div class="highlight"><span class="filename">led_on_const.ino</span><pre><span></span><code><span class="c1">// Version 2: a named constant</span>
+<span class="k">const</span><span class="w"> </span><span class="kt">int</span><span class="w"> </span><span class="n">LED_BLUE</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">23</span><span class="p">;</span>
+
+<span class="kt">void</span><span class="w"> </span><span class="nf">setup</span><span class="p">()</span><span class="w"> </span><span class="p">{</span>
+<span class="w">  </span><span class="n">pinMode</span><span class="p">(</span><span class="n">LED_BLUE</span><span class="p">,</span><span class="w"> </span><span class="n">OUTPUT</span><span class="p">);</span><span class="w">     </span><span class="c1">// pin as output</span>
+<span class="w">  </span><span class="n">digitalWrite</span><span class="p">(</span><span class="n">LED_BLUE</span><span class="p">,</span><span class="w"> </span><span class="n">HIGH</span><span class="p">);</span><span class="w">  </span><span class="c1">// 3.3 V: LED on</span>
+<span class="p">}</span>
+<span class="kt">void</span><span class="w"> </span><span class="nf">loop</span><span class="p">()</span><span class="w"> </span><span class="p">{}</span>
+</code></pre></div>
+<p><a download="download" href="../examples/digital-io/led_on_const.ino">Download this example</a></p>
+<ul>
+<li>
+<p><code>HIGH</code> puts 3.3 V on the pin; current flows through resistor and LED to GND.</p>
+</li>
+<li>
+<p><code>LOW</code> puts 0 V on the pin: no current, LED off.</p>
+</li>
+<li>
+<p>Both versions do the same, but version 2 is <strong>readable</strong> and changing the pin means <strong>one</strong> edit.</p>
+</li>
+</ul>
+<div class="admonition info">
+<p class="admonition-title">Rule</p>
+<p>No “magic numbers” in your code: give every pin and every setting a <code>const</code> with a meaningful name.</p>
+</div>
+<p><em>Sources: <a href="../references/#ep-lectures">Embedded Programming, lectures 1–6</a></em></p>
+<h2 id="blink-digital-output">Blink: digital output<a class="headerlink" href="#blink-digital-output" title="Permanent link">&para;</a></h2>
+<div class="highlight"><span class="filename">blink.ino</span><pre><span></span><code><span class="k">const</span><span class="w"> </span><span class="kt">int</span><span class="w"> </span><span class="n">LED_PIN</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">2</span><span class="p">;</span><span class="w">      </span><span class="c1">// on-board LED</span>
+
+<span class="kt">void</span><span class="w"> </span><span class="nf">setup</span><span class="p">()</span><span class="w"> </span><span class="p">{</span>
+<span class="w">  </span><span class="n">pinMode</span><span class="p">(</span><span class="n">LED_PIN</span><span class="p">,</span><span class="w"> </span><span class="n">OUTPUT</span><span class="p">);</span>
+<span class="p">}</span>
+
+<span class="kt">void</span><span class="w"> </span><span class="nf">loop</span><span class="p">()</span><span class="w"> </span><span class="p">{</span>
+<span class="w">  </span><span class="n">digitalWrite</span><span class="p">(</span><span class="n">LED_PIN</span><span class="p">,</span><span class="w"> </span><span class="n">HIGH</span><span class="p">);</span>
+<span class="w">  </span><span class="n">delay</span><span class="p">(</span><span class="mi">500</span><span class="p">);</span><span class="w">                </span><span class="c1">// waits: nothing else runs</span>
+<span class="w">  </span><span class="n">digitalWrite</span><span class="p">(</span><span class="n">LED_PIN</span><span class="p">,</span><span class="w"> </span><span class="n">LOW</span><span class="p">);</span>
+<span class="w">  </span><span class="n">delay</span><span class="p">(</span><span class="mi">500</span><span class="p">);</span>
+<span class="p">}</span>
+</code></pre></div>
+<p><a download="download" href="../examples/digital-io/blink.ino">Download this example</a></p>
+<p><strong>External LED</strong>  </p>
+<p><img alt="Blink: digital output" class="lecture-figure" loading="lazy" src="../assets/diagrams/digital-io-034.png" /></p>
+<ul>
+<li>
+<p><span class="arithmatex">\(R = (3.3 - V_F)/I \approx (3.3-2.0)/4\,\text{mA} \approx 330\,\Omega\)</span>.</p>
+</li>
+<li>
+<p>Pins use the <strong>GPIO number</strong>, not the label “D2”.</p>
+</li>
+<li>
+<p>During <code>delay()</code>, your sketch waits before executing its next statement.</p>
+</li>
+</ul>
+<h2 id="example-all-four-leds-of-the-course-board">Example: all four LEDs of the course board<a class="headerlink" href="#example-all-four-leds-of-the-course-board" title="Permanent link">&para;</a></h2>
+<div class="highlight"><span class="filename">four_leds.ino</span><pre><span></span><code><span class="k">const</span><span class="w"> </span><span class="kt">int</span><span class="w"> </span><span class="n">LED_BLUE</span><span class="w">   </span><span class="o">=</span><span class="w"> </span><span class="mi">23</span><span class="p">;</span>
+<span class="k">const</span><span class="w"> </span><span class="kt">int</span><span class="w"> </span><span class="n">LED_GREEN</span><span class="w">  </span><span class="o">=</span><span class="w"> </span><span class="mi">22</span><span class="p">;</span>
+<span class="k">const</span><span class="w"> </span><span class="kt">int</span><span class="w"> </span><span class="n">LED_RED</span><span class="w">    </span><span class="o">=</span><span class="w"> </span><span class="mi">21</span><span class="p">;</span>
+<span class="k">const</span><span class="w"> </span><span class="kt">int</span><span class="w"> </span><span class="n">LED_ORANGE</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">4</span><span class="p">;</span>
+<span class="kt">void</span><span class="w"> </span><span class="nf">setup</span><span class="p">()</span><span class="w"> </span><span class="p">{</span>
+<span class="w">  </span><span class="n">pinMode</span><span class="p">(</span><span class="n">LED_BLUE</span><span class="p">,</span><span class="w"> </span><span class="n">OUTPUT</span><span class="p">);</span>
+<span class="w">  </span><span class="n">pinMode</span><span class="p">(</span><span class="n">LED_GREEN</span><span class="p">,</span><span class="w"> </span><span class="n">OUTPUT</span><span class="p">);</span>
+<span class="w">  </span><span class="n">pinMode</span><span class="p">(</span><span class="n">LED_RED</span><span class="p">,</span><span class="w"> </span><span class="n">OUTPUT</span><span class="p">);</span>
+<span class="w">  </span><span class="n">pinMode</span><span class="p">(</span><span class="n">LED_ORANGE</span><span class="p">,</span><span class="w"> </span><span class="n">OUTPUT</span><span class="p">);</span>
+<span class="p">}</span>
+<span class="kt">void</span><span class="w"> </span><span class="nf">loop</span><span class="p">()</span><span class="w"> </span><span class="p">{</span>
+<span class="w">  </span><span class="n">digitalWrite</span><span class="p">(</span><span class="n">LED_BLUE</span><span class="p">,</span><span class="w"> </span><span class="n">HIGH</span><span class="p">);</span><span class="w">   </span><span class="n">delay</span><span class="p">(</span><span class="mi">200</span><span class="p">);</span>
+<span class="w">  </span><span class="n">digitalWrite</span><span class="p">(</span><span class="n">LED_GREEN</span><span class="p">,</span><span class="w"> </span><span class="n">HIGH</span><span class="p">);</span><span class="w">  </span><span class="n">delay</span><span class="p">(</span><span class="mi">200</span><span class="p">);</span>
+<span class="w">  </span><span class="n">digitalWrite</span><span class="p">(</span><span class="n">LED_RED</span><span class="p">,</span><span class="w"> </span><span class="n">HIGH</span><span class="p">);</span><span class="w">    </span><span class="n">delay</span><span class="p">(</span><span class="mi">200</span><span class="p">);</span>
+<span class="w">  </span><span class="n">digitalWrite</span><span class="p">(</span><span class="n">LED_ORANGE</span><span class="p">,</span><span class="w"> </span><span class="n">HIGH</span><span class="p">);</span><span class="w"> </span><span class="n">delay</span><span class="p">(</span><span class="mi">200</span><span class="p">);</span>
+<span class="w">  </span><span class="n">digitalWrite</span><span class="p">(</span><span class="n">LED_BLUE</span><span class="p">,</span><span class="w"> </span><span class="n">LOW</span><span class="p">);</span>
+<span class="w">  </span><span class="n">digitalWrite</span><span class="p">(</span><span class="n">LED_GREEN</span><span class="p">,</span><span class="w"> </span><span class="n">LOW</span><span class="p">);</span>
+<span class="w">  </span><span class="n">digitalWrite</span><span class="p">(</span><span class="n">LED_RED</span><span class="p">,</span><span class="w"> </span><span class="n">LOW</span><span class="p">);</span>
+<span class="w">  </span><span class="n">digitalWrite</span><span class="p">(</span><span class="n">LED_ORANGE</span><span class="p">,</span><span class="w"> </span><span class="n">LOW</span><span class="p">);</span>
+<span class="w">  </span><span class="n">delay</span><span class="p">(</span><span class="mi">500</span><span class="p">);</span>
+<span class="p">}</span>
+</code></pre></div>
+<p><a download="download" href="../examples/digital-io/four_leds.ino">Download this example</a></p>
+<ul>
+<li>
+<p>The LEDs light up one by one, then all switch off together.</p>
+</li>
+<li>
+<p>It works, but notice the <strong>repetition</strong>: 4 almost identical lines, three times.</p>
+</li>
+<li>
+<p>In the chapters <em>Functions</em> and <em>Loops and Arrays</em> we will shrink this to a few lines.</p>
+</li>
+</ul>
+<div class="admonition tip">
+<p class="admonition-title">Try</p>
+<p>Change the order, or the delays, to make a “Knight Rider” effect.</p>
+</div>
+<h2 id="digitalread-what-counts-as-high-or-low">digitalRead(): what counts as HIGH or LOW?<a class="headerlink" href="#digitalread-what-counts-as-high-or-low" title="Permanent link">&para;</a></h2>
+<p><a class="md-button lecture-simulation" href="../../dashboard/?lab=simulations/course_topics_lab.html&amp;topic=foundations">Try simulation: Digital I/O</a></p>
+<p><img alt="digitalRead(): what counts as HIGH or LOW?" class="lecture-figure" loading="lazy" src="../assets/diagrams/digital-io-035.png" /></p>
+<ul>
+<li>
+<p><code>digitalRead(pin)</code> returns <code>HIGH</code> or <code>LOW</code>: <strong>yes or no</strong>, not how much.</p>
+</li>
+<li>
+<p>Store the result: <code>bool pressed = digitalRead(34);</code></p>
+</li>
+<li>
+<p>Between the thresholds the result is <strong>undefined</strong>: it may flip randomly.</p>
+</li>
+<li>
+<p>Lecture rule of thumb: LOW <span class="arithmatex">\(\leq\)</span> 0.8 V, HIGH <span class="arithmatex">\(\geq\)</span> 2.4 V.</p>
+</li>
+</ul>
+<div class="admonition warning">
+<p class="admonition-title">5 V signals</p>
+<p>Reduce them to <span class="arithmatex">\(\approx\)</span> 3.3 V or less before they reach a GPIO (voltage divider, level shifter).</p>
+</div>
+<p><em>Sources: <a href="../references/#esp32-datasheet">ESP32 Series Datasheet</a>; <a href="../references/#ep-lectures">Embedded Programming, lectures 1–6</a></em></p>
+<h2 id="floating-inputs-and-pull-resistors">Floating inputs and pull resistors<a class="headerlink" href="#floating-inputs-and-pull-resistors" title="Permanent link">&para;</a></h2>
+<p><a class="md-button lecture-simulation" href="../../dashboard/?lab=simulations/pull_resistors_lab.html">Try simulation: Pull-up / pull-down</a></p>
+<p><strong>Floating</strong>  </p>
+<p><img alt="Floating inputs and pull resistors" class="lecture-figure" loading="lazy" src="../assets/diagrams/digital-io-036.png" /></p>
+<p>Open button: the pin is connected to <strong>nothing</strong>. It picks up noise <span class="arithmatex">\(\Rightarrow\)</span> random readings.</p>
+<p><strong>Pull-down</strong>  </p>
+<p><img alt="Floating inputs and pull resistors" class="lecture-figure" loading="lazy" src="../assets/diagrams/digital-io-037.png" /></p>
+<p>Resistor to GND: released = <code>LOW</code>, pressed = <code>HIGH</code>. <strong>Course board.</strong></p>
+<p><strong>Pull-up</strong>  </p>
+<p><img alt="Floating inputs and pull resistors" class="lecture-figure" loading="lazy" src="../assets/diagrams/digital-io-038.png" /></p>
+<p>Resistor to 3.3 V: released = <code>HIGH</code>, pressed = <code>LOW</code> (“active low”).</p>
+<div class="admonition info">
+<p class="admonition-title">Why a resistor and not a wire?</p>
+<p>When the button is pressed, the resistor limits the current from 3.3 V to GND to a few μA–mA instead of a short circuit. Typical values: 3.3–47 k<span class="arithmatex">\(\Omega\)</span>.</p>
+</div>
+<h2 id="external-pull-resistor-configure-the-pin-as-input">External pull resistor? Configure the pin as INPUT<a class="headerlink" href="#external-pull-resistor-configure-the-pin-as-input" title="Permanent link">&para;</a></h2>
+<div class="admonition info">
+<p class="admonition-title">The resistor already does the job in hardware</p>
+<p>An <strong>external pull-up or pull-down</strong> already sets the released level. Use <code>pinMode(BUTTON, INPUT);</code> to configure the input; <strong>no internal pull needs to be enabled</strong>.</p>
+</div>
+<div class="tabular">
+
+@L5.6cml c c@ **Button circuit (normally open)** & **Software mode** & **Released** & **Pressed**  
+External pull-down; button to 3V3 & `INPUT` & LOW & HIGH  
+External pull-up; button to GND & `INPUT` & HIGH & LOW  
+No external resistor; button to GND & `INPUT_PULLUP`\* & HIGH & LOW  
+No external resistor; button to 3V3 & `INPUT_PULLDOWN`\* & LOW & HIGH  
+
+</div>
+
+<p>* Only on GPIOs that support internal pull resistors.</p>
+<div class="admonition tip">
+<p class="admonition-title">INPUT does not disconnect an external resistor</p>
+<p>It disables internal pulls, leaving the external resistor connected. With no pull resistor, an open button leaves the high-impedance input floating.</p>
+</div>
+<div class="admonition info">
+<p class="admonition-title">Course board: KEY1 and KEY2</p>
+<p>GPIO34/35 already have external pull-downs: use <code>INPUT</code>; pressed is HIGH. These classic ESP32 pins have no internal pull resistors.</p>
+</div>
+<p><em>Sources: <a href="https://docs.espressif.com/projects/arduino-esp32/en/latest/api/gpio.html">Arduino-ESP32 GPIO modes</a>; course-board schematic</em></p>
+<h2 id="reading-the-course-board-buttons">Reading the course-board buttons<a class="headerlink" href="#reading-the-course-board-buttons" title="Permanent link">&para;</a></h2>
+<p><a class="md-button lecture-simulation" href="../../dashboard/?lab=simulations/pull_resistors_lab.html">Try simulation: Pull-up / pull-down</a></p>
+<div class="highlight"><span class="filename">buttons.ino</span><pre><span></span><code><span class="k">const</span><span class="w"> </span><span class="kt">int</span><span class="w"> </span><span class="n">KEY1</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">34</span><span class="p">;</span><span class="w">        </span><span class="c1">// active HIGH (pull-down)</span>
+<span class="k">const</span><span class="w"> </span><span class="kt">int</span><span class="w"> </span><span class="n">KEY2</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">35</span><span class="p">;</span>
+<span class="k">const</span><span class="w"> </span><span class="kt">int</span><span class="w"> </span><span class="n">LED_BLUE</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">23</span><span class="p">;</span>
+<span class="k">const</span><span class="w"> </span><span class="kt">int</span><span class="w"> </span><span class="n">LED_RED</span><span class="w">  </span><span class="o">=</span><span class="w"> </span><span class="mi">21</span><span class="p">;</span>
+<span class="kt">void</span><span class="w"> </span><span class="nf">setup</span><span class="p">()</span><span class="w"> </span><span class="p">{</span>
+<span class="w">  </span><span class="n">Serial</span><span class="p">.</span><span class="n">begin</span><span class="p">(</span><span class="mi">115200</span><span class="p">);</span>
+<span class="w">  </span><span class="n">pinMode</span><span class="p">(</span><span class="n">KEY1</span><span class="p">,</span><span class="w"> </span><span class="n">INPUT</span><span class="p">);</span><span class="w">     </span><span class="c1">// no internal pull on 34/35</span>
+<span class="w">  </span><span class="n">pinMode</span><span class="p">(</span><span class="n">KEY2</span><span class="p">,</span><span class="w"> </span><span class="n">INPUT</span><span class="p">);</span>
+<span class="w">  </span><span class="n">pinMode</span><span class="p">(</span><span class="n">LED_BLUE</span><span class="p">,</span><span class="w"> </span><span class="n">OUTPUT</span><span class="p">);</span>
+<span class="w">  </span><span class="n">pinMode</span><span class="p">(</span><span class="n">LED_RED</span><span class="p">,</span><span class="w"> </span><span class="n">OUTPUT</span><span class="p">);</span>
+<span class="p">}</span>
+<span class="kt">void</span><span class="w"> </span><span class="nf">loop</span><span class="p">()</span><span class="w"> </span><span class="p">{</span>
+<span class="w">  </span><span class="kt">bool</span><span class="w"> </span><span class="n">key1</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">digitalRead</span><span class="p">(</span><span class="n">KEY1</span><span class="p">);</span><span class="w">   </span><span class="c1">// true = pressed</span>
+<span class="w">  </span><span class="kt">bool</span><span class="w"> </span><span class="n">key2</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">digitalRead</span><span class="p">(</span><span class="n">KEY2</span><span class="p">);</span>
+<span class="w">  </span><span class="n">digitalWrite</span><span class="p">(</span><span class="n">LED_BLUE</span><span class="p">,</span><span class="w"> </span><span class="n">key1</span><span class="p">);</span><span class="w">    </span><span class="c1">// LED follows button</span>
+<span class="w">  </span><span class="n">digitalWrite</span><span class="p">(</span><span class="n">LED_RED</span><span class="p">,</span><span class="w"> </span><span class="n">key2</span><span class="p">);</span>
+<span class="w">  </span><span class="n">Serial</span><span class="p">.</span><span class="n">printf</span><span class="p">(</span><span class="s">"KEY1=%d KEY2=%d</span><span class="se">\n</span><span class="s">"</span><span class="p">,</span><span class="w"> </span><span class="n">key1</span><span class="p">,</span><span class="w"> </span><span class="n">key2</span><span class="p">);</span>
+<span class="w">  </span><span class="n">delay</span><span class="p">(</span><span class="mi">100</span><span class="p">);</span>
+<span class="p">}</span>
+</code></pre></div>
+<p><a download="download" href="../examples/digital-io/buttons.ino">Download this example</a></p>
+<ul>
+<li>
+<p>Each LED follows its button: pressed = on.</p>
+</li>
+<li>
+<p><code>digitalRead()</code> returns <code>HIGH</code>/<code>LOW</code>, which equals <code>true</code>/<code>false</code>: you can store it in a <code>bool</code>.</p>
+</li>
+<li>
+<p>The Serial Monitor shows the raw state: the <strong>first test</strong> for any input.</p>
+</li>
+</ul>
+<div class="admonition tip">
+<p class="admonition-title">Breadboard version</p>
+<p>Button to GND on GPIO25, with <strong>no external pull-up</strong>? Use <code>INPUT_PULLUP</code>; pressed = <code>LOW</code>. If an external pull-up is already fitted, use <code>INPUT</code> instead.</p>
+</div>
+<h2 id="level-vs-edge-toggling-an-led">Level vs edge: toggling an LED<a class="headerlink" href="#level-vs-edge-toggling-an-led" title="Permanent link">&para;</a></h2>
+<p><a class="md-button lecture-simulation" href="../../dashboard/?lab=simulations/debouncing_lab.html">Try simulation: Button debouncing</a></p>
+<div class="highlight"><span class="filename">toggle.ino</span><pre><span></span><code><span class="k">const</span><span class="w"> </span><span class="kt">int</span><span class="w"> </span><span class="n">KEY1</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">34</span><span class="p">;</span>
+<span class="k">const</span><span class="w"> </span><span class="kt">int</span><span class="w"> </span><span class="n">LED_GREEN</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">22</span><span class="p">;</span>
+
+<span class="kt">bool</span><span class="w"> </span><span class="n">ledOn</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nb">false</span><span class="p">;</span>
+<span class="kt">bool</span><span class="w"> </span><span class="n">lastKey</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">LOW</span><span class="p">;</span>
+
+<span class="kt">void</span><span class="w"> </span><span class="nf">setup</span><span class="p">()</span><span class="w"> </span><span class="p">{</span>
+<span class="w">  </span><span class="n">pinMode</span><span class="p">(</span><span class="n">KEY1</span><span class="p">,</span><span class="w"> </span><span class="n">INPUT</span><span class="p">);</span>
+<span class="w">  </span><span class="n">pinMode</span><span class="p">(</span><span class="n">LED_GREEN</span><span class="p">,</span><span class="w"> </span><span class="n">OUTPUT</span><span class="p">);</span>
+<span class="p">}</span>
+
+<span class="kt">void</span><span class="w"> </span><span class="nf">loop</span><span class="p">()</span><span class="w"> </span><span class="p">{</span>
+<span class="w">  </span><span class="kt">bool</span><span class="w"> </span><span class="n">key</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">digitalRead</span><span class="p">(</span><span class="n">KEY1</span><span class="p">);</span>
+<span class="w">  </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">key</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="n">HIGH</span><span class="w"> </span><span class="o">&amp;&amp;</span><span class="w"> </span><span class="n">lastKey</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="n">LOW</span><span class="p">)</span><span class="w"> </span><span class="p">{</span><span class="w">  </span><span class="c1">// rising edge</span>
+<span class="w">    </span><span class="n">ledOn</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="o">!</span><span class="n">ledOn</span><span class="p">;</span><span class="w">                     </span><span class="c1">// toggle</span>
+<span class="w">    </span><span class="n">digitalWrite</span><span class="p">(</span><span class="n">LED_GREEN</span><span class="p">,</span><span class="w"> </span><span class="n">ledOn</span><span class="p">);</span>
+<span class="w">  </span><span class="p">}</span>
+<span class="w">  </span><span class="n">lastKey</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">key</span><span class="p">;</span><span class="w">                        </span><span class="c1">// remember</span>
+<span class="w">  </span><span class="n">delay</span><span class="p">(</span><span class="mi">10</span><span class="p">);</span>
+<span class="p">}</span>
+</code></pre></div>
+<p><a download="download" href="../examples/digital-io/toggle.ino">Download this example</a></p>
+<p><img alt="Level vs edge: toggling an LED" class="lecture-figure" loading="lazy" src="../assets/diagrams/digital-io-039.png" /></p>
+<ul>
+<li>
+<p><strong>Level</strong>: “is the button pressed <em>now</em>?”</p>
+</li>
+<li>
+<p><strong>Edge</strong>: “did it <em>become</em> pressed since last time?”</p>
+</li>
+<li>
+<p>Compare the current reading with the <strong>previous</strong> one, stored in a variable.</p>
+</li>
+<li>
+<p><code>!ledOn</code> inverts a <code>bool</code>.</p>
+</li>
+</ul>
+<p><em>Sources: <a href="../references/#arduino-reference">Arduino Language Reference</a></em></p>
+<h2 id="flowchart-edge-detection-toggle">Flowchart: edge detection (toggle)<a class="headerlink" href="#flowchart-edge-detection-toggle" title="Permanent link">&para;</a></h2>
+<p><a class="md-button lecture-simulation" href="../../dashboard/?lab=simulations/course_topics_lab.html&amp;topic=foundations">Try simulation: Digital I/O</a></p>
+<p><a class="md-button lecture-simulation" href="../../dashboard/?lab=simulations/arduino_flowchart_converter.html">Try simulation: Arduino to flowchart</a></p>
+<p><img alt="Flowchart: edge detection (toggle)" class="lecture-figure" loading="lazy" src="../assets/diagrams/digital-io-040.png" /></p>
+<ul>
+<li>
+<p>The decision compares <strong>now</strong> with <strong>last time</strong>: only a change from LOW to HIGH (an <strong>edge</strong>) toggles the LED.</p>
+</li>
+<li>
+<p><code>lastKey = key</code> is executed on <strong>both</strong> paths: the program must always remember the latest state.</p>
+</li>
+<li>
+<p>Holding the button does nothing more: the condition is only true once per press.</p>
+</li>
+</ul>
+<h2 id="driving-bigger-loads-use-a-transistor">Driving bigger loads: use a transistor<a class="headerlink" href="#driving-bigger-loads-use-a-transistor" title="Permanent link">&para;</a></h2>
+<p><img alt="Driving bigger loads: use a transistor" class="lecture-figure" loading="lazy" src="../assets/diagrams/digital-io-041.png" /></p>
+<ul>
+<li>
+<p>A GPIO can deliver only <span class="arithmatex">\(\approx\)</span> 12–20 mA at 3.3 V.</p>
+</li>
+<li>
+<p>Motors, pumps, relays and LED strips need more current and often 5–12 V.</p>
+</li>
+<li>
+<p>The GPIO switches a <strong>transistor</strong> (or MOSFET), which switches the load.</p>
+</li>
+<li>
+<p>Inductive loads (motor, relay coil) need a <strong>flyback diode</strong> across them.</p>
+</li>
+<li>
+<p>Common ground between ESP32 and load supply.</p>
+</li>
+</ul>
+<div class="admonition tip">
+<p class="admonition-title">Easy option</p>
+<p>Ready-made relay or MOSFET modules contain transistor and diode.</p>
+</div>
+<h2 id="quiz-digital-io">Quiz: digital I/O<a class="headerlink" href="#quiz-digital-io" title="Permanent link">&para;</a></h2>
+<ol>
+<li>
+<p>You forgot <code>pinMode(23, OUTPUT)</code>. What happens with <code>digitalWrite(23, HIGH)</code>?</p>
+<p><details class="lecture-answer"><summary>Check your answer</summary><p>The pin stays an input; at best the LED glows very faintly. Always configure the mode.</p></details></p>
+</li>
+<li>
+<p>A button on GPIO35 (to GND, no resistor) gives random values. Why?</p>
+<p><details class="lecture-answer"><summary>Check your answer</summary><p>GPIO35 has no internal pull-up and nothing pulls it HIGH: the input floats.</p></details></p>
+</li>
+<li>
+<p>With <code>INPUT_PULLUP</code>, what does a pressed button read?</p>
+<p><details class="lecture-answer"><summary>Check your answer</summary><p><code>LOW</code>: the button connects the pin to GND.</p></details></p>
+</li>
+<li>
+<p>Your toggle program sometimes switches twice per press. Name the cause.</p>
+<p><details class="lecture-answer"><summary>Check your answer</summary><p>Contact bounce: one press produces several edges (see chapter <em>Time and Interrupts</em>).</p></details></p>
+</li>
+<li>
+<p>Can a GPIO drive a 12 V water pump directly?</p>
+<p><details class="lecture-answer"><summary>Check your answer</summary><p>No: use a transistor/MOSFET or relay module and a separate supply.</p></details></p>
+</li>
+</ol>
+<h2 id="exercises-digital-io">Exercises: digital I/O<a class="headerlink" href="#exercises-digital-io" title="Permanent link">&para;</a></h2>
+<p><a class="md-button lecture-simulation" href="../../dashboard/?lab=experiments/traffic_lights.html">Try simulation: Traffic lights</a></p>
+<div class="admonition example">
+<p class="admonition-title">Exercise 1 – Traffic light</p>
+<p>Use the red, orange and green LEDs as a traffic light with realistic timing (green 5 s, orange 2 s, red 5 s).</p>
+</div>
+<div class="admonition example">
+<p class="admonition-title">Exercise 2 – On and off</p>
+<p>KEY1 switches the blue LED on, KEY2 switches it off. The LED keeps its state after you release the button.</p>
+</div>
+<div class="admonition example">
+<p class="admonition-title">Exercise 3 – Counter</p>
+<p>Count presses of KEY1 (edges, not levels) and print the count. Show the count in binary on the four LEDs (0–15).</p>
+</div>
+<div class="admonition example">
+<p class="admonition-title">Exercise 4 – Both buttons</p>
+<p>Light the red LED only when <strong>both</strong> buttons are pressed, the green LED when <strong>exactly one</strong> is pressed.</p>
+</div>
+<h2 id="further-material-digital-io">Further material: digital I/O<a class="headerlink" href="#further-material-digital-io" title="Permanent link">&para;</a></h2>
+<h3 id="read">Read<a class="headerlink" href="#read" title="Permanent link">&para;</a></h3>
+<ul>
+<li>
+<p><a href="https://docs.espressif.com/projects/arduino-esp32/en/latest/api/gpio.html">Arduino-ESP32 GPIO API</a></p>
+</li>
+<li>
+<p><a href="https://learn.sparkfun.com/tutorials/pull-up-resistors">Pull-up resistors (SparkFun)</a></p>
+</li>
+<li>
+<p><a href="https://learn.sparkfun.com/tutorials/logic-levels">Logic levels (SparkFun)</a></p>
+</li>
+</ul>
+<h3 id="watch">Watch<a class="headerlink" href="#watch" title="Permanent link">&para;</a></h3>
+<ul>
+<li>
+<p><a href="https://www.youtube.com/results?search_query=esp32+digital+input+output+arduino+ide">YouTube: ESP32 digital inputs and outputs</a></p>
+</li>
+<li>
+<p><a href="https://www.youtube.com/results?search_query=pull+up+pull+down+resistor+explained">YouTube: pull-up and pull-down resistors</a></p>
+</li>
+</ul>
+<h3 id="try-it">Try it<a class="headerlink" href="#try-it" title="Permanent link">&para;</a></h3>
+<ul>
+<li>
+<p><a href="../../dashboard/?lab=simulations/course_topics_lab.html&amp;topic=foundations">Digital input &amp; output</a></p>
+</li>
+<li>
+<p><a href="../../dashboard/?lab=simulations/pull_resistors_lab.html">Pull-up / pull-down</a></p>
+</li>
+<li>
+<p><a href="../../dashboard/?lab=experiments/traffic_lights.html">Experiment: traffic lights</a></p>
+</li>
+</ul>
+
+
+
+
+
+
+
+  
+  
+
+
+
+
+
+
+                
+              </article>
+            </div>
+          
+          
+  <script>var tabs=__md_get("__tabs");if(Array.isArray(tabs))e:for(var set of document.querySelectorAll(".tabbed-set")){var labels=set.querySelector(".tabbed-labels");for(var tab of tabs)for(var label of labels.getElementsByTagName("label"))if(label.innerText.trim()===tab){var input=document.getElementById(label.htmlFor);input.checked=!0;continue e}}</script>
+
+<script>var target=document.getElementById(location.hash.slice(1));target&&target.name&&(target.checked=target.name.startsWith("__tabbed_"))</script>
+        </div>
+        
+          <button type="button" class="md-top md-icon" data-md-component="top" hidden>
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M13 20h-2V8l-5.5 5.5-1.42-1.42L12 4.16l7.92 7.92-1.42 1.42L13 8z"/></svg>
+  Back to top
+</button>
+        
+      </main>
+      
+        <footer class="md-footer">
+  
+    
+      
+      <nav class="md-footer__inner md-grid" aria-label="Footer" >
+        
+          
+          <a href="../code-quality-debugging/" class="md-footer__link md-footer__link--prev" aria-label="Previous: Code quality &amp; debugging">
+            <div class="md-footer__button md-icon">
+              
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11z"/></svg>
+            </div>
+            <div class="md-footer__title">
+              <span class="md-footer__direction">
+                Previous
+              </span>
+              <div class="md-ellipsis">
+                Code quality & debugging
+              </div>
+            </div>
+          </a>
+        
+        
+          
+          <a href="../analog-pwm/" class="md-footer__link md-footer__link--next" aria-label="Next: Analog input, PWM &amp; DAC">
+            <div class="md-footer__title">
+              <span class="md-footer__direction">
+                Next
+              </span>
+              <div class="md-ellipsis">
+                Analog input, PWM & DAC
+              </div>
+            </div>
+            <div class="md-footer__button md-icon">
+              
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M4 11v2h12l-5.5 5.5 1.42 1.42L19.84 12l-7.92-7.92L10.5 5.5 16 11z"/></svg>
+            </div>
+          </a>
+        
+      </nav>
+    
+  
+  <div class="md-footer-meta md-typeset">
+    <div class="md-footer-meta__inner md-grid">
+      <div class="md-copyright">
+  
+  
+    Made with
+    <a href="https://squidfunk.github.io/mkdocs-material/" target="_blank" rel="noopener">
+      Material for MkDocs
+    </a>
+  
+</div>
+      
+    </div>
+  </div>
+</footer>
+      
+    </div>
+    <div class="md-dialog" data-md-component="dialog">
+      <div class="md-dialog__inner md-typeset"></div>
+    </div>
+    
+      <div class="md-progress" data-md-component="progress" role="progressbar"></div>
+    
+    
+    
+      
+      
+      <script id="__config" type="application/json">{"annotate": null, "base": "../..", "features": ["navigation.tabs", "navigation.tabs.sticky", "navigation.instant", "navigation.instant.progress", "navigation.tracking", "navigation.top", "navigation.footer", "content.code.copy", "content.tabs.link", "search.suggest", "search.highlight", "toc.follow"], "search": "../../assets/javascripts/workers/search.a7633da7.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": null}</script>
+    
+    
+      <script src="../../assets/javascripts/bundle.c21346df.min.js"></script>
+      
+        <script src="../../javascripts/mathjax.js"></script>
+      
+        <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+      
+        <script src="../../javascripts/dashboard.js"></script>
+      
+    
+  </body>
+</html>

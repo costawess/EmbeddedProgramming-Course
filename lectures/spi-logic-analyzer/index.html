@@ -1,0 +1,3594 @@
+
+<!doctype html>
+<html lang="en" class="no-js">
+  <head>
+    
+      <meta charset="utf-8">
+      <meta name="viewport" content="width=device-width,initial-scale=1">
+      
+        <meta name="description" content="Embedded Programming lectures, practical tutorials, and interactive ESP32 simulations at Hanze.">
+      
+      
+      
+        <link rel="canonical" href="https://costawess.github.io/EmbeddedProgramming-Course/lectures/spi-logic-analyzer/">
+      
+      
+        <link rel="prev" href="../i2c/">
+      
+      
+        <link rel="next" href="../state-machines/">
+      
+      
+        
+      
+      
+      <link rel="icon" href="../../assets/images/favicon.png">
+      <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.8.0">
+    
+    
+      
+        <title>SPI and the Logic Analyzer - Embedded Programming</title>
+      
+    
+    
+      <link rel="stylesheet" href="../../assets/stylesheets/main.57a0d79d.min.css">
+      
+        
+        <link rel="stylesheet" href="../../assets/stylesheets/palette.fb2fffe2.min.css">
+      
+      
+
+
+    
+    
+      
+    
+    
+      
+        
+        
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,300i,400,400i,700,700i%7CRoboto+Mono:400,400i,700,700i&display=fallback">
+        <style>:root{--md-text-font:"Roboto";--md-code-font:"Roboto Mono"}</style>
+      
+    
+    
+      <link rel="stylesheet" href="../../stylesheets/extra.css">
+    
+    <script>__md_scope=new URL("../..",location),__md_hash=e=>[...e].reduce(((e,_)=>(e<<5)-e+_.charCodeAt(0)),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
+    
+      
+
+    
+    
+  </head>
+  
+  
+    
+    
+      
+    
+    
+    
+    
+    <body dir="ltr" data-md-color-scheme="slate" data-md-color-primary="indigo" data-md-color-accent="indigo">
+  
+    
+    <input class="md-toggle" data-md-toggle="drawer" type="checkbox" id="__drawer" autocomplete="off">
+    <input class="md-toggle" data-md-toggle="search" type="checkbox" id="__search" autocomplete="off">
+    <label class="md-overlay" for="__drawer"></label>
+    <div data-md-component="skip">
+      
+        
+        <a href="#spi-and-the-logic-analyzer" class="md-skip">
+          Skip to content
+        </a>
+      
+    </div>
+    <div data-md-component="announce">
+      
+    </div>
+    
+    
+      
+
+  
+
+<header class="md-header md-header--shadow md-header--lifted" data-md-component="header">
+  <nav class="md-header__inner md-grid" aria-label="Header">
+    <a href="../.." title="Embedded Programming" class="md-header__button md-logo" aria-label="Embedded Programming" data-md-component="logo">
+      
+  <img src="../../assets/hanze_logo.png" alt="logo">
+
+    </a>
+    <label class="md-header__button md-icon" for="__drawer">
+      
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M3 6h18v2H3zm0 5h18v2H3zm0 5h18v2H3z"/></svg>
+    </label>
+    <div class="md-header__title" data-md-component="header-title">
+      <div class="md-header__ellipsis">
+        <div class="md-header__topic">
+          <span class="md-ellipsis">
+            Embedded Programming
+          </span>
+        </div>
+        <div class="md-header__topic" data-md-component="header-topic">
+          <span class="md-ellipsis">
+            
+              SPI and the Logic Analyzer
+            
+          </span>
+        </div>
+      </div>
+    </div>
+    
+      
+        <form class="md-header__option" data-md-component="palette">
+  
+    
+    
+    
+    <input class="md-option" data-md-color-media="" data-md-color-scheme="slate" data-md-color-primary="indigo" data-md-color-accent="indigo"  aria-label="Switch to light mode"  type="radio" name="__palette" id="__palette_0">
+    
+      <label class="md-header__button md-icon" title="Switch to light mode" for="__palette_1" hidden>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 7a5 5 0 0 1 5 5 5 5 0 0 1-5 5 5 5 0 0 1-5-5 5 5 0 0 1 5-5m0 2a3 3 0 0 0-3 3 3 3 0 0 0 3 3 3 3 0 0 0 3-3 3 3 0 0 0-3-3m0-7 2.39 3.42C13.65 5.15 12.84 5 12 5s-1.65.15-2.39.42zM3.34 7l4.16-.35A7.2 7.2 0 0 0 5.94 8.5c-.44.74-.69 1.5-.83 2.29zm.02 10 1.76-3.77a7.131 7.131 0 0 0 2.38 4.14zM20.65 7l-1.77 3.79a7.02 7.02 0 0 0-2.38-4.15zm-.01 10-4.14.36c.59-.51 1.12-1.14 1.54-1.86.42-.73.69-1.5.83-2.29zM12 22l-2.41-3.44c.74.27 1.55.44 2.41.44.82 0 1.63-.17 2.37-.44z"/></svg>
+      </label>
+    
+  
+    
+    
+    
+    <input class="md-option" data-md-color-media="" data-md-color-scheme="default" data-md-color-primary="indigo" data-md-color-accent="indigo"  aria-label="Switch to dark mode"  type="radio" name="__palette" id="__palette_1">
+    
+      <label class="md-header__button md-icon" title="Switch to dark mode" for="__palette_0" hidden>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="m17.75 4.09-2.53 1.94.91 3.06-2.63-1.81-2.63 1.81.91-3.06-2.53-1.94L12.44 4l1.06-3 1.06 3zm3.5 6.91-1.64 1.25.59 1.98-1.7-1.17-1.7 1.17.59-1.98L15.75 11l2.06-.05L18.5 9l.69 1.95zm-2.28 4.95c.83-.08 1.72 1.1 1.19 1.85-.32.45-.66.87-1.08 1.27C15.17 23 8.84 23 4.94 19.07c-3.91-3.9-3.91-10.24 0-14.14.4-.4.82-.76 1.27-1.08.75-.53 1.93.36 1.85 1.19-.27 2.86.69 5.83 2.89 8.02a9.96 9.96 0 0 0 8.02 2.89m-1.64 2.02a12.08 12.08 0 0 1-7.8-3.47c-2.17-2.19-3.33-5-3.49-7.82-2.81 3.14-2.7 7.96.31 10.98 3.02 3.01 7.84 3.12 10.98.31"/></svg>
+      </label>
+    
+  
+</form>
+      
+    
+    
+      <script>var palette=__md_get("__palette");if(palette&&palette.color){if("(prefers-color-scheme)"===palette.color.media){var media=matchMedia("(prefers-color-scheme: light)"),input=document.querySelector(media.matches?"[data-md-color-media='(prefers-color-scheme: light)']":"[data-md-color-media='(prefers-color-scheme: dark)']");palette.color.media=input.getAttribute("data-md-color-media"),palette.color.scheme=input.getAttribute("data-md-color-scheme"),palette.color.primary=input.getAttribute("data-md-color-primary"),palette.color.accent=input.getAttribute("data-md-color-accent")}for(var[key,value]of Object.entries(palette.color))document.body.setAttribute("data-md-color-"+key,value)}</script>
+    
+    
+    
+      
+      
+        <label class="md-header__button md-icon" for="__search">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+        </label>
+        <div class="md-search" data-md-component="search" role="dialog">
+  <label class="md-search__overlay" for="__search"></label>
+  <div class="md-search__inner" role="search">
+    <form class="md-search__form" name="search">
+      <input type="text" class="md-search__input" name="query" aria-label="Search" placeholder="Search" autocapitalize="off" autocorrect="off" autocomplete="off" spellcheck="false" data-md-component="search-query" required>
+      <label class="md-search__icon md-icon" for="__search">
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11z"/></svg>
+      </label>
+      <nav class="md-search__options" aria-label="Search">
+        
+        <button type="reset" class="md-search__icon md-icon" title="Clear" aria-label="Clear" tabindex="-1">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M19 6.41 17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/></svg>
+        </button>
+      </nav>
+      
+        <div class="md-search__suggest" data-md-component="search-suggest"></div>
+      
+    </form>
+    <div class="md-search__output">
+      <div class="md-search__scrollwrap" tabindex="0" data-md-scrollfix>
+        <div class="md-search-result" data-md-component="search-result">
+          <div class="md-search-result__meta">
+            Initializing search
+          </div>
+          <ol class="md-search-result__list" role="presentation"></ol>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+      
+    
+    
+      <div class="md-header__source">
+        <a href="https://github.com/costawess/EmbeddedProgramming-Course" title="Go to repository" class="md-source" data-md-component="source">
+  <div class="md-source__icon md-icon">
+    
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--! Font Awesome Free 7.1.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2025 Fonticons, Inc.--><path d="M439.6 236.1 244 40.5c-5.4-5.5-12.8-8.5-20.4-8.5s-15 3-20.4 8.4L162.5 81l51.5 51.5c27.1-9.1 52.7 16.8 43.4 43.7l49.7 49.7c34.2-11.8 61.2 31 35.5 56.7-26.5 26.5-70.2-2.9-56-37.3L240.3 199v121.9c25.3 12.5 22.3 41.8 9.1 55-6.4 6.4-15.2 10.1-24.3 10.1s-17.8-3.6-24.3-10.1c-17.6-17.6-11.1-46.9 11.2-56v-123c-20.8-8.5-24.6-30.7-18.6-45L142.6 101 8.5 235.1C3 240.6 0 247.9 0 255.5s3 15 8.5 20.4l195.6 195.7c5.4 5.4 12.7 8.4 20.4 8.4s15-3 20.4-8.4l194.7-194.7c5.4-5.4 8.4-12.8 8.4-20.4s-3-15-8.4-20.4"/></svg>
+  </div>
+  <div class="md-source__repository">
+    EmbeddedProgramming-Course
+  </div>
+</a>
+      </div>
+    
+  </nav>
+  
+    
+      
+<nav class="md-tabs" aria-label="Tabs" data-md-component="tabs">
+  <div class="md-grid">
+    <ul class="md-tabs__list">
+      
+        
+  
+  
+  
+  
+    <li class="md-tabs__item">
+      <a href="../.." class="md-tabs__link">
+        
+  
+  
+    
+  
+  Home
+
+      </a>
+    </li>
+  
+
+      
+        
+  
+  
+  
+    
+  
+  
+    
+    
+      <li class="md-tabs__item md-tabs__item--active">
+        <a href="../" class="md-tabs__link">
+          
+  
+  
+  Lectures
+
+        </a>
+      </li>
+    
+  
+
+      
+        
+  
+  
+  
+  
+    
+    
+      <li class="md-tabs__item">
+        <a href="../../tutorials/" class="md-tabs__link">
+          
+  
+  
+  Tutorials
+
+        </a>
+      </li>
+    
+  
+
+      
+        
+  
+  
+  
+  
+    <li class="md-tabs__item">
+      <a href="../../dashboard/" class="md-tabs__link">
+        
+  
+  
+    
+  
+  Dashboard
+
+      </a>
+    </li>
+  
+
+      
+    </ul>
+  </div>
+</nav>
+    
+  
+</header>
+    
+    <div class="md-container" data-md-component="container">
+      
+      
+        
+      
+      <main class="md-main" data-md-component="main">
+        <div class="md-main__inner md-grid">
+          
+            
+              
+              <div class="md-sidebar md-sidebar--primary" data-md-component="sidebar" data-md-type="navigation" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+
+  
+
+
+<nav class="md-nav md-nav--primary md-nav--lifted" aria-label="Navigation" data-md-level="0">
+  <label class="md-nav__title" for="__drawer">
+    <a href="../.." title="Embedded Programming" class="md-nav__button md-logo" aria-label="Embedded Programming" data-md-component="logo">
+      
+  <img src="../../assets/hanze_logo.png" alt="logo">
+
+    </a>
+    Embedded Programming
+  </label>
+  
+    <div class="md-nav__source">
+      <a href="https://github.com/costawess/EmbeddedProgramming-Course" title="Go to repository" class="md-source" data-md-component="source">
+  <div class="md-source__icon md-icon">
+    
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--! Font Awesome Free 7.1.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2025 Fonticons, Inc.--><path d="M439.6 236.1 244 40.5c-5.4-5.5-12.8-8.5-20.4-8.5s-15 3-20.4 8.4L162.5 81l51.5 51.5c27.1-9.1 52.7 16.8 43.4 43.7l49.7 49.7c34.2-11.8 61.2 31 35.5 56.7-26.5 26.5-70.2-2.9-56-37.3L240.3 199v121.9c25.3 12.5 22.3 41.8 9.1 55-6.4 6.4-15.2 10.1-24.3 10.1s-17.8-3.6-24.3-10.1c-17.6-17.6-11.1-46.9 11.2-56v-123c-20.8-8.5-24.6-30.7-18.6-45L142.6 101 8.5 235.1C3 240.6 0 247.9 0 255.5s3 15 8.5 20.4l195.6 195.7c5.4 5.4 12.7 8.4 20.4 8.4s15-3 20.4-8.4l194.7-194.7c5.4-5.4 8.4-12.8 8.4-20.4s-3-15-8.4-20.4"/></svg>
+  </div>
+  <div class="md-source__repository">
+    EmbeddedProgramming-Course
+  </div>
+</a>
+    </div>
+  
+  <ul class="md-nav__list" data-md-scrollfix>
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../.." class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Home
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+    
+  
+  
+  
+    
+    
+    
+    
+      
+        
+        
+      
+      
+    
+    
+    <li class="md-nav__item md-nav__item--active md-nav__item--section md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_2" checked>
+        
+          
+          <label class="md-nav__link" for="__nav_2" id="__nav_2_label" tabindex="">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Lectures
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_2_label" aria-expanded="true">
+          <label class="md-nav__title" for="__nav_2">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Lectures
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Overview
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+    
+    
+      
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_2_2" >
+        
+          
+          <label class="md-nav__link" for="__nav_2_2" id="__nav_2_2_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Course & foundations
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_2_2_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_2_2">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Course & foundations
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../course/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Course organisation
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../how-programs-run/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    How programs run
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../esp32-introduction/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    The ESP32 family
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../architecture/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Architecture & memory
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+    
+    
+      
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_2_3" >
+        
+          
+          <label class="md-nav__link" for="__nav_2_3" id="__nav_2_3_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Hardware & setup
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_2_3_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_2_3">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Hardware & setup
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../pinout/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Pinout & electrical limits
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../course-board/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    The course board
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../arduino-ide/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Arduino IDE & first sketch
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+    
+    
+      
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_2_4" >
+        
+          
+          <label class="md-nav__link" for="__nav_2_4" id="__nav_2_4_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Programming
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_2_4_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_2_4">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Programming
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../variables-types/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Variables, types & numbers
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../flowcharts/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Flowcharts
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../functions-decisions/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Functions & decisions
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../loops-arrays/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Loops & arrays
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../structs/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Structs
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../code-quality-debugging/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Code quality & debugging
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+    
+    
+      
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_2_5" >
+        
+          
+          <label class="md-nav__link" for="__nav_2_5" id="__nav_2_5_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Inputs, outputs & timing
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_2_5_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_2_5">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Inputs, outputs & timing
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../digital-io/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Digital inputs & outputs
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../analog-pwm/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Analog input, PWM & DAC
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../timing-interrupts/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Timing, interrupts & timers
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../breadboard-libraries/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Breadboards & libraries
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+    
+  
+  
+  
+    
+    
+    
+    
+      
+      
+    
+    
+    <li class="md-nav__item md-nav__item--active md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_2_6" checked>
+        
+          
+          <label class="md-nav__link" for="__nav_2_6" id="__nav_2_6_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Communication & behaviour
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_2_6_label" aria-expanded="true">
+          <label class="md-nav__title" for="__nav_2_6">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Communication & behaviour
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../serial-uart/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Serial communication & UART
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../i2c/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    I2C
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+    
+  
+  
+  
+    <li class="md-nav__item md-nav__item--active">
+      
+      <input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
+      
+      
+        
+      
+      
+        <label class="md-nav__link md-nav__link--active" for="__toc">
+          
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    SPI & logic analysis
+  
+
+    
+  </span>
+  
+  
+
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <a href="./" class="md-nav__link md-nav__link--active">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    SPI & logic analysis
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+      
+        
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#spi-at-a-glance" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        SPI at a glance
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#how-an-spi-transfer-works" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        How an SPI transfer works
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#spi-modes-and-settings" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        SPI modes and settings
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#spi-fast-full-duplex" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        SPI: fast, full-duplex
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#original-spi-diagrams-individual-selects-and-daisy-chain" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Original SPI diagrams: individual selects and daisy chain
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#uart-vs-i2c-vs-spi" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        UART vs I2C vs SPI
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#the-logic-analyzer-seeing-your-signals" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        The logic analyzer: seeing your signals
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#capturing-a-transaction-step-by-step" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Capturing a transaction, step by step
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#inside-a-logic-analyzer-voltage-becomes-sampled-bits" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Inside a logic analyzer: voltage becomes sampled bits
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#pulseview-connect-the-instrument-and-name-the-inputs" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        PulseView: connect the instrument and name the inputs
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#choose-both-sample-rate-and-recording-length" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Choose both sample rate and recording length
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#blink-capture-wire-it-set-it-run-it" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Blink capture: wire it, set it, run it
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#read-blink-period-frequency-and-duty-cycle" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Read Blink: period, frequency and duty cycle
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#uart-capture-generate-a-byte-you-can-recognise" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        UART capture: generate a byte you can recognise
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#configure-the-uart-analyzer-the-settings-must-match-the-sender" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Configure the UART analyzer: the settings must match the sender
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#i2c-capture-read-a-bme280-chip-id" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        I2C capture: read a BME280 chip ID
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#configure-the-i2c-analyzer-map-clock-and-data" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Configure the I2C analyzer: map clock and data
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#read-the-decoded-transaction-who-sends-each-part" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Read the decoded transaction: who sends each part?
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#capture-first-decode-second-fix-the-right-setting" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Capture first, decode second: fix the right setting
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#what-a-decoded-i2c-capture-looks-like" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        What a decoded I2C capture looks like
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#quiz-spi-and-the-logic-analyzer" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Quiz: SPI and the logic analyzer
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#exercises-spi-and-logic-analyzer" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Exercises: SPI and logic analyzer
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#further-material-spi-and-logic-analyzer" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Further material: SPI and logic analyzer
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Further material: SPI and logic analyzer">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#read" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Read
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#watch" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Watch
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#try-it" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Try it
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#complete-project-sketches" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Complete project sketches
+      
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../state-machines/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    State machines
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+    
+    
+      
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_2_7" >
+        
+          
+          <label class="md-nav__link" for="__nav_2_7" id="__nav_2_7_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Connected systems & projects
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_2_7_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_2_7">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Connected systems & projects
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../wifi-web/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Wi-Fi & web
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../iot-mqtt-ble/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    IoT, MQTT & BLE
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../storage-low-power-ota/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Storage, low power & OTA
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../projects-best-practices/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Projects & best practices
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../references/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    References
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+    
+    
+      
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_3" >
+        
+          
+          <label class="md-nav__link" for="__nav_3" id="__nav_3_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Tutorials
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_3_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_3">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Tutorials
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../tutorials/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Overview
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+    
+    
+      
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_3_2" >
+        
+          
+          <label class="md-nav__link" for="__nav_3_2" id="__nav_3_2_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Getting started
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_3_2_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_3_2">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Getting started
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../tutorials/arduino-setup-gpio/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Arduino setup & GPIO
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+    
+    
+      
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_3_3" >
+        
+          
+          <label class="md-nav__link" for="__nav_3_3" id="__nav_3_3_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Programming fundamentals
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_3_3_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_3_3">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Programming fundamentals
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../tutorials/variables-types/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Variables & data types
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../tutorials/conditionals-loops/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Conditionals, switch & while
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+    
+    
+      
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_3_4" >
+        
+          
+          <label class="md-nav__link" for="__nav_3_4" id="__nav_3_4_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Serial communication
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_3_4_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_3_4">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Serial communication
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../tutorials/serial-input/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Reading serial input
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+    
+    
+      
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_3_5" >
+        
+          
+          <label class="md-nav__link" for="__nav_3_5" id="__nav_3_5_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Timing
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_3_5_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_3_5">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Timing
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../tutorials/hardware-timers/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Hardware timer interrupts
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../dashboard/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Dashboard
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+  </ul>
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+            
+              
+              <div class="md-sidebar md-sidebar--secondary" data-md-component="sidebar" data-md-type="toc" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#spi-at-a-glance" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        SPI at a glance
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#how-an-spi-transfer-works" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        How an SPI transfer works
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#spi-modes-and-settings" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        SPI modes and settings
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#spi-fast-full-duplex" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        SPI: fast, full-duplex
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#original-spi-diagrams-individual-selects-and-daisy-chain" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Original SPI diagrams: individual selects and daisy chain
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#uart-vs-i2c-vs-spi" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        UART vs I2C vs SPI
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#the-logic-analyzer-seeing-your-signals" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        The logic analyzer: seeing your signals
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#capturing-a-transaction-step-by-step" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Capturing a transaction, step by step
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#inside-a-logic-analyzer-voltage-becomes-sampled-bits" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Inside a logic analyzer: voltage becomes sampled bits
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#pulseview-connect-the-instrument-and-name-the-inputs" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        PulseView: connect the instrument and name the inputs
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#choose-both-sample-rate-and-recording-length" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Choose both sample rate and recording length
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#blink-capture-wire-it-set-it-run-it" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Blink capture: wire it, set it, run it
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#read-blink-period-frequency-and-duty-cycle" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Read Blink: period, frequency and duty cycle
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#uart-capture-generate-a-byte-you-can-recognise" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        UART capture: generate a byte you can recognise
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#configure-the-uart-analyzer-the-settings-must-match-the-sender" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Configure the UART analyzer: the settings must match the sender
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#i2c-capture-read-a-bme280-chip-id" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        I2C capture: read a BME280 chip ID
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#configure-the-i2c-analyzer-map-clock-and-data" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Configure the I2C analyzer: map clock and data
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#read-the-decoded-transaction-who-sends-each-part" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Read the decoded transaction: who sends each part?
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#capture-first-decode-second-fix-the-right-setting" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Capture first, decode second: fix the right setting
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#what-a-decoded-i2c-capture-looks-like" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        What a decoded I2C capture looks like
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#quiz-spi-and-the-logic-analyzer" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Quiz: SPI and the logic analyzer
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#exercises-spi-and-logic-analyzer" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Exercises: SPI and logic analyzer
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#further-material-spi-and-logic-analyzer" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Further material: SPI and logic analyzer
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Further material: SPI and logic analyzer">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#read" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Read
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#watch" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Watch
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#try-it" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Try it
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#complete-project-sketches" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Complete project sketches
+      
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+          
+          
+            <div class="md-content" data-md-component="content">
+              
+              <article class="md-content__inner md-typeset">
+                
+                  
+
+
+  
+  
+
+
+<h1 id="spi-and-the-logic-analyzer">SPI and the Logic Analyzer<a class="headerlink" href="#spi-and-the-logic-analyzer" title="Permanent link">&para;</a></h1>
+<h2 id="spi-at-a-glance">SPI at a glance<a class="headerlink" href="#spi-at-a-glance" title="Permanent link">&para;</a></h2>
+<p><img alt="SPI at a glance" class="lecture-figure" loading="lazy" src="../assets/figures/spi/spi-shared-bus.png" /></p>
+<ul>
+<li>
+<p><strong>S</strong>erial <strong>P</strong>eripheral <strong>I</strong>nterface: fast serial bus with a <strong>clock</strong>.</p>
+</li>
+<li>
+<p><strong>Full duplex</strong>: data goes in <strong>both directions at the same time</strong> (I<sup>2</sup>C is half duplex).</p>
+</li>
+<li>
+<p>No addresses: each slave has its own <strong>chip-select</strong> (CS / SS) line.</p>
+</li>
+<li>
+<p>Speeds of 10–80 MHz: displays, SD cards, flash memory, fast ADCs.</p>
+</li>
+</ul>
+<p><img alt="SPI at a glance" class="lecture-figure" loading="lazy" src="../assets/figures/spi/spi-signals.png" /></p>
+<p><em>Sources: Figures: lecture 6 <a href="../references/#ep-lectures">Embedded Programming, lectures 1–6</a>; <a href="../references/#circuitbasics-spi">Basics of the SPI Communication Protocol</a></em></p>
+<h2 id="how-an-spi-transfer-works">How an SPI transfer works<a class="headerlink" href="#how-an-spi-transfer-works" title="Permanent link">&para;</a></h2>
+<p><img alt="How an SPI transfer works" class="lecture-figure" loading="lazy" src="../assets/diagrams/spi-logic-analyzer-090.png" /></p>
+<ol>
+<li>
+<p>Master pulls <strong>CS LOW</strong>: “you, listen”.</p>
+</li>
+<li>
+<p>Master generates 8 clock pulses on <strong>SCK</strong>.</p>
+</li>
+<li>
+<p>With every pulse one bit goes out on <strong>MOSI</strong> (master out, slave in) and one bit comes in on <strong>MISO</strong>.</p>
+</li>
+<li>
+<p>After the last byte: <strong>CS HIGH</strong>.</p>
+</li>
+</ol>
+<div class="admonition info">
+<p class="admonition-title">Exchange</p>
+<p>SPI always <strong>exchanges</strong> bytes: <code>SPI.transfer(x)</code> sends <code>x</code> and returns the received byte.</p>
+</div>
+<h2 id="spi-modes-and-settings">SPI modes and settings<a class="headerlink" href="#spi-modes-and-settings" title="Permanent link">&para;</a></h2>
+<div class="tabular">
+
+@l c c L2.6cm@ **Mode** & **CPOL** & **CPHA** & **Clock idle / sample**  
+`SPI_MODE0` & 0 & 0 & idle LOW, rising edge  
+`SPI_MODE1` & 0 & 1 & idle LOW, falling edge  
+`SPI_MODE2` & 1 & 0 & idle HIGH, falling edge  
+`SPI_MODE3` & 1 & 1 & idle HIGH, rising edge  
+
+</div>
+
+<p><strong>SPISettings(speed, order, mode)</strong></p>
+<ul>
+<li>
+<p><strong>Speed</strong>: maximum clock the slave accepts (datasheet), e.g. 1 MHz to start.</p>
+</li>
+<li>
+<p><strong>Bit order</strong>: <code>MSBFIRST</code> for almost every device.</p>
+</li>
+<li>
+<p><strong>Mode</strong>: most devices use mode 0; check the datasheet.</p>
+</li>
+</ul>
+<div class="admonition warning">
+<p class="admonition-title">Wrong mode</p>
+<p>Data shifted by one bit, or all <code>0xFF</code>/<code>0x00</code>: first suspect the mode and the CS wiring.</p>
+</div>
+<h2 id="spi-fast-full-duplex">SPI: fast, full-duplex<a class="headerlink" href="#spi-fast-full-duplex" title="Permanent link">&para;</a></h2>
+<div class="highlight"><span class="filename">spi_id.ino</span><pre><span></span><code><span class="cp">#include</span><span class="w"> </span><span class="cpf">&lt;SPI.h&gt;</span>
+<span class="k">const</span><span class="w"> </span><span class="kt">int</span><span class="w"> </span><span class="n">CS_PIN</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">5</span><span class="p">;</span>
+
+<span class="kt">void</span><span class="w"> </span><span class="nf">setup</span><span class="p">()</span><span class="w"> </span><span class="p">{</span>
+<span class="w">  </span><span class="n">Serial</span><span class="p">.</span><span class="n">begin</span><span class="p">(</span><span class="mi">115200</span><span class="p">);</span>
+<span class="w">  </span><span class="n">pinMode</span><span class="p">(</span><span class="n">CS_PIN</span><span class="p">,</span><span class="w"> </span><span class="n">OUTPUT</span><span class="p">);</span>
+<span class="w">  </span><span class="n">digitalWrite</span><span class="p">(</span><span class="n">CS_PIN</span><span class="p">,</span><span class="w"> </span><span class="n">HIGH</span><span class="p">);</span>
+<span class="w">  </span><span class="n">SPI</span><span class="p">.</span><span class="n">begin</span><span class="p">(</span><span class="mi">18</span><span class="p">,</span><span class="w"> </span><span class="mi">19</span><span class="p">,</span><span class="w"> </span><span class="mi">23</span><span class="p">,</span><span class="w"> </span><span class="n">CS_PIN</span><span class="p">);</span><span class="w">    </span><span class="c1">// SCK, MISO, MOSI, SS</span>
+
+<span class="w">  </span><span class="n">SPI</span><span class="p">.</span><span class="n">beginTransaction</span><span class="p">(</span><span class="n">SPISettings</span><span class="p">(</span><span class="mi">1000000</span><span class="p">,</span><span class="w"> </span><span class="n">MSBFIRST</span><span class="p">,</span><span class="w"> </span><span class="n">SPI_MODE0</span><span class="p">));</span>
+<span class="w">  </span><span class="n">digitalWrite</span><span class="p">(</span><span class="n">CS_PIN</span><span class="p">,</span><span class="w"> </span><span class="n">LOW</span><span class="p">);</span>
+<span class="w">  </span><span class="n">SPI</span><span class="p">.</span><span class="n">transfer</span><span class="p">(</span><span class="mh">0x9F</span><span class="p">);</span><span class="w">               </span><span class="c1">// JEDEC "read ID"</span>
+<span class="w">  </span><span class="kt">uint8_t</span><span class="w"> </span><span class="n">maker</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">SPI</span><span class="p">.</span><span class="n">transfer</span><span class="p">(</span><span class="mh">0x00</span><span class="p">);</span>
+<span class="w">  </span><span class="n">digitalWrite</span><span class="p">(</span><span class="n">CS_PIN</span><span class="p">,</span><span class="w"> </span><span class="n">HIGH</span><span class="p">);</span>
+<span class="w">  </span><span class="n">SPI</span><span class="p">.</span><span class="n">endTransaction</span><span class="p">();</span>
+
+<span class="w">  </span><span class="n">Serial</span><span class="p">.</span><span class="n">printf</span><span class="p">(</span><span class="s">"Manufacturer ID: 0x%02X</span><span class="se">\n</span><span class="s">"</span><span class="p">,</span><span class="w"> </span><span class="n">maker</span><span class="p">);</span>
+<span class="p">}</span>
+
+<span class="kt">void</span><span class="w"> </span><span class="nf">loop</span><span class="p">()</span><span class="w"> </span><span class="p">{}</span>
+</code></pre></div>
+<p><a download="download" href="../examples/spi-logic-analyzer/spi_id.ino">Download this example</a></p>
+<table>
+<thead>
+<tr>
+<th style="text-align: left;"></th>
+<th style="text-align: center;"><strong>VSPI</strong></th>
+<th style="text-align: center;"><strong>HSPI</strong></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: left;">SCK</td>
+<td style="text-align: center;">18</td>
+<td style="text-align: center;">14</td>
+</tr>
+<tr>
+<td style="text-align: left;">MISO</td>
+<td style="text-align: center;">19</td>
+<td style="text-align: center;">12</td>
+</tr>
+<tr>
+<td style="text-align: left;">MOSI</td>
+<td style="text-align: center;">23</td>
+<td style="text-align: center;">13</td>
+</tr>
+<tr>
+<td style="text-align: left;">SS</td>
+<td style="text-align: center;">5</td>
+<td style="text-align: center;">15</td>
+</tr>
+</tbody>
+</table>
+<ul>
+<li>
+<p>Displays, SD cards, external flash, fast ADCs.</p>
+</li>
+<li>
+<p>One <strong>CS</strong> line per device.</p>
+</li>
+<li>
+<p>Up to 80 MHz on IO_MUX pins.</p>
+</li>
+</ul>
+<p><em>Sources: <a href="https://docs.espressif.com/projects/arduino-esp32/en/latest/tutorials/io_mux.html">Espressif: GPIO Matrix and Pin Mux</a></em></p>
+<h2 id="original-spi-diagrams-individual-selects-and-daisy-chain">Original SPI diagrams: individual selects and daisy chain<a class="headerlink" href="#original-spi-diagrams-individual-selects-and-daisy-chain" title="Permanent link">&para;</a></h2>
+<p><strong>Individual chip-selects</strong></p>
+<p><img alt="Original SPI diagrams: individual selects and daisy chain" class="lecture-figure" loading="lazy" src="../assets/figures/spi/spi-shared-bus.png" /></p>
+<ul>
+<li>
+<p>SCK, MOSI and MISO are shared.</p>
+</li>
+<li>
+<p>Each device has a separate select wire.</p>
+</li>
+<li>
+<p>Only the selected device drives MISO.</p>
+</li>
+</ul>
+<p><strong>Daisy chain: a different arrangement</strong></p>
+<p><img alt="Original SPI diagrams: individual selects and daisy chain" class="lecture-figure" loading="lazy" src="../assets/figures/spi/spi-multiple-chip-select.png" /></p>
+<ul>
+<li>
+<p>Devices pass serial data to the next device.</p>
+</li>
+<li>
+<p>The chain shares clock and select.</p>
+</li>
+<li>
+<p>Requires devices that support chaining; check the datasheet.</p>
+</li>
+</ul>
+<p><em>Sources: Both original diagrams: lecture 6 slide 14 <a href="../references/#ep-lectures">Embedded Programming, lectures 1–6</a>; <a href="../references/#circuitbasics-spi">Basics of the SPI Communication Protocol</a></em></p>
+<h2 id="uart-vs-i2c-vs-spi">UART vs I2C vs SPI<a class="headerlink" href="#uart-vs-i2c-vs-spi" title="Permanent link">&para;</a></h2>
+<table>
+<thead>
+<tr>
+<th style="text-align: left;"></th>
+<th style="text-align: center;"><strong>UART</strong></th>
+<th style="text-align: center;"><strong>I<sup>2</sup>C</strong></th>
+<th style="text-align: center;"><strong>SPI</strong></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: left;">Signal wires</td>
+<td style="text-align: center;">2 (TX, RX)</td>
+<td style="text-align: center;">2 (SDA, SCL)</td>
+<td style="text-align: center;">3 + 1 CS per slave</td>
+</tr>
+<tr>
+<td style="text-align: left;">Clock</td>
+<td style="text-align: center;">no (agreed baud)</td>
+<td style="text-align: center;">yes</td>
+<td style="text-align: center;">yes</td>
+</tr>
+<tr>
+<td style="text-align: left;">Devices</td>
+<td style="text-align: center;">2 (point to point)</td>
+<td style="text-align: center;">many (addresses)</td>
+<td style="text-align: center;">many (chip selects)</td>
+</tr>
+<tr>
+<td style="text-align: left;">Duplex</td>
+<td style="text-align: center;">full</td>
+<td style="text-align: center;">half</td>
+<td style="text-align: center;">full</td>
+</tr>
+<tr>
+<td style="text-align: left;">Typical speed</td>
+<td style="text-align: center;">9.6–921 kbit/s</td>
+<td style="text-align: center;">100–400 kHz</td>
+<td style="text-align: center;">1–80 MHz</td>
+</tr>
+<tr>
+<td style="text-align: left;">Distance</td>
+<td style="text-align: center;">metres (RS-232/485)</td>
+<td style="text-align: center;">short, on a board</td>
+<td style="text-align: center;">short, on a board</td>
+</tr>
+<tr>
+<td style="text-align: left;">Typical use</td>
+<td style="text-align: center;">PC, GPS, modules</td>
+<td style="text-align: center;">sensors, small displays</td>
+<td style="text-align: center;">displays, SD card, flash</td>
+</tr>
+</tbody>
+</table>
+<div class="admonition tip">
+<p class="admonition-title">Which one?</p>
+<p>Usually the <strong>device decides</strong>: read the datasheet. Many sensors support both I<sup>2</sup>C and SPI (e.g. the BME280).</p>
+</div>
+<p><em>Sources: <a href="https://docs.espressif.com/projects/arduino-esp32/en/latest/tutorials/io_mux.html">Espressif: GPIO Matrix and Pin Mux</a></em></p>
+<h2 id="the-logic-analyzer-seeing-your-signals">The logic analyzer: seeing your signals<a class="headerlink" href="#the-logic-analyzer-seeing-your-signals" title="Permanent link">&para;</a></h2>
+<p><img alt="The logic analyzer: seeing your signals" class="lecture-figure" loading="lazy" src="../assets/figures/logic-analyzer/logic-analyzer-8ch.png" /></p>
+<ul>
+<li>
+<p>Records digital signals (HIGH/LOW) on several channels at the same time.</p>
+</li>
+<li>
+<p><strong>Hardware debugging</strong> vs software debugging: you see what really happens on the wires.</p>
+</li>
+<li>
+<p>Debug <strong>communication</strong> (UART, I<sup>2</sup>C, SPI are decoded into bytes) and <strong>timing</strong> problems.</p>
+</li>
+<li>
+<p>Cheap 8-channel, 24 MHz analyzers + free <strong>PulseView</strong> software (sigrok).</p>
+</li>
+</ul>
+<div class="admonition tip">
+<p class="admonition-title">Installation (Windows)</p>
+<p>Install PulseView; if needed, assign <strong>WinUSB</strong> to the analyzer using <strong>Zadig</strong>. Select <code>fx2lafw</code> in PulseView. Older builds may also need the Visual C++ 2010 runtime (x86/x64).</p>
+</div>
+<p><em>Sources: <a href="../references/#ep-lectures">Embedded Programming, lectures 1–6</a>; <a href="../references/#sigrok-pulseview">PulseView: a Qt based logic analyzer, oscilloscope and MSO GUI for sigrok</a></em></p>
+<h2 id="capturing-a-transaction-step-by-step">Capturing a transaction, step by step<a class="headerlink" href="#capturing-a-transaction-step-by-step" title="Permanent link">&para;</a></h2>
+<ol>
+<li>
+<p>Connect <strong>GND</strong> of the analyzer to GND of the circuit (always first!).</p>
+</li>
+<li>
+<p>Connect channels to the signals: CH0 = SCL, CH1 = SDA (or CS, SCK, MOSI, MISO).</p>
+</li>
+<li>
+<p>Choose the <strong>sample rate</strong>: start around 10<span class="arithmatex">\(\times\)</span> the bus clock/bit rate or more; also set the <strong>sample count</strong> for the required time window.</p>
+</li>
+<li>
+<p>Set a supported <strong>trigger</strong>: e.g. falling CS (SPI). Falling SDA is a candidate for I<sup>2</sup>C START; verify that SCL is HIGH.</p>
+</li>
+<li>
+<p><strong>Capture</strong>, then add a <strong>protocol decoder</strong>.</p>
+</li>
+</ol>
+<table>
+<thead>
+<tr>
+<th style="text-align: left;"><strong>Signal</strong></th>
+<th style="text-align: left;"><strong>Sample rate</strong></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: left;">I<sup>2</sup>C 100 kHz</td>
+<td style="text-align: left;"><span class="arithmatex">\(\geq\)</span> 1 MHz</td>
+</tr>
+<tr>
+<td style="text-align: left;">I<sup>2</sup>C 400 kHz</td>
+<td style="text-align: left;"><span class="arithmatex">\(\geq\)</span> 4 MHz</td>
+</tr>
+<tr>
+<td style="text-align: left;">UART 115 200 baud</td>
+<td style="text-align: left;">2 MHz to start</td>
+</tr>
+<tr>
+<td style="text-align: left;">SPI 1 MHz</td>
+<td style="text-align: left;">12 MHz to start</td>
+</tr>
+<tr>
+<td style="text-align: left;">PWM 5 kHz</td>
+<td style="text-align: left;"><span class="arithmatex">\(\geq\)</span> 500 kHz</td>
+</tr>
+</tbody>
+</table>
+<div class="admonition info">
+<p class="admonition-title">Why a trigger?</p>
+<p>A trigger selects an event to align the capture with. Available conditions and pre-trigger history depend on the device/driver. Start with no trigger if unsure.</p>
+</div>
+<p><em>Sources: <a href="../references/#ep-lectures">Embedded Programming, lectures 1–6</a>; <a href="../references/#sigrok-pulseview">PulseView: a Qt based logic analyzer, oscilloscope and MSO GUI for sigrok</a></em></p>
+<h2 id="inside-a-logic-analyzer-voltage-becomes-sampled-bits">Inside a logic analyzer: voltage becomes sampled bits<a class="headerlink" href="#inside-a-logic-analyzer-voltage-becomes-sampled-bits" title="Permanent link">&para;</a></h2>
+<ol>
+<li>
+<p>A probe observes a signal relative to <strong>GND</strong>.</p>
+</li>
+<li>
+<p>The input threshold classifies it as <strong>0 or 1</strong>.</p>
+</li>
+<li>
+<p>A sampling clock records all enabled channels at regular intervals.</p>
+</li>
+<li>
+<p>Software draws the samples. A <strong>decoder</strong> interprets their pattern as bytes or bus events.</p>
+</li>
+</ol>
+<div class="admonition info">
+<p class="admonition-title">Two different clocks</p>
+<p>The ESP32 produces the signal. The analyzer’s independent sample clock observes it: <span class="arithmatex">\(\Delta t=1/f_s\)</span>. At <span class="arithmatex">\(f_s=1\,\mathrm{MHz}\)</span>, samples are <span class="arithmatex">\(1\,\text{\textmu s}\)</span> apart.</p>
+</div>
+<p><img alt="Inside a logic analyzer: voltage becomes sampled bits" class="lecture-figure" loading="lazy" src="../assets/diagrams/spi-logic-analyzer-091.png" /></p>
+<div class="admonition tip">
+<p class="admonition-title">What the trace can tell you</p>
+<p>Measure levels, order and timing. Use an <strong>oscilloscope</strong> to inspect voltage shape, noise and rise time.</p>
+</div>
+<h2 id="pulseview-connect-the-instrument-and-name-the-inputs">PulseView: connect the instrument and name the inputs<a class="headerlink" href="#pulseview-connect-the-instrument-and-name-the-inputs" title="Permanent link">&para;</a></h2>
+<ol>
+<li>
+<p>Connect the analyzer by USB; power the ESP32 normally.</p>
+</li>
+<li>
+<p>Select the real device instead of <strong>Demo device</strong>. For the common FX2 analyzer: <strong>Connect to Device</strong> <span class="arithmatex">\(\rightarrow\)</span> <strong>fx2lafw</strong> <span class="arithmatex">\(\rightarrow\)</span> USB <span class="arithmatex">\(\rightarrow\)</span> Scan <span class="arithmatex">\(\rightarrow\)</span> select the device.</p>
+</li>
+<li>
+<p>Connect analyzer <strong>GND to board GND</strong>, then the signal probes.</p>
+</li>
+<li>
+<p>Enable the required inputs. Rename <strong>D0/D1</strong> to the signal names to make their role visible.</p>
+</li>
+</ol>
+<p><img alt="PulseView: connect the instrument and name the inputs" class="lecture-figure" loading="lazy" src="../assets/diagrams/spi-logic-analyzer-092.png" /></p>
+<div class="admonition info">
+<p class="admonition-title">Input names are not GPIO numbers</p>
+<p><strong>D0</strong> means analyzer channel 0. It may be clipped to <strong>GPIO23</strong>, GPIO17 or any chosen signal.</p>
+</div>
+<p>Windows: assign <strong>WinUSB to the analyzer</strong> in Zadig if needed; keep the ESP32 USB–UART driver. Select <code>fx2lafw</code> in PulseView. Check input limits for 3.3 V logic; probes observe signals and do not power the circuit.</p>
+<p><em>Sources: <a href="https://sigrok.org/doc/pulseview/0.4.2/manual.html">PulseView manual: device selection and Windows installation</a></em></p>
+<h2 id="choose-both-sample-rate-and-recording-length">Choose both sample rate and recording length<a class="headerlink" href="#choose-both-sample-rate-and-recording-length" title="Permanent link">&para;</a></h2>
+<p><span class="arithmatex">\(\Delta t=\dfrac{1}{f_s}\qquad T_{\rm capture}=\dfrac{N_s}{f_s}\qquad N_s=f_s\,T_{\rm capture}\)</span></p>
+<p><span class="arithmatex">\(f_s\)</span>: samples per second<span class="arithmatex">\(N_s\)</span>: sample instants per channel<span class="arithmatex">\(T_{\rm capture}\)</span>: recorded time</p>
+<div class="tabular">
+
+@L3.2cmL2.5cmL2.9cmL3.8cm@ **Example signal** & **Sample rate** & **Sample count** & **Resulting window**  
+Blink: 1 Hz & 10 kHz & 50 k samples & 5 s: several full cycles  
+UART: 115200 baud & 2 MHz & 200 k samples & 100 ms: many byte frames  
+I<sup>2</sup>C: 100 kHz & 2 MHz & 200 k samples & 100 ms: one short transaction  
+I<sup>2</sup>C: 400 kHz & 8 MHz & 800 k samples & 100 ms: same time, more data  
+
+</div>
+
+<div class="admonition tip">
+<p class="admonition-title">Resolve the shortest feature</p>
+<p>Start around <strong>10 samples per bit/clock period or more</strong> for decoding; increase for short pulses and timing detail. At 115200 baud, 2 MHz gives about 17 samples per bit.</p>
+</div>
+<div class="admonition info">
+<p class="admonition-title">Faster is not a longer recording</p>
+<p>With 100 k samples: 1 MHz records 100 ms; 10 MHz records only 10 ms. Choose the closest supported values and recalculate the window.</p>
+</div>
+<h2 id="blink-capture-wire-it-set-it-run-it">Blink capture: wire it, set it, run it<a class="headerlink" href="#blink-capture-wire-it-set-it-run-it" title="Permanent link">&para;</a></h2>
+<div class="highlight"><span class="filename">blink-capture.ino</span><pre><span></span><code><span class="k">const</span><span class="w"> </span><span class="kt">int</span><span class="w"> </span><span class="n">LED</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">23</span><span class="p">;</span><span class="w"> </span><span class="c1">// blue course-board LED</span>
+
+<span class="kt">void</span><span class="w"> </span><span class="nf">setup</span><span class="p">()</span><span class="w"> </span><span class="p">{</span>
+<span class="w">  </span><span class="n">pinMode</span><span class="p">(</span><span class="n">LED</span><span class="p">,</span><span class="w"> </span><span class="n">OUTPUT</span><span class="p">);</span>
+<span class="p">}</span>
+
+<span class="kt">void</span><span class="w"> </span><span class="nf">loop</span><span class="p">()</span><span class="w"> </span><span class="p">{</span>
+<span class="w">  </span><span class="n">digitalWrite</span><span class="p">(</span><span class="n">LED</span><span class="p">,</span><span class="w"> </span><span class="n">HIGH</span><span class="p">);</span>
+<span class="w">  </span><span class="n">delay</span><span class="p">(</span><span class="mi">250</span><span class="p">);</span>
+<span class="w">  </span><span class="n">digitalWrite</span><span class="p">(</span><span class="n">LED</span><span class="p">,</span><span class="w"> </span><span class="n">LOW</span><span class="p">);</span>
+<span class="w">  </span><span class="n">delay</span><span class="p">(</span><span class="mi">750</span><span class="p">);</span>
+<span class="p">}</span>
+</code></pre></div>
+<p><a download="download" href="../examples/spi-logic-analyzer/blink-capture.ino">Download this example</a></p>
+<p><strong>Probe at the GPIO side of the LED resistor</strong></p>
+<ul>
+<li>
+<p>Analyzer GND <span class="arithmatex">\(\rightarrow\)</span> board GND.</p>
+</li>
+<li>
+<p>D0 <span class="arithmatex">\(\rightarrow\)</span> <strong>GPIO23</strong>; rename it <strong>LED</strong>.</p>
+</li>
+</ul>
+<table>
+<thead>
+<tr>
+<th style="text-align: left;"><strong>PulseView setting</strong></th>
+<th style="text-align: left;"><strong>Value</strong></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: left;">Enabled input</td>
+<td style="text-align: left;">D0</td>
+</tr>
+<tr>
+<td style="text-align: left;">Sample rate</td>
+<td style="text-align: left;">10 kHz</td>
+</tr>
+<tr>
+<td style="text-align: left;">Samples</td>
+<td style="text-align: left;">50 k (<span class="arithmatex">\(=5\)</span> s)</td>
+</tr>
+<tr>
+<td style="text-align: left;">Trigger</td>
+<td style="text-align: left;">D0 rising edge, if available</td>
+</tr>
+<tr>
+<td style="text-align: left;">Protocol decoder</td>
+<td style="text-align: left;">none needed</td>
+</tr>
+</tbody>
+</table>
+<p>Click <strong>Run</strong>, then <strong>Zoom to Fit</strong>. If an edge trigger is unavailable, start without a trigger: the signal repeats.</p>
+<h2 id="read-blink-period-frequency-and-duty-cycle">Read Blink: period, frequency and duty cycle<a class="headerlink" href="#read-blink-period-frequency-and-duty-cycle" title="Permanent link">&para;</a></h2>
+<p><img alt="Read Blink: period, frequency and duty cycle" class="lecture-figure" loading="lazy" src="../assets/diagrams/spi-logic-analyzer-093.png" /></p>
+<ul>
+<li>
+<p>Enable <strong>cursors</strong>; place them on two consecutive <strong>rising edges</strong> to measure <span class="arithmatex">\(T\)</span>.</p>
+</li>
+<li>
+<p>Rising to falling gives <span class="arithmatex">\(t_H\approx250\)</span> ms.</p>
+</li>
+<li>
+<p>Falling to rising gives <span class="arithmatex">\(t_L\approx750\)</span> ms.</p>
+</li>
+</ul>
+<div class="admonition info">
+<p class="admonition-title">Calculate from the trace</p>
+<p><span class="arithmatex">\(T=t_H+t_L=1\,\mathrm{s}\)</span></p>
+<p><span class="arithmatex">\(f=1/T=1\,\mathrm{Hz}\)</span></p>
+<p><span class="arithmatex">\(D=t_H/T\times100\%=25\%\)</span></p>
+</div>
+<div class="admonition tip">
+<p class="admonition-title">Optional analyzer: PWM decoder</p>
+<p>Add the <strong>PWM</strong> decoder; map its <strong>Data</strong> input to D0 and choose <strong>active-high</strong> polarity. Compare its duty-cycle annotations with your cursors. These describe the electrical HIGH time; an active-low LED would be on during LOW.</p>
+</div>
+<p><em>Sources: <a href="https://sigrok.org/wiki/Protocol_decoder:Pwm">sigrok PWM decoder</a>; illustrative waveform, nominal delays</em></p>
+<h2 id="uart-capture-generate-a-byte-you-can-recognise">UART capture: generate a byte you can recognise<a class="headerlink" href="#uart-capture-generate-a-byte-you-can-recognise" title="Permanent link">&para;</a></h2>
+<div class="highlight"><span class="filename">uart-capture.ino</span><pre><span></span><code><span class="kt">void</span><span class="w"> </span><span class="nf">setup</span><span class="p">()</span><span class="w"> </span><span class="p">{</span>
+<span class="w">  </span><span class="c1">// UART2: baud, format, RX, TX</span>
+<span class="w">  </span><span class="n">Serial2</span><span class="p">.</span><span class="n">begin</span><span class="p">(</span><span class="mi">115200</span><span class="p">,</span><span class="w"> </span><span class="n">SERIAL_8N1</span><span class="p">,</span><span class="w"> </span><span class="mi">16</span><span class="p">,</span><span class="w"> </span><span class="mi">17</span><span class="p">);</span>
+<span class="p">}</span>
+
+<span class="kt">void</span><span class="w"> </span><span class="nf">loop</span><span class="p">()</span><span class="w"> </span><span class="p">{</span>
+<span class="w">  </span><span class="n">Serial2</span><span class="p">.</span><span class="n">write</span><span class="p">(</span><span class="sc">'A'</span><span class="p">);</span><span class="w"> </span><span class="c1">// one byte: 0x41</span>
+<span class="w">  </span><span class="n">delay</span><span class="p">(</span><span class="mi">20</span><span class="p">);</span>
+<span class="p">}</span>
+</code></pre></div>
+<p><a download="download" href="../examples/spi-logic-analyzer/uart-capture.ino">Download this example</a></p>
+<div class="admonition info">
+<p class="admonition-title">What is sent?</p>
+<p><code>write('A')</code> sends one byte. <code>println("A")</code> adds CR and LF: <code>0x41 0x0D 0x0A</code>. Capture on TX2, not on the USB cable.</p>
+</div>
+<p><strong>The analyzer listens in parallel</strong></p>
+<ul>
+<li>
+<p>GND <span class="arithmatex">\(\rightarrow\)</span> board GND.</p>
+</li>
+<li>
+<p>D0 <span class="arithmatex">\(\rightarrow\)</span> <strong>GPIO17 (ESP32 TX2)</strong>.</p>
+</li>
+<li>
+<p>Optional D1 <span class="arithmatex">\(\rightarrow\)</span> <strong>GPIO16 (ESP32 RX2)</strong> to observe a second device’s replies. Leave it unassigned for this example.</p>
+</li>
+</ul>
+<table>
+<thead>
+<tr>
+<th style="text-align: left;"><strong>Capture setting</strong></th>
+<th style="text-align: left;"><strong>Value</strong></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: left;">Sample rate</td>
+<td style="text-align: left;">2 MHz</td>
+</tr>
+<tr>
+<td style="text-align: left;">Samples</td>
+<td style="text-align: left;">200 k (<span class="arithmatex">\(=100\)</span> ms)</td>
+</tr>
+<tr>
+<td style="text-align: left;">Trigger</td>
+<td style="text-align: left;">D0 falling edge, if available</td>
+</tr>
+<tr>
+<td style="text-align: left;">Expected idle state</td>
+<td style="text-align: left;">HIGH</td>
+</tr>
+</tbody>
+</table>
+<p>The falling edge marks the <strong>start bit</strong>. Click <strong>Run</strong>; zoom in on one burst before adding the decoder.</p>
+<p><em>Sources: <a href="https://docs.espressif.com/projects/arduino-esp32/en/latest/api/serial.html">Arduino-ESP32 Serial API</a></em></p>
+<h2 id="configure-the-uart-analyzer-the-settings-must-match-the-sender">Configure the UART analyzer: the settings must match the sender<a class="headerlink" href="#configure-the-uart-analyzer-the-settings-must-match-the-sender" title="Permanent link">&para;</a></h2>
+<p>Add <strong>UART</strong>; click its decoder row to edit the channel mapping and options.</p>
+<table>
+<thead>
+<tr>
+<th style="text-align: left;"><strong>Decoder field</strong></th>
+<th style="text-align: left;"><strong>This example</strong></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: left;">TX</td>
+<td style="text-align: left;">D0 (GPIO17)</td>
+</tr>
+<tr>
+<td style="text-align: left;">RX</td>
+<td style="text-align: left;">unassigned</td>
+</tr>
+<tr>
+<td style="text-align: left;">Baud rate</td>
+<td style="text-align: left;">115200</td>
+</tr>
+<tr>
+<td style="text-align: left;">Frame: data/parity/stop</td>
+<td style="text-align: left;">8 / none / 1 (8N1)</td>
+</tr>
+<tr>
+<td style="text-align: left;">Bit order</td>
+<td style="text-align: left;">LSB first</td>
+</tr>
+<tr>
+<td style="text-align: left;">Invert TX</td>
+<td style="text-align: left;">no</td>
+</tr>
+<tr>
+<td style="text-align: left;">Data format</td>
+<td style="text-align: left;">ASCII or hex</td>
+</tr>
+<tr>
+<td style="text-align: left;">Sample point</td>
+<td style="text-align: left;">50% (default)</td>
+</tr>
+</tbody>
+</table>
+<div class="admonition info">
+<p class="admonition-title">There is no clock wire</p>
+<p>The decoder uses the <strong>baud rate</strong> to locate bit centres after the start edge. <span class="arithmatex">\(T_{\rm bit}=1/115200\approx8.68\,\text{\textmu s}\)</span>. One 8N1 frame has 10 bits: about 86.8 .</p>
+</div>
+<div class="admonition tip">
+<p class="admonition-title">Check the result</p>
+<p>Expect repeated <strong>A</strong> or <strong>0x41</strong>, without framing errors. Changing the decoder to 9600 does not change the captured wire: it only interprets it incorrectly. The <strong>2 MHz sample rate is not the 115200 baud rate</strong>.</p>
+</div>
+<p><img alt="Configure the UART analyzer: the settings must match the sender" class="lecture-figure" loading="lazy" src="../assets/diagrams/spi-logic-analyzer-094.png" /></p>
+<p><em>Sources: <a href="https://github.com/sigrokproject/libsigrokdecode/blob/master/decoders/uart/pd.py">sigrok UART decoder options</a>; illustrative 8N1 frame</em></p>
+<h2 id="i2c-capture-read-a-bme280-chip-id">I2C capture: read a BME280 chip ID<a class="headerlink" href="#i2c-capture-read-a-bme280-chip-id" title="Permanent link">&para;</a></h2>
+<div class="highlight"><span class="filename">i2c-capture.ino</span><pre><span></span><code><span class="cp">#include</span><span class="w"> </span><span class="cpf">&lt;Wire.h&gt;</span>
+<span class="kt">void</span><span class="w"> </span><span class="nf">setup</span><span class="p">()</span><span class="w"> </span><span class="p">{</span>
+<span class="w">  </span><span class="n">Serial</span><span class="p">.</span><span class="n">begin</span><span class="p">(</span><span class="mi">115200</span><span class="p">);</span>
+<span class="w">  </span><span class="n">Wire</span><span class="p">.</span><span class="n">begin</span><span class="p">(</span><span class="mi">19</span><span class="p">,</span><span class="w"> </span><span class="mi">18</span><span class="p">);</span><span class="w"> </span><span class="c1">// course board: SDA, SCL</span>
+<span class="w">  </span><span class="n">Wire</span><span class="p">.</span><span class="n">setClock</span><span class="p">(</span><span class="mi">100000</span><span class="p">);</span>
+<span class="p">}</span>
+<span class="kt">void</span><span class="w"> </span><span class="nf">loop</span><span class="p">()</span><span class="w"> </span><span class="p">{</span>
+<span class="w">  </span><span class="n">Wire</span><span class="p">.</span><span class="n">beginTransmission</span><span class="p">(</span><span class="mh">0x76</span><span class="p">);</span>
+<span class="w">  </span><span class="n">Wire</span><span class="p">.</span><span class="n">write</span><span class="p">(</span><span class="mh">0xD0</span><span class="p">);</span><span class="w">   </span><span class="c1">// chip-ID register</span>
+<span class="w">  </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">Wire</span><span class="p">.</span><span class="n">endTransmission</span><span class="p">(</span><span class="nb">false</span><span class="p">)</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="mi">0</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">Wire</span><span class="p">.</span><span class="n">requestFrom</span><span class="p">((</span><span class="kt">uint8_t</span><span class="p">)</span><span class="mh">0x76</span><span class="p">,</span>
+<span class="w">                         </span><span class="p">(</span><span class="kt">size_t</span><span class="p">)</span><span class="mi">1</span><span class="p">,</span><span class="w"> </span><span class="nb">true</span><span class="p">)</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="mi">1</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">      </span><span class="n">Serial</span><span class="p">.</span><span class="n">printf</span><span class="p">(</span><span class="s">"ID: 0x%02X</span><span class="se">\n</span><span class="s">"</span><span class="p">,</span><span class="w"> </span><span class="n">Wire</span><span class="p">.</span><span class="n">read</span><span class="p">());</span>
+<span class="w">    </span><span class="p">}</span>
+<span class="w">  </span><span class="p">}</span>
+<span class="w">  </span><span class="n">delay</span><span class="p">(</span><span class="mi">1000</span><span class="p">);</span>
+<span class="p">}</span>
+</code></pre></div>
+<p><a download="download" href="../examples/spi-logic-analyzer/i2c-capture.ino">Download this example</a></p>
+<p><strong>Probe the existing bus in parallel</strong></p>
+<ul>
+<li>
+<p>GND <span class="arithmatex">\(\rightarrow\)</span> board GND.</p>
+</li>
+<li>
+<p><strong>D0 <span class="arithmatex">\(\rightarrow\)</span> GPIO18 (SCL)</strong>.</p>
+</li>
+<li>
+<p><strong>D1 <span class="arithmatex">\(\rightarrow\)</span> GPIO19 (SDA)</strong>.</p>
+</li>
+<li>
+<p>Sensor on the same bus, with 3.3 V pull-ups; both lines idle HIGH.</p>
+</li>
+</ul>
+<div class="admonition info">
+<p class="admonition-title">Capture settings</p>
+<p>Both inputs enabled; <strong>2 MHz</strong>, <strong>4 M samples</strong> <span class="arithmatex">\(=2\)</span> s, <strong>no trigger</strong>: capture a complete repeating transaction. For a short 100 ms window use 200 k samples; if supported, trigger on SDA falling with SCL HIGH and retain pre-trigger samples to include START.</p>
+</div>
+<p>Use address 0x76 or 0x77 to match the sensor. Run separately from SPI/LED sketches sharing these pins.</p>
+<p><em>Sources: <a href="https://docs.espressif.com/projects/arduino-esp32/en/latest/api/i2c.html">Arduino-ESP32 I2C API</a>; BME280 register 0xD0</em></p>
+<h2 id="configure-the-i2c-analyzer-map-clock-and-data">Configure the I2C analyzer: map clock and data<a class="headerlink" href="#configure-the-i2c-analyzer-map-clock-and-data" title="Permanent link">&para;</a></h2>
+<p>Add the <strong>I<sup>2</sup>C</strong> decoder; open its settings and verify the assignments yourself.</p>
+<div class="tabular">
+
+@L3.4cmL2.9cm@ **Decoder field** & **This example**  
+SCL & D0: GPIO18  
+SDA & D1: GPIO19  
+Displayed slave address format & **shifted**: 7-bit address  
+
+</div>
+
+<div class="admonition info">
+<p class="admonition-title">No baud-rate field is needed</p>
+<p>I<sup>2</sup>C carries its own clock on <strong>SCL</strong>. The decoder reads SDA at the clock edges; the capture sample rate still has to resolve both lines.</p>
+</div>
+<p><strong>Why does 0x76 sometimes appear as 0xEC?</strong></p>
+<ul>
+<li>
+<p>The wire sends <strong>7 address bits + R/W</strong>.</p>
+</li>
+<li>
+<p>Write byte: <span class="arithmatex">\((\texttt{0x76}\ll1)|0=\texttt{0xEC}\)</span>.</p>
+</li>
+<li>
+<p>Read byte: <span class="arithmatex">\((\texttt{0x76}\ll1)|1=\texttt{0xED}\)</span>.</p>
+</li>
+<li>
+<p><strong>shifted</strong> displays <strong>0x76</strong> plus Write/Read. <strong>unshifted</strong> displays the raw address byte, <strong>0xEC/0xED</strong>.</p>
+</li>
+</ul>
+<div class="admonition tip">
+<p class="admonition-title">Inspect the first event</p>
+<p>START = SDA falling <strong>while SCL is HIGH</strong>. A falling SDA edge during SCL LOW is normally a data transition. A simple SDA-edge trigger cannot distinguish them.</p>
+</div>
+<p><em>Sources: <a href="https://github.com/sigrokproject/libsigrokdecode/blob/master/decoders/i2c/pd.py">sigrok I2C decoder: channel mapping and address-format options</a></em></p>
+<h2 id="read-the-decoded-transaction-who-sends-each-part">Read the decoded transaction: who sends each part?<a class="headerlink" href="#read-the-decoded-transaction-who-sends-each-part" title="Permanent link">&para;</a></h2>
+<p>Expected BME280 chip-ID read at address <strong>0x76</strong>, register <strong>0xD0</strong>:</p>
+<p><img alt="Read the decoded transaction: who sends each part?" class="lecture-figure" loading="lazy" src="../assets/diagrams/spi-logic-analyzer-095.png" /></p>
+<ol>
+<li>
+<p>ESP32 writes the register number <strong>0xD0</strong>. Sensor ACKs the address and register.</p>
+</li>
+<li>
+<p><code>endTransmission(false)</code> keeps the bus for the <strong>repeated START</strong> before reading.</p>
+</li>
+<li>
+<p>Sensor sends <strong>0x60</strong>: BME280 ID.</p>
+</li>
+</ol>
+<div class="admonition info">
+<p class="admonition-title">ACK is the ninth clock pulse</p>
+<p>The receiver drives <strong>LOW = ACK</strong> or leaves <strong>HIGH = NACK</strong>. The ESP32 sends <strong>NACK after the final read byte</strong> to end the read: here it is expected, not an error.</p>
+</div>
+<p>Measure adjacent SCL rising edges inside a byte: <span class="arithmatex">\(T_{\rm SCL}\approx10\,\text{\textmu s}\)</span>, so <span class="arithmatex">\(f_{\rm SCL}\approx100\)</span> kHz. Exclude gaps between bytes.</p>
+<p><em>Sources: <a href="https://www.bosch-sensortec.com/media/boschsensortec/downloads/datasheets/bst-bme280-ds002.pdf">Bosch BME280 datasheet</a>; illustrative decoder annotations</em></p>
+<h2 id="capture-first-decode-second-fix-the-right-setting">Capture first, decode second: fix the right setting<a class="headerlink" href="#capture-first-decode-second-fix-the-right-setting" title="Permanent link">&para;</a></h2>
+<div class="tabular">
+
+@L3.0cmL4.3cmL5.1cm@ **What you see** & **Likely reason** & **What to check/change**  
+Flat trace & wrong probe, pin, GND, or no activity & Inspect the wiring and running sketch; remove the trigger for a first look.  
+Waiting for trigger & chosen edge never occurs & Check the input/edge; arm before the transfer; try a repeating test signal.  
+Pulses, no decoded text & missing channel mapping, too little zoom, or capture begins mid-frame & Open decoder settings; map the inputs; zoom in; capture a complete frame/START.  
+UART garbage / framing errors & wrong baud, frame or inversion & Match 115200, 8N1, LSB first, no inversion; measure $T_{\rm bit}$ to verify baud.  
+I<sup>2</sup>C NACK on address & wrong address, unpowered device, or wiring & Check 0x76/0x77, pull-ups and SCL/SDA; final read NACK is normal.  
+Edges disappear / timing looks wrong & sample rate too low or window too short & Increase $f_s$ for detail and increase $N_s$ to retain the required time window.  
+
+</div>
+
+<div class="admonition tip">
+<p class="admonition-title">Keep evidence you can explain</p>
+<p>Save the capture as <strong>.sr</strong> and retain the PulseView setup if saved alongside it. Record the probe-to-GPIO mapping, <span class="arithmatex">\(f_s\)</span>, sample count, trigger and decoder settings. A decoder can be reconfigured on saved data; a missed pulse requires a new capture.</p>
+</div>
+<p><em>Sources: <a href="https://sigrok.org/doc/pulseview/0.4.2/manual.html">PulseView manual: decoding, cursors and saved sessions</a></em></p>
+<h2 id="what-a-decoded-i2c-capture-looks-like">What a decoded I2C capture looks like<a class="headerlink" href="#what-a-decoded-i2c-capture-looks-like" title="Permanent link">&para;</a></h2>
+<p><img alt="What a decoded I2C capture looks like" class="lecture-figure" loading="lazy" src="../assets/diagrams/spi-logic-analyzer-096.png" /></p>
+<ul>
+<li>
+<p>The decoder groups the bits into <strong>start, address, R/W, ACK, data</strong>.</p>
+</li>
+<li>
+<p>Compare with what your code <strong>should</strong> send: <code>beginTransmission(0x76); write(0xD0);</code></p>
+</li>
+</ul>
+<div class="admonition tip">
+<p class="admonition-title">Typical findings</p>
+<p>NACK after the address = wrong address or device not powered. No clock at all = wrong pins in <code>Wire.begin()</code>.</p>
+</div>
+<p><em>Sources: Simplified drawing</em></p>
+<h2 id="quiz-spi-and-the-logic-analyzer">Quiz: SPI and the logic analyzer<a class="headerlink" href="#quiz-spi-and-the-logic-analyzer" title="Permanent link">&para;</a></h2>
+<ol>
+<li>
+<p>Why does SPI need no addresses?</p>
+<p><details class="lecture-answer"><summary>Check your answer</summary><p>Each slave has its own chip-select line: only the selected one listens.</p></details></p>
+</li>
+<li>
+<p>How many signal wires for 3 SPI devices?</p>
+<p><details class="lecture-answer"><summary>Check your answer</summary><p>SCK, MOSI, MISO + 3 CS = 6.</p></details></p>
+</li>
+<li>
+<p>What does <code>SPI.transfer(0x00)</code> do?</p>
+<p><details class="lecture-answer"><summary>Check your answer</summary><p>It sends a dummy byte to generate 8 clocks and returns the byte received from the slave.</p></details></p>
+</li>
+<li>
+<p>You capture I<sup>2</sup>C at 100 kHz with 200 kHz sample rate. Problem?</p>
+<p><details class="lecture-answer"><summary>Check your answer</summary><p>Too few samples per bit: edges are missed. Use <span class="arithmatex"><span class="arithmatex">\(\geq\)</span></span> 1 MHz.</p></details></p>
+</li>
+<li>
+<p>What must you always connect first on a logic analyzer?</p>
+<p><details class="lecture-answer"><summary>Check your answer</summary><p>GND.</p></details></p>
+</li>
+</ol>
+<h2 id="exercises-spi-and-logic-analyzer">Exercises: SPI and logic analyzer<a class="headerlink" href="#exercises-spi-and-logic-analyzer" title="Permanent link">&para;</a></h2>
+<div class="admonition example">
+<p class="admonition-title">Exercise 1 – Measure your own signals</p>
+<p>Capture the Blink example and measure the period. Then capture <code>ledcWrite()</code> PWM at different duty cycles and verify the duty with the analyzer.</p>
+</div>
+<div class="admonition example">
+<p class="admonition-title">Exercise 2 – Decode I<sup>2</sup>C</p>
+<p>Capture the BME280 chip-ID read. Identify every part: start, <code>0xEC</code>, ACK, <code>0xD0</code>, repeated start, <code>0xED</code>, <code>0x60</code>, NACK, stop.</p>
+</div>
+<div class="admonition example">
+<p class="admonition-title">Exercise 3 – UART on the wire</p>
+<p>Send the letter <code>'A'</code> on Serial2 at 115200 baud. Capture it, measure one bit time and decode the byte by hand.</p>
+</div>
+<h2 id="further-material-spi-and-logic-analyzer">Further material: SPI and logic analyzer<a class="headerlink" href="#further-material-spi-and-logic-analyzer" title="Permanent link">&para;</a></h2>
+<h3 id="read">Read<a class="headerlink" href="#read" title="Permanent link">&para;</a></h3>
+<ul>
+<li>
+<p><a href="https://www.circuitbasics.com/basics-of-the-spi-communication-protocol/">Basics of SPI (Circuit Basics)</a></p>
+</li>
+<li>
+<p><a href="https://learn.sparkfun.com/tutorials/serial-peripheral-interface-spi">SPI (SparkFun)</a></p>
+</li>
+<li>
+<p><a href="https://docs.espressif.com/projects/arduino-esp32/en/latest/api/spi.html">Arduino-ESP32 SPI API</a></p>
+</li>
+</ul>
+<h3 id="watch">Watch<a class="headerlink" href="#watch" title="Permanent link">&para;</a></h3>
+<ul>
+<li>
+<p><a href="https://www.youtube.com/results?search_query=spi+protocol+explained">YouTube: SPI explained</a></p>
+</li>
+<li>
+<p><a href="https://www.youtube.com/results?search_query=pulseview+logic+analyzer+tutorial">YouTube: PulseView logic analyzer</a></p>
+</li>
+</ul>
+<h3 id="try-it">Try it<a class="headerlink" href="#try-it" title="Permanent link">&para;</a></h3>
+<ul>
+<li>
+<p><a href="https://sigrok.org/wiki/PulseView">PulseView (sigrok)</a></p>
+</li>
+<li>
+<p><a href="https://www.okaphone.com/artikel.xhtml?id=496446">Logic analyzer LOGIC8 (Okaphone)</a></p>
+</li>
+</ul>
+<h2 id="complete-project-sketches">Complete project sketches<a class="headerlink" href="#complete-project-sketches" title="Permanent link">&para;</a></h2>
+<ul>
+<li><a download="download" href="../examples/projects/logic-analyzer/blink-capture/blink-capture.ino">Blink Capture</a></li>
+<li><a download="download" href="../examples/projects/logic-analyzer/i2c-capture/i2c-capture.ino">I2C Capture</a></li>
+<li><a download="download" href="../examples/projects/logic-analyzer/uart-capture/uart-capture.ino">Uart Capture</a></li>
+</ul>
+
+
+
+
+
+
+
+  
+  
+
+
+
+
+
+
+                
+              </article>
+            </div>
+          
+          
+  <script>var tabs=__md_get("__tabs");if(Array.isArray(tabs))e:for(var set of document.querySelectorAll(".tabbed-set")){var labels=set.querySelector(".tabbed-labels");for(var tab of tabs)for(var label of labels.getElementsByTagName("label"))if(label.innerText.trim()===tab){var input=document.getElementById(label.htmlFor);input.checked=!0;continue e}}</script>
+
+<script>var target=document.getElementById(location.hash.slice(1));target&&target.name&&(target.checked=target.name.startsWith("__tabbed_"))</script>
+        </div>
+        
+          <button type="button" class="md-top md-icon" data-md-component="top" hidden>
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M13 20h-2V8l-5.5 5.5-1.42-1.42L12 4.16l7.92 7.92-1.42 1.42L13 8z"/></svg>
+  Back to top
+</button>
+        
+      </main>
+      
+        <footer class="md-footer">
+  
+    
+      
+      <nav class="md-footer__inner md-grid" aria-label="Footer" >
+        
+          
+          <a href="../i2c/" class="md-footer__link md-footer__link--prev" aria-label="Previous: I2C">
+            <div class="md-footer__button md-icon">
+              
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11z"/></svg>
+            </div>
+            <div class="md-footer__title">
+              <span class="md-footer__direction">
+                Previous
+              </span>
+              <div class="md-ellipsis">
+                I2C
+              </div>
+            </div>
+          </a>
+        
+        
+          
+          <a href="../state-machines/" class="md-footer__link md-footer__link--next" aria-label="Next: State machines">
+            <div class="md-footer__title">
+              <span class="md-footer__direction">
+                Next
+              </span>
+              <div class="md-ellipsis">
+                State machines
+              </div>
+            </div>
+            <div class="md-footer__button md-icon">
+              
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M4 11v2h12l-5.5 5.5 1.42 1.42L19.84 12l-7.92-7.92L10.5 5.5 16 11z"/></svg>
+            </div>
+          </a>
+        
+      </nav>
+    
+  
+  <div class="md-footer-meta md-typeset">
+    <div class="md-footer-meta__inner md-grid">
+      <div class="md-copyright">
+  
+  
+    Made with
+    <a href="https://squidfunk.github.io/mkdocs-material/" target="_blank" rel="noopener">
+      Material for MkDocs
+    </a>
+  
+</div>
+      
+    </div>
+  </div>
+</footer>
+      
+    </div>
+    <div class="md-dialog" data-md-component="dialog">
+      <div class="md-dialog__inner md-typeset"></div>
+    </div>
+    
+      <div class="md-progress" data-md-component="progress" role="progressbar"></div>
+    
+    
+    
+      
+      
+      <script id="__config" type="application/json">{"annotate": null, "base": "../..", "features": ["navigation.tabs", "navigation.tabs.sticky", "navigation.instant", "navigation.instant.progress", "navigation.tracking", "navigation.top", "navigation.footer", "content.code.copy", "content.tabs.link", "search.suggest", "search.highlight", "toc.follow"], "search": "../../assets/javascripts/workers/search.a7633da7.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": null}</script>
+    
+    
+      <script src="../../assets/javascripts/bundle.c21346df.min.js"></script>
+      
+        <script src="../../javascripts/mathjax.js"></script>
+      
+        <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+      
+        <script src="../../javascripts/dashboard.js"></script>
+      
+    
+  </body>
+</html>

@@ -1,0 +1,14 @@
+CourseBoard/
+  library.properties
+  README.md
+  keywords.txt          (optional: colours in the IDE)
+  src/
+    CourseBoard.h
+    CourseBoard.cpp
+    Blinker.h
+    Blinker.cpp
+  examples/
+    Counter/
+      Counter.ino
+    BlinkTwo/
+      BlinkTwo.ino

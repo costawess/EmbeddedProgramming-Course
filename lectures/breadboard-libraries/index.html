@@ -1,0 +1,3232 @@
+
+<!doctype html>
+<html lang="en" class="no-js">
+  <head>
+    
+      <meta charset="utf-8">
+      <meta name="viewport" content="width=device-width,initial-scale=1">
+      
+        <meta name="description" content="Embedded Programming lectures, practical tutorials, and interactive ESP32 simulations at Hanze.">
+      
+      
+      
+        <link rel="canonical" href="https://costawess.github.io/EmbeddedProgramming-Course/lectures/breadboard-libraries/">
+      
+      
+        <link rel="prev" href="../timing-interrupts/">
+      
+      
+        <link rel="next" href="../serial-uart/">
+      
+      
+        
+      
+      
+      <link rel="icon" href="../../assets/images/favicon.png">
+      <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.8.0">
+    
+    
+      
+        <title>Breadboard and Libraries - Embedded Programming</title>
+      
+    
+    
+      <link rel="stylesheet" href="../../assets/stylesheets/main.57a0d79d.min.css">
+      
+        
+        <link rel="stylesheet" href="../../assets/stylesheets/palette.fb2fffe2.min.css">
+      
+      
+
+
+    
+    
+      
+    
+    
+      
+        
+        
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,300i,400,400i,700,700i%7CRoboto+Mono:400,400i,700,700i&display=fallback">
+        <style>:root{--md-text-font:"Roboto";--md-code-font:"Roboto Mono"}</style>
+      
+    
+    
+      <link rel="stylesheet" href="../../stylesheets/extra.css">
+    
+    <script>__md_scope=new URL("../..",location),__md_hash=e=>[...e].reduce(((e,_)=>(e<<5)-e+_.charCodeAt(0)),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
+    
+      
+
+    
+    
+  </head>
+  
+  
+    
+    
+      
+    
+    
+    
+    
+    <body dir="ltr" data-md-color-scheme="slate" data-md-color-primary="indigo" data-md-color-accent="indigo">
+  
+    
+    <input class="md-toggle" data-md-toggle="drawer" type="checkbox" id="__drawer" autocomplete="off">
+    <input class="md-toggle" data-md-toggle="search" type="checkbox" id="__search" autocomplete="off">
+    <label class="md-overlay" for="__drawer"></label>
+    <div data-md-component="skip">
+      
+        
+        <a href="#breadboard-and-libraries" class="md-skip">
+          Skip to content
+        </a>
+      
+    </div>
+    <div data-md-component="announce">
+      
+    </div>
+    
+    
+      
+
+  
+
+<header class="md-header md-header--shadow md-header--lifted" data-md-component="header">
+  <nav class="md-header__inner md-grid" aria-label="Header">
+    <a href="../.." title="Embedded Programming" class="md-header__button md-logo" aria-label="Embedded Programming" data-md-component="logo">
+      
+  <img src="../../assets/hanze_logo.png" alt="logo">
+
+    </a>
+    <label class="md-header__button md-icon" for="__drawer">
+      
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M3 6h18v2H3zm0 5h18v2H3zm0 5h18v2H3z"/></svg>
+    </label>
+    <div class="md-header__title" data-md-component="header-title">
+      <div class="md-header__ellipsis">
+        <div class="md-header__topic">
+          <span class="md-ellipsis">
+            Embedded Programming
+          </span>
+        </div>
+        <div class="md-header__topic" data-md-component="header-topic">
+          <span class="md-ellipsis">
+            
+              Breadboard and Libraries
+            
+          </span>
+        </div>
+      </div>
+    </div>
+    
+      
+        <form class="md-header__option" data-md-component="palette">
+  
+    
+    
+    
+    <input class="md-option" data-md-color-media="" data-md-color-scheme="slate" data-md-color-primary="indigo" data-md-color-accent="indigo"  aria-label="Switch to light mode"  type="radio" name="__palette" id="__palette_0">
+    
+      <label class="md-header__button md-icon" title="Switch to light mode" for="__palette_1" hidden>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 7a5 5 0 0 1 5 5 5 5 0 0 1-5 5 5 5 0 0 1-5-5 5 5 0 0 1 5-5m0 2a3 3 0 0 0-3 3 3 3 0 0 0 3 3 3 3 0 0 0 3-3 3 3 0 0 0-3-3m0-7 2.39 3.42C13.65 5.15 12.84 5 12 5s-1.65.15-2.39.42zM3.34 7l4.16-.35A7.2 7.2 0 0 0 5.94 8.5c-.44.74-.69 1.5-.83 2.29zm.02 10 1.76-3.77a7.131 7.131 0 0 0 2.38 4.14zM20.65 7l-1.77 3.79a7.02 7.02 0 0 0-2.38-4.15zm-.01 10-4.14.36c.59-.51 1.12-1.14 1.54-1.86.42-.73.69-1.5.83-2.29zM12 22l-2.41-3.44c.74.27 1.55.44 2.41.44.82 0 1.63-.17 2.37-.44z"/></svg>
+      </label>
+    
+  
+    
+    
+    
+    <input class="md-option" data-md-color-media="" data-md-color-scheme="default" data-md-color-primary="indigo" data-md-color-accent="indigo"  aria-label="Switch to dark mode"  type="radio" name="__palette" id="__palette_1">
+    
+      <label class="md-header__button md-icon" title="Switch to dark mode" for="__palette_0" hidden>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="m17.75 4.09-2.53 1.94.91 3.06-2.63-1.81-2.63 1.81.91-3.06-2.53-1.94L12.44 4l1.06-3 1.06 3zm3.5 6.91-1.64 1.25.59 1.98-1.7-1.17-1.7 1.17.59-1.98L15.75 11l2.06-.05L18.5 9l.69 1.95zm-2.28 4.95c.83-.08 1.72 1.1 1.19 1.85-.32.45-.66.87-1.08 1.27C15.17 23 8.84 23 4.94 19.07c-3.91-3.9-3.91-10.24 0-14.14.4-.4.82-.76 1.27-1.08.75-.53 1.93.36 1.85 1.19-.27 2.86.69 5.83 2.89 8.02a9.96 9.96 0 0 0 8.02 2.89m-1.64 2.02a12.08 12.08 0 0 1-7.8-3.47c-2.17-2.19-3.33-5-3.49-7.82-2.81 3.14-2.7 7.96.31 10.98 3.02 3.01 7.84 3.12 10.98.31"/></svg>
+      </label>
+    
+  
+</form>
+      
+    
+    
+      <script>var palette=__md_get("__palette");if(palette&&palette.color){if("(prefers-color-scheme)"===palette.color.media){var media=matchMedia("(prefers-color-scheme: light)"),input=document.querySelector(media.matches?"[data-md-color-media='(prefers-color-scheme: light)']":"[data-md-color-media='(prefers-color-scheme: dark)']");palette.color.media=input.getAttribute("data-md-color-media"),palette.color.scheme=input.getAttribute("data-md-color-scheme"),palette.color.primary=input.getAttribute("data-md-color-primary"),palette.color.accent=input.getAttribute("data-md-color-accent")}for(var[key,value]of Object.entries(palette.color))document.body.setAttribute("data-md-color-"+key,value)}</script>
+    
+    
+    
+      
+      
+        <label class="md-header__button md-icon" for="__search">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+        </label>
+        <div class="md-search" data-md-component="search" role="dialog">
+  <label class="md-search__overlay" for="__search"></label>
+  <div class="md-search__inner" role="search">
+    <form class="md-search__form" name="search">
+      <input type="text" class="md-search__input" name="query" aria-label="Search" placeholder="Search" autocapitalize="off" autocorrect="off" autocomplete="off" spellcheck="false" data-md-component="search-query" required>
+      <label class="md-search__icon md-icon" for="__search">
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11z"/></svg>
+      </label>
+      <nav class="md-search__options" aria-label="Search">
+        
+        <button type="reset" class="md-search__icon md-icon" title="Clear" aria-label="Clear" tabindex="-1">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M19 6.41 17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/></svg>
+        </button>
+      </nav>
+      
+        <div class="md-search__suggest" data-md-component="search-suggest"></div>
+      
+    </form>
+    <div class="md-search__output">
+      <div class="md-search__scrollwrap" tabindex="0" data-md-scrollfix>
+        <div class="md-search-result" data-md-component="search-result">
+          <div class="md-search-result__meta">
+            Initializing search
+          </div>
+          <ol class="md-search-result__list" role="presentation"></ol>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+      
+    
+    
+      <div class="md-header__source">
+        <a href="https://github.com/costawess/EmbeddedProgramming-Course" title="Go to repository" class="md-source" data-md-component="source">
+  <div class="md-source__icon md-icon">
+    
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--! Font Awesome Free 7.1.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2025 Fonticons, Inc.--><path d="M439.6 236.1 244 40.5c-5.4-5.5-12.8-8.5-20.4-8.5s-15 3-20.4 8.4L162.5 81l51.5 51.5c27.1-9.1 52.7 16.8 43.4 43.7l49.7 49.7c34.2-11.8 61.2 31 35.5 56.7-26.5 26.5-70.2-2.9-56-37.3L240.3 199v121.9c25.3 12.5 22.3 41.8 9.1 55-6.4 6.4-15.2 10.1-24.3 10.1s-17.8-3.6-24.3-10.1c-17.6-17.6-11.1-46.9 11.2-56v-123c-20.8-8.5-24.6-30.7-18.6-45L142.6 101 8.5 235.1C3 240.6 0 247.9 0 255.5s3 15 8.5 20.4l195.6 195.7c5.4 5.4 12.7 8.4 20.4 8.4s15-3 20.4-8.4l194.7-194.7c5.4-5.4 8.4-12.8 8.4-20.4s-3-15-8.4-20.4"/></svg>
+  </div>
+  <div class="md-source__repository">
+    EmbeddedProgramming-Course
+  </div>
+</a>
+      </div>
+    
+  </nav>
+  
+    
+      
+<nav class="md-tabs" aria-label="Tabs" data-md-component="tabs">
+  <div class="md-grid">
+    <ul class="md-tabs__list">
+      
+        
+  
+  
+  
+  
+    <li class="md-tabs__item">
+      <a href="../.." class="md-tabs__link">
+        
+  
+  
+    
+  
+  Home
+
+      </a>
+    </li>
+  
+
+      
+        
+  
+  
+  
+    
+  
+  
+    
+    
+      <li class="md-tabs__item md-tabs__item--active">
+        <a href="../" class="md-tabs__link">
+          
+  
+  
+  Lectures
+
+        </a>
+      </li>
+    
+  
+
+      
+        
+  
+  
+  
+  
+    
+    
+      <li class="md-tabs__item">
+        <a href="../../tutorials/" class="md-tabs__link">
+          
+  
+  
+  Tutorials
+
+        </a>
+      </li>
+    
+  
+
+      
+        
+  
+  
+  
+  
+    <li class="md-tabs__item">
+      <a href="../../dashboard/" class="md-tabs__link">
+        
+  
+  
+    
+  
+  Dashboard
+
+      </a>
+    </li>
+  
+
+      
+    </ul>
+  </div>
+</nav>
+    
+  
+</header>
+    
+    <div class="md-container" data-md-component="container">
+      
+      
+        
+      
+      <main class="md-main" data-md-component="main">
+        <div class="md-main__inner md-grid">
+          
+            
+              
+              <div class="md-sidebar md-sidebar--primary" data-md-component="sidebar" data-md-type="navigation" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+
+  
+
+
+<nav class="md-nav md-nav--primary md-nav--lifted" aria-label="Navigation" data-md-level="0">
+  <label class="md-nav__title" for="__drawer">
+    <a href="../.." title="Embedded Programming" class="md-nav__button md-logo" aria-label="Embedded Programming" data-md-component="logo">
+      
+  <img src="../../assets/hanze_logo.png" alt="logo">
+
+    </a>
+    Embedded Programming
+  </label>
+  
+    <div class="md-nav__source">
+      <a href="https://github.com/costawess/EmbeddedProgramming-Course" title="Go to repository" class="md-source" data-md-component="source">
+  <div class="md-source__icon md-icon">
+    
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--! Font Awesome Free 7.1.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2025 Fonticons, Inc.--><path d="M439.6 236.1 244 40.5c-5.4-5.5-12.8-8.5-20.4-8.5s-15 3-20.4 8.4L162.5 81l51.5 51.5c27.1-9.1 52.7 16.8 43.4 43.7l49.7 49.7c34.2-11.8 61.2 31 35.5 56.7-26.5 26.5-70.2-2.9-56-37.3L240.3 199v121.9c25.3 12.5 22.3 41.8 9.1 55-6.4 6.4-15.2 10.1-24.3 10.1s-17.8-3.6-24.3-10.1c-17.6-17.6-11.1-46.9 11.2-56v-123c-20.8-8.5-24.6-30.7-18.6-45L142.6 101 8.5 235.1C3 240.6 0 247.9 0 255.5s3 15 8.5 20.4l195.6 195.7c5.4 5.4 12.7 8.4 20.4 8.4s15-3 20.4-8.4l194.7-194.7c5.4-5.4 8.4-12.8 8.4-20.4s-3-15-8.4-20.4"/></svg>
+  </div>
+  <div class="md-source__repository">
+    EmbeddedProgramming-Course
+  </div>
+</a>
+    </div>
+  
+  <ul class="md-nav__list" data-md-scrollfix>
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../.." class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Home
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+    
+  
+  
+  
+    
+    
+    
+    
+      
+        
+        
+      
+      
+    
+    
+    <li class="md-nav__item md-nav__item--active md-nav__item--section md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_2" checked>
+        
+          
+          <label class="md-nav__link" for="__nav_2" id="__nav_2_label" tabindex="">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Lectures
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_2_label" aria-expanded="true">
+          <label class="md-nav__title" for="__nav_2">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Lectures
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Overview
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+    
+    
+      
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_2_2" >
+        
+          
+          <label class="md-nav__link" for="__nav_2_2" id="__nav_2_2_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Course & foundations
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_2_2_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_2_2">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Course & foundations
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../course/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Course organisation
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../how-programs-run/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    How programs run
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../esp32-introduction/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    The ESP32 family
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../architecture/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Architecture & memory
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+    
+    
+      
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_2_3" >
+        
+          
+          <label class="md-nav__link" for="__nav_2_3" id="__nav_2_3_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Hardware & setup
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_2_3_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_2_3">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Hardware & setup
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../pinout/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Pinout & electrical limits
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../course-board/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    The course board
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../arduino-ide/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Arduino IDE & first sketch
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+    
+    
+      
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_2_4" >
+        
+          
+          <label class="md-nav__link" for="__nav_2_4" id="__nav_2_4_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Programming
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_2_4_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_2_4">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Programming
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../variables-types/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Variables, types & numbers
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../flowcharts/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Flowcharts
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../functions-decisions/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Functions & decisions
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../loops-arrays/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Loops & arrays
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../structs/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Structs
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../code-quality-debugging/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Code quality & debugging
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+    
+  
+  
+  
+    
+    
+    
+    
+      
+      
+    
+    
+    <li class="md-nav__item md-nav__item--active md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_2_5" checked>
+        
+          
+          <label class="md-nav__link" for="__nav_2_5" id="__nav_2_5_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Inputs, outputs & timing
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_2_5_label" aria-expanded="true">
+          <label class="md-nav__title" for="__nav_2_5">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Inputs, outputs & timing
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../digital-io/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Digital inputs & outputs
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../analog-pwm/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Analog input, PWM & DAC
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../timing-interrupts/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Timing, interrupts & timers
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+    
+  
+  
+  
+    <li class="md-nav__item md-nav__item--active">
+      
+      <input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
+      
+      
+        
+      
+      
+        <label class="md-nav__link md-nav__link--active" for="__toc">
+          
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Breadboards & libraries
+  
+
+    
+  </span>
+  
+  
+
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <a href="./" class="md-nav__link md-nav__link--active">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Breadboards & libraries
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+      
+        
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#the-breadboard" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        The breadboard
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#how-the-strips-are-connected" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        How the strips are connected
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#common-breadboard-mistakes" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Common breadboard mistakes
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#libraries-standing-on-the-shoulders-of-others" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Libraries: standing on the shoulders of others
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#example-dht22-temperature-and-humidity" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Example: DHT22 temperature and humidity
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#example-ssd1306-oled-display" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Example: SSD1306 OLED display
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#under-the-hood-what-a-library-does-for-you" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Under the hood: what a library does for you
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#your-own-library-why-and-what" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Your own library: why and what?
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#step-1-split-a-sketch-into-tabs" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Step 1: split a sketch into tabs
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#step-2-the-header-and-the-implementation" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Step 2: the header and the implementation
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#step-3-use-your-library" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Step 3: use your library
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#step-4-a-library-with-a-class" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Step 4: a library with a class
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#step-5-install-it-as-a-real-library" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Step 5: install it as a real library
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#good-practices-for-your-own-library" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Good practices for your own library
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#quiz-your-own-library" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Quiz: your own library
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#exercises-breadboard-and-libraries" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Exercises: breadboard and libraries
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#further-material-breadboard-and-libraries" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Further material: breadboard and libraries
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Further material: breadboard and libraries">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#read" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Read
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#watch" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Watch
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#try-it" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Try it
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+      
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+    
+    
+      
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_2_6" >
+        
+          
+          <label class="md-nav__link" for="__nav_2_6" id="__nav_2_6_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Communication & behaviour
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_2_6_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_2_6">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Communication & behaviour
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../serial-uart/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Serial communication & UART
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../i2c/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    I2C
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../spi-logic-analyzer/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    SPI & logic analysis
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../state-machines/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    State machines
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+    
+    
+      
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_2_7" >
+        
+          
+          <label class="md-nav__link" for="__nav_2_7" id="__nav_2_7_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Connected systems & projects
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_2_7_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_2_7">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Connected systems & projects
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../wifi-web/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Wi-Fi & web
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../iot-mqtt-ble/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    IoT, MQTT & BLE
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../storage-low-power-ota/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Storage, low power & OTA
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../projects-best-practices/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Projects & best practices
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../references/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    References
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+    
+    
+      
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_3" >
+        
+          
+          <label class="md-nav__link" for="__nav_3" id="__nav_3_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Tutorials
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_3_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_3">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Tutorials
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../tutorials/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Overview
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+    
+    
+      
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_3_2" >
+        
+          
+          <label class="md-nav__link" for="__nav_3_2" id="__nav_3_2_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Getting started
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_3_2_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_3_2">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Getting started
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../tutorials/arduino-setup-gpio/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Arduino setup & GPIO
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+    
+    
+      
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_3_3" >
+        
+          
+          <label class="md-nav__link" for="__nav_3_3" id="__nav_3_3_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Programming fundamentals
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_3_3_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_3_3">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Programming fundamentals
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../tutorials/variables-types/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Variables & data types
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../tutorials/conditionals-loops/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Conditionals, switch & while
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+    
+    
+      
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_3_4" >
+        
+          
+          <label class="md-nav__link" for="__nav_3_4" id="__nav_3_4_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Serial communication
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_3_4_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_3_4">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Serial communication
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../tutorials/serial-input/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Reading serial input
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+    
+    
+      
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_3_5" >
+        
+          
+          <label class="md-nav__link" for="__nav_3_5" id="__nav_3_5_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Timing
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_3_5_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_3_5">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Timing
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../tutorials/hardware-timers/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Hardware timer interrupts
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../dashboard/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Dashboard
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+  </ul>
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+            
+              
+              <div class="md-sidebar md-sidebar--secondary" data-md-component="sidebar" data-md-type="toc" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#the-breadboard" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        The breadboard
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#how-the-strips-are-connected" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        How the strips are connected
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#common-breadboard-mistakes" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Common breadboard mistakes
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#libraries-standing-on-the-shoulders-of-others" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Libraries: standing on the shoulders of others
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#example-dht22-temperature-and-humidity" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Example: DHT22 temperature and humidity
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#example-ssd1306-oled-display" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Example: SSD1306 OLED display
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#under-the-hood-what-a-library-does-for-you" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Under the hood: what a library does for you
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#your-own-library-why-and-what" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Your own library: why and what?
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#step-1-split-a-sketch-into-tabs" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Step 1: split a sketch into tabs
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#step-2-the-header-and-the-implementation" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Step 2: the header and the implementation
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#step-3-use-your-library" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Step 3: use your library
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#step-4-a-library-with-a-class" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Step 4: a library with a class
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#step-5-install-it-as-a-real-library" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Step 5: install it as a real library
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#good-practices-for-your-own-library" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Good practices for your own library
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#quiz-your-own-library" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Quiz: your own library
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#exercises-breadboard-and-libraries" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Exercises: breadboard and libraries
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#further-material-breadboard-and-libraries" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Further material: breadboard and libraries
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Further material: breadboard and libraries">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#read" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Read
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#watch" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Watch
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#try-it" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Try it
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+          
+          
+            <div class="md-content" data-md-component="content">
+              
+              <article class="md-content__inner md-typeset">
+                
+                  
+
+
+  
+  
+
+
+<h1 id="breadboard-and-libraries">Breadboard and Libraries<a class="headerlink" href="#breadboard-and-libraries" title="Permanent link">&para;</a></h1>
+<h2 id="the-breadboard">The breadboard<a class="headerlink" href="#the-breadboard" title="Permanent link">&para;</a></h2>
+<p><img alt="The breadboard" class="lecture-figure" loading="lazy" src="../assets/figures/breadboard/breadboard-anatomy.jpg" /></p>
+<ul>
+<li>
+<p>Build and <strong>test circuits before soldering</strong>; debug designs quickly.</p>
+</li>
+<li>
+<p><strong>Side rails</strong> (power rails): long strips for VCC (red, +) and GND (blue, <span class="arithmatex">\(-\)</span>).</p>
+</li>
+<li>
+<p><strong>Terminal strips</strong>: each row of 5 holes is connected.</p>
+</li>
+<li>
+<p>The <strong>centre gap</strong> separates the two halves: no connection across it. Chips (DIP) straddle it.</p>
+</li>
+<li>
+<p>Use <strong>colour-coded jumper wires</strong>: red = 3.3 V/5 V, black = GND, other colours = signals.</p>
+</li>
+</ul>
+<div class="admonition warning">
+<p class="admonition-title">Long breadboards</p>
+<p>On some boards the power rails are <strong>split in the middle</strong>: bridge them with a wire.</p>
+</div>
+<p><em>Sources: Figure: lecture 4 <a href="../references/#ep-lectures">Embedded Programming, lectures 1–6</a></em></p>
+<h2 id="how-the-strips-are-connected">How the strips are connected<a class="headerlink" href="#how-the-strips-are-connected" title="Permanent link">&para;</a></h2>
+<p><img alt="How the strips are connected" class="lecture-figure" loading="lazy" src="../assets/diagrams/breadboard-libraries-085.png" /></p>
+<div class="admonition info">
+<p class="admonition-title">Rule</p>
+<p>Two legs in the <strong>same strip</strong> are connected. Two legs in different strips only connect through a wire or component.</p>
+</div>
+<div class="admonition tip">
+<p class="admonition-title">ESP32 DevKit on a breadboard</p>
+<p>The DevKit is wide: it covers almost both halves. Use two breadboards side by side, or only one row of free holes.</p>
+</div>
+<h2 id="common-breadboard-mistakes">Common breadboard mistakes<a class="headerlink" href="#common-breadboard-mistakes" title="Permanent link">&para;</a></h2>
+<ol>
+<li>
+<p>Both legs of a resistor or LED in the <strong>same strip</strong>: the component is shorted.</p>
+</li>
+<li>
+<p>Component placed <strong>along</strong> the gap instead of across it.</p>
+</li>
+<li>
+<p>Power rail split in the middle, half the board has no power.</p>
+</li>
+<li>
+<p>5 V on a rail that also feeds 3.3 V parts.</p>
+</li>
+<li>
+<p>LED inserted the wrong way round (long leg = anode = +).</p>
+</li>
+<li>
+<p>Loose wires: push them in fully, keep them short and flat.</p>
+</li>
+</ol>
+<div class="admonition info">
+<p class="admonition-title">Build step by step</p>
+<ol>
+<li>
+<p>Connect GND and 3.3 V rails, measure them.</p>
+</li>
+<li>
+<p>Add <strong>one</strong> component, test with a small sketch.</p>
+</li>
+<li>
+<p>Add the next one only when the first works.</p>
+</li>
+</ol>
+</div>
+<div class="admonition tip">
+<p class="admonition-title">Document</p>
+<p>Take a photo of the working setup and draw the wiring (e.g. Fritzing, draw.io, Wokwi): you need it for the report.</p>
+</div>
+<h2 id="libraries-standing-on-the-shoulders-of-others">Libraries: standing on the shoulders of others<a class="headerlink" href="#libraries-standing-on-the-shoulders-of-others" title="Permanent link">&para;</a></h2>
+<ul>
+<li>
+<p>A <strong>library</strong> is ready-made code for a task or a device: you call its functions instead of writing everything yourself.</p>
+</li>
+<li>
+<p><strong>Built into the ESP32 core</strong>: <code>Wire</code> (I<sup>2</sup>C), <code>SPI</code>, <code>WiFi</code>, <code>Preferences</code>, <code>Ticker</code>, <code>WebServer</code> …</p>
+</li>
+<li>
+<p><strong>External</strong>, via the Library Manager: sensor and display drivers (DHT, BME280, SSD1306, PubSubClient …).</p>
+</li>
+</ul>
+<p><strong>Workflow for every new library</strong></p>
+<ol>
+<li>
+<p><strong>Install</strong>: <em>Sketch <span class="arithmatex">\(\rightarrow\)</span> Include Library <span class="arithmatex">\(\rightarrow\)</span> Manage Libraries</em>, search, install (also its dependencies).</p>
+</li>
+<li>
+<p><strong>Read the example</strong> sketch: <em>File <span class="arithmatex">\(\rightarrow\)</span> Examples <span class="arithmatex">\(\rightarrow\)</span> \&lt;library&gt;</em>.</p>
+</li>
+<li>
+<p>Add <code>#include &lt;LibraryName.h&gt;</code>.</p>
+</li>
+<li>
+<p>Create the required <strong>object</strong>.</p>
+</li>
+<li>
+<p>Call its <strong>initialisation</strong> in <code>setup()</code>.</p>
+</li>
+<li>
+<p>Use its functions in <code>loop()</code> or your own functions.</p>
+</li>
+</ol>
+<p><em>Sources: <a href="../references/#ep-lectures">Embedded Programming, lectures 1–6</a>; <a href="../references/#arduino-esp32-docs">Arduino ESP32 Core Documentation</a></em></p>
+<h2 id="example-dht22-temperature-and-humidity">Example: DHT22 temperature and humidity<a class="headerlink" href="#example-dht22-temperature-and-humidity" title="Permanent link">&para;</a></h2>
+<div class="highlight"><span class="filename">dht22.ino</span><pre><span></span><code><span class="cp">#include</span><span class="w"> </span><span class="cpf">&lt;DHT.h&gt;</span>
+
+<span class="n">DHT</span><span class="w"> </span><span class="nf">dht</span><span class="p">(</span><span class="mi">25</span><span class="p">,</span><span class="w"> </span><span class="n">DHT22</span><span class="p">);</span><span class="w">          </span><span class="c1">// data pin, sensor type</span>
+
+<span class="kt">void</span><span class="w"> </span><span class="nf">setup</span><span class="p">()</span><span class="w"> </span><span class="p">{</span>
+<span class="w">  </span><span class="n">Serial</span><span class="p">.</span><span class="n">begin</span><span class="p">(</span><span class="mi">115200</span><span class="p">);</span>
+<span class="w">  </span><span class="n">dht</span><span class="p">.</span><span class="n">begin</span><span class="p">();</span>
+<span class="p">}</span>
+
+<span class="kt">void</span><span class="w"> </span><span class="nf">loop</span><span class="p">()</span><span class="w"> </span><span class="p">{</span>
+<span class="w">  </span><span class="kt">float</span><span class="w"> </span><span class="n">t</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">dht</span><span class="p">.</span><span class="n">readTemperature</span><span class="p">();</span><span class="w">   </span><span class="c1">// Celsius</span>
+<span class="w">  </span><span class="kt">float</span><span class="w"> </span><span class="n">h</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">dht</span><span class="p">.</span><span class="n">readHumidity</span><span class="p">();</span><span class="w">      </span><span class="c1">// %</span>
+<span class="w">  </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">isnan</span><span class="p">(</span><span class="n">t</span><span class="p">)</span><span class="w"> </span><span class="o">||</span><span class="w"> </span><span class="n">isnan</span><span class="p">(</span><span class="n">h</span><span class="p">))</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="n">Serial</span><span class="p">.</span><span class="n">println</span><span class="p">(</span><span class="s">"DHT read failed"</span><span class="p">);</span>
+<span class="w">  </span><span class="p">}</span><span class="w"> </span><span class="k">else</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="n">Serial</span><span class="p">.</span><span class="n">printf</span><span class="p">(</span><span class="s">"T = %.1f C  RH = %.0f %%</span><span class="se">\n</span><span class="s">"</span><span class="p">,</span><span class="w"> </span><span class="n">t</span><span class="p">,</span><span class="w"> </span><span class="n">h</span><span class="p">);</span>
+<span class="w">  </span><span class="p">}</span>
+<span class="w">  </span><span class="n">delay</span><span class="p">(</span><span class="mi">2000</span><span class="p">);</span><span class="w">               </span><span class="c1">// DHT22: max one read per 2 s</span>
+<span class="p">}</span>
+</code></pre></div>
+<p><a download="download" href="../examples/breadboard-libraries/dht22.ino">Download this example</a></p>
+<ul>
+<li>
+<p>Library: <em>DHT sensor library</em> by Adafruit (+ <em>Adafruit Unified Sensor</em>).</p>
+</li>
+<li>
+<p>The object <code>dht</code> knows the pin and the sensor type.</p>
+</li>
+<li>
+<p><code>isnan()</code>: the library returns “not a number” when the read fails: always check!</p>
+</li>
+</ul>
+<div class="admonition tip">
+<p class="admonition-title">Error you will see</p>
+<p><code>fatal error: DHT.h: No such file or directory</code> <span class="arithmatex">\(\Rightarrow\)</span> the library is not installed.</p>
+</div>
+<p><em>Sources: <a href="../references/#adafruit-dht">DHT sensor library</a>; <a href="../references/#ep-lectures">Embedded Programming, lectures 1–6</a></em></p>
+<h2 id="example-ssd1306-oled-display">Example: SSD1306 OLED display<a class="headerlink" href="#example-ssd1306-oled-display" title="Permanent link">&para;</a></h2>
+<div class="highlight"><span class="filename">oled.ino</span><pre><span></span><code><span class="cp">#include</span><span class="w"> </span><span class="cpf">&lt;Wire.h&gt;</span>
+<span class="cp">#include</span><span class="w"> </span><span class="cpf">&lt;Adafruit_GFX.h&gt;</span>
+<span class="cp">#include</span><span class="w"> </span><span class="cpf">&lt;Adafruit_SSD1306.h&gt;</span>
+
+<span class="n">Adafruit_SSD1306</span><span class="w"> </span><span class="nf">display</span><span class="p">(</span><span class="mi">128</span><span class="p">,</span><span class="w"> </span><span class="mi">64</span><span class="p">,</span><span class="w"> </span><span class="o">&amp;</span><span class="n">Wire</span><span class="p">,</span><span class="w"> </span><span class="mi">-1</span><span class="p">);</span><span class="w">   </span><span class="c1">// w, h, bus, no reset pin</span>
+
+<span class="kt">void</span><span class="w"> </span><span class="nf">setup</span><span class="p">()</span><span class="w"> </span><span class="p">{</span>
+<span class="w">  </span><span class="n">Serial</span><span class="p">.</span><span class="n">begin</span><span class="p">(</span><span class="mi">115200</span><span class="p">);</span>
+<span class="w">  </span><span class="n">Wire</span><span class="p">.</span><span class="n">begin</span><span class="p">(</span><span class="mi">19</span><span class="p">,</span><span class="w"> </span><span class="mi">18</span><span class="p">);</span><span class="w">                            </span><span class="c1">// course board I2C</span>
+<span class="w">  </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="o">!</span><span class="n">display</span><span class="p">.</span><span class="n">begin</span><span class="p">(</span><span class="n">SSD1306_SWITCHCAPVCC</span><span class="p">,</span><span class="w"> </span><span class="mh">0x3C</span><span class="p">))</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="n">Serial</span><span class="p">.</span><span class="n">println</span><span class="p">(</span><span class="s">"OLED not found"</span><span class="p">);</span>
+<span class="w">    </span><span class="k">while</span><span class="w"> </span><span class="p">(</span><span class="nb">true</span><span class="p">)</span><span class="w"> </span><span class="n">delay</span><span class="p">(</span><span class="mi">10</span><span class="p">);</span>
+<span class="w">  </span><span class="p">}</span>
+<span class="w">  </span><span class="n">display</span><span class="p">.</span><span class="n">clearDisplay</span><span class="p">();</span>
+<span class="w">  </span><span class="n">display</span><span class="p">.</span><span class="n">setTextSize</span><span class="p">(</span><span class="mi">2</span><span class="p">);</span>
+<span class="w">  </span><span class="n">display</span><span class="p">.</span><span class="n">setTextColor</span><span class="p">(</span><span class="n">SSD1306_WHITE</span><span class="p">);</span>
+<span class="w">  </span><span class="n">display</span><span class="p">.</span><span class="n">setCursor</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span><span class="w"> </span><span class="mi">0</span><span class="p">);</span>
+<span class="w">  </span><span class="n">display</span><span class="p">.</span><span class="n">print</span><span class="p">(</span><span class="s">"Hello"</span><span class="p">);</span>
+<span class="w">  </span><span class="n">display</span><span class="p">.</span><span class="n">display</span><span class="p">();</span><span class="w">               </span><span class="c1">// nothing shows before this call!</span>
+<span class="p">}</span>
+
+<span class="kt">void</span><span class="w"> </span><span class="nf">loop</span><span class="p">()</span><span class="w"> </span><span class="p">{}</span>
+</code></pre></div>
+<p><a download="download" href="../examples/breadboard-libraries/oled.ino">Download this example</a></p>
+<ul>
+<li>
+<p>Libraries: <em>Adafruit SSD1306</em> + <em>Adafruit GFX</em>.</p>
+</li>
+<li>
+<p><code>0x3C</code>: the I<sup>2</sup>C address of the display.</p>
+</li>
+<li>
+<p>Drawing happens in a <strong>buffer</strong> in RAM; <code>display()</code> sends it to the screen.</p>
+</li>
+<li>
+<p><code>&amp;Wire</code>: the address of the I<sup>2</sup>C object the display uses.</p>
+</li>
+</ul>
+<p><em>Sources: <a href="../references/#adafruit-ssd1306">Adafruit SSD1306 Library</a>; <a href="../references/#ep-lectures">Embedded Programming, lectures 1–6</a></em></p>
+<h2 id="under-the-hood-what-a-library-does-for-you">Under the hood: what a library does for you<a class="headerlink" href="#under-the-hood-what-a-library-does-for-you" title="Permanent link">&para;</a></h2>
+<ul>
+<li>
+<p><code>display.begin()</code> sends a list of <strong>command bytes</strong> over I<sup>2</sup>C, for example <code>Wire.write(0xAE)</code>: “display off”, then contrast, addressing mode, … “display on”.</p>
+</li>
+<li>
+<p>Those numbers come from the <strong>datasheet</strong> of the SSD1306 controller.</p>
+</li>
+<li>
+<p>The library author read the datasheet so you do not have to, but you <strong>can</strong>, and sometimes must.</p>
+</li>
+</ul>
+<div class="admonition info">
+<p class="admonition-title">Yes, hex</p>
+<p>Registers, commands and addresses are written in hexadecimal: <code>0xAE</code>, <code>0x3C</code>, <code>0x76</code>. That is why we practised it.</p>
+</div>
+<div class="admonition warning">
+<p class="admonition-title">Choose libraries carefully</p>
+<p>Popular, maintained, with examples and compatible with the <strong>ESP32 core 3.x</strong>. Check the date of the last update.</p>
+</div>
+<p><em>Sources: <a href="../references/#ep-lectures">Embedded Programming, lectures 1–6</a></em></p>
+<h2 id="your-own-library-why-and-what">Your own library: why and what?<a class="headerlink" href="#your-own-library-why-and-what" title="Permanent link">&para;</a></h2>
+<p><strong>Why write a library?</strong></p>
+<ul>
+<li>
+<p><strong>Reuse</strong> the same code in every project, without copy-paste.</p>
+</li>
+<li>
+<p><strong>Hide details</strong> (pins, registers, timing) behind clear names.</p>
+</li>
+<li>
+<p><strong>Share</strong> with your project team, or publish it on GitHub.</p>
+</li>
+<li>
+<p>Fix a bug <strong>once</strong>: every project that uses the library benefits.</p>
+</li>
+</ul>
+<div class="admonition tip">
+<p class="admonition-title">From functions to libraries</p>
+<p>A library is the next step after functions: you group related functions (or a class) in their own files.</p>
+</div>
+<p><strong>What is inside?</strong>  </p>
+<div class="tabular">
+
+@l L3.6cm@ `CourseBoard.h` & **header**: what the library offers (declarations)  
+`CourseBoard.cpp` & **implementation**: how it works (definitions)  
+`examples/` & sketches that show how to use it  
+`library.properties` & name, version, author  
+
+</div>
+
+<div class="admonition info">
+<p class="admonition-title"><code>#include 'x.h'</code> vs <code>&lt;x.h&gt;</code></p>
+<p>Quotes: file in your <strong>sketch folder</strong>. Angle brackets: an <strong>installed</strong> library.</p>
+</div>
+<p><em>Sources: <a href="../references/#arduino-library-guide">Writing a Library for Arduino</a>; <a href="../references/#arduino-library-spec">Library specification</a></em></p>
+<h2 id="step-1-split-a-sketch-into-tabs">Step 1: split a sketch into tabs<a class="headerlink" href="#step-1-split-a-sketch-into-tabs" title="Permanent link">&para;</a></h2>
+<p><img alt="Step 1: split a sketch into tabs" class="lecture-figure" loading="lazy" src="../assets/diagrams/breadboard-libraries-086.png" /></p>
+<ol>
+<li>
+<p>In the IDE: the <strong>…</strong> menu at the right of the tabs <span class="arithmatex">\(\rightarrow\)</span> <em>New Tab</em>.</p>
+</li>
+<li>
+<p>Name it <code>CourseBoard.h</code>, then a second tab <code>CourseBoard.cpp</code>.</p>
+</li>
+<li>
+<p>The files are saved in the <strong>same folder</strong> as the sketch.</p>
+</li>
+<li>
+<p>Move the functions from the <code>.ino</code> file to the <code>.cpp</code> file; put their declarations in the <code>.h</code> file.</p>
+</li>
+</ol>
+<div class="admonition tip">
+<p class="admonition-title">Start here</p>
+<p>A library in tabs is already useful: it keeps <code>loop()</code> short. Step 5 turns it into an installed library.</p>
+</div>
+<p><em>Sources: <a href="../references/#arduino-library-guide">Writing a Library for Arduino</a></em></p>
+<h2 id="step-2-the-header-and-the-implementation">Step 2: the header and the implementation<a class="headerlink" href="#step-2-the-header-and-the-implementation" title="Permanent link">&para;</a></h2>
+<div class="highlight"><span class="filename">CourseBoard.h</span><pre><span></span><code><span class="c1">// CourseBoard.h: what the library offers</span>
+<span class="cp">#pragma once              </span><span class="c1">// include this file only once</span>
+<span class="cp">#include</span><span class="w"> </span><span class="cpf">&lt;Arduino.h&gt;</span>
+
+<span class="kt">void</span><span class="w"> </span><span class="nf">boardBegin</span><span class="p">();</span><span class="w">                </span><span class="c1">// LEDs + buttons</span>
+<span class="kt">void</span><span class="w"> </span><span class="nf">setLed</span><span class="p">(</span><span class="kt">int</span><span class="w"> </span><span class="n">index</span><span class="p">,</span><span class="w"> </span><span class="kt">bool</span><span class="w"> </span><span class="n">on</span><span class="p">);</span><span class="w">  </span><span class="c1">// index 0..3</span>
+<span class="kt">void</span><span class="w"> </span><span class="nf">showBinary</span><span class="p">(</span><span class="kt">uint8_t</span><span class="w"> </span><span class="n">value</span><span class="p">);</span><span class="w">   </span><span class="c1">// 4 bits on the LEDs</span>
+<span class="kt">bool</span><span class="w"> </span><span class="nf">keyPressed</span><span class="p">(</span><span class="kt">int</span><span class="w"> </span><span class="n">key</span><span class="p">);</span><span class="w">         </span><span class="c1">// key 1 or 2</span>
+</code></pre></div>
+<p><a download="download" href="../examples/breadboard-libraries/CourseBoard.h">Download this example</a></p>
+<ul>
+<li>
+<p>The header holds only <strong>declarations</strong>: the “menu” of the library.</p>
+</li>
+<li>
+<p><code>#pragma once</code> prevents errors when the header is included twice.</p>
+</li>
+<li>
+<p>Comments in the header are the user’s documentation.</p>
+</li>
+</ul>
+<div class="highlight"><span class="filename">CourseBoard.cpp</span><pre><span></span><code><span class="c1">// CourseBoard.cpp: how it works</span>
+<span class="cp">#include</span><span class="w"> </span><span class="cpf">"CourseBoard.h"</span>
+
+<span class="c1">// static: only visible inside this file (private)</span>
+<span class="k">static</span><span class="w"> </span><span class="k">const</span><span class="w"> </span><span class="kt">int</span><span class="w"> </span><span class="n">LEDS</span><span class="p">[</span><span class="mi">4</span><span class="p">]</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">{</span><span class="mi">23</span><span class="p">,</span><span class="w"> </span><span class="mi">22</span><span class="p">,</span><span class="w"> </span><span class="mi">21</span><span class="p">,</span><span class="w"> </span><span class="mi">4</span><span class="p">};</span>
+<span class="k">static</span><span class="w"> </span><span class="k">const</span><span class="w"> </span><span class="kt">int</span><span class="w"> </span><span class="n">KEYS</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">{</span><span class="mi">34</span><span class="p">,</span><span class="w"> </span><span class="mi">35</span><span class="p">};</span>
+
+<span class="kt">void</span><span class="w"> </span><span class="nf">boardBegin</span><span class="p">()</span><span class="w"> </span><span class="p">{</span>
+<span class="w">  </span><span class="k">for</span><span class="w"> </span><span class="p">(</span><span class="kt">int</span><span class="w"> </span><span class="n">i</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">0</span><span class="p">;</span><span class="w"> </span><span class="n">i</span><span class="w"> </span><span class="o">&lt;</span><span class="w"> </span><span class="mi">4</span><span class="p">;</span><span class="w"> </span><span class="n">i</span><span class="o">++</span><span class="p">)</span><span class="w"> </span><span class="n">pinMode</span><span class="p">(</span><span class="n">LEDS</span><span class="p">[</span><span class="n">i</span><span class="p">],</span><span class="w"> </span><span class="n">OUTPUT</span><span class="p">);</span>
+<span class="w">  </span><span class="k">for</span><span class="w"> </span><span class="p">(</span><span class="kt">int</span><span class="w"> </span><span class="n">i</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">0</span><span class="p">;</span><span class="w"> </span><span class="n">i</span><span class="w"> </span><span class="o">&lt;</span><span class="w"> </span><span class="mi">2</span><span class="p">;</span><span class="w"> </span><span class="n">i</span><span class="o">++</span><span class="p">)</span><span class="w"> </span><span class="n">pinMode</span><span class="p">(</span><span class="n">KEYS</span><span class="p">[</span><span class="n">i</span><span class="p">],</span><span class="w"> </span><span class="n">INPUT</span><span class="p">);</span>
+<span class="p">}</span>
+
+<span class="kt">void</span><span class="w"> </span><span class="nf">setLed</span><span class="p">(</span><span class="kt">int</span><span class="w"> </span><span class="n">index</span><span class="p">,</span><span class="w"> </span><span class="kt">bool</span><span class="w"> </span><span class="n">on</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">  </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">index</span><span class="w"> </span><span class="o">&gt;=</span><span class="w"> </span><span class="mi">0</span><span class="w"> </span><span class="o">&amp;&amp;</span><span class="w"> </span><span class="n">index</span><span class="w"> </span><span class="o">&lt;</span><span class="w"> </span><span class="mi">4</span><span class="p">)</span><span class="w"> </span><span class="n">digitalWrite</span><span class="p">(</span><span class="n">LEDS</span><span class="p">[</span><span class="n">index</span><span class="p">],</span><span class="w"> </span><span class="n">on</span><span class="p">);</span>
+<span class="p">}</span>
+
+<span class="kt">void</span><span class="w"> </span><span class="nf">showBinary</span><span class="p">(</span><span class="kt">uint8_t</span><span class="w"> </span><span class="n">value</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">  </span><span class="k">for</span><span class="w"> </span><span class="p">(</span><span class="kt">int</span><span class="w"> </span><span class="n">i</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">0</span><span class="p">;</span><span class="w"> </span><span class="n">i</span><span class="w"> </span><span class="o">&lt;</span><span class="w"> </span><span class="mi">4</span><span class="p">;</span><span class="w"> </span><span class="n">i</span><span class="o">++</span><span class="p">)</span><span class="w"> </span><span class="n">setLed</span><span class="p">(</span><span class="n">i</span><span class="p">,</span><span class="w"> </span><span class="p">(</span><span class="n">value</span><span class="w"> </span><span class="o">&gt;&gt;</span><span class="w"> </span><span class="n">i</span><span class="p">)</span><span class="w"> </span><span class="o">&amp;</span><span class="w"> </span><span class="mi">1</span><span class="p">);</span>
+<span class="p">}</span>
+
+<span class="kt">bool</span><span class="w"> </span><span class="nf">keyPressed</span><span class="p">(</span><span class="kt">int</span><span class="w"> </span><span class="n">key</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">  </span><span class="k">return</span><span class="w"> </span><span class="n">digitalRead</span><span class="p">(</span><span class="n">KEYS</span><span class="p">[</span><span class="n">key</span><span class="w"> </span><span class="o">-</span><span class="w"> </span><span class="mi">1</span><span class="p">])</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="n">HIGH</span><span class="p">;</span><span class="w">   </span><span class="c1">// active HIGH</span>
+<span class="p">}</span>
+</code></pre></div>
+<p><a download="download" href="../examples/breadboard-libraries/CourseBoard.cpp">Download this example</a></p>
+<p><em>Sources: <a href="../references/#arduino-library-guide">Writing a Library for Arduino</a></em></p>
+<h2 id="step-3-use-your-library">Step 3: use your library<a class="headerlink" href="#step-3-use-your-library" title="Permanent link">&para;</a></h2>
+<div class="highlight"><span class="filename">counter.ino</span><pre><span></span><code><span class="cp">#include</span><span class="w"> </span><span class="cpf">"CourseBoard.h"</span><span class="w">    </span><span class="c1">// our own tab</span>
+
+<span class="kt">uint8_t</span><span class="w"> </span><span class="n">counter</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">0</span><span class="p">;</span>
+<span class="kt">bool</span><span class="w"> </span><span class="n">lastKey</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nb">false</span><span class="p">;</span>
+
+<span class="kt">void</span><span class="w"> </span><span class="nf">setup</span><span class="p">()</span><span class="w"> </span><span class="p">{</span>
+<span class="w">  </span><span class="n">boardBegin</span><span class="p">();</span>
+<span class="p">}</span>
+
+<span class="kt">void</span><span class="w"> </span><span class="nf">loop</span><span class="p">()</span><span class="w"> </span><span class="p">{</span>
+<span class="w">  </span><span class="kt">bool</span><span class="w"> </span><span class="n">key</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">keyPressed</span><span class="p">(</span><span class="mi">1</span><span class="p">);</span>
+<span class="w">  </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">key</span><span class="w"> </span><span class="o">&amp;&amp;</span><span class="w"> </span><span class="o">!</span><span class="n">lastKey</span><span class="p">)</span><span class="w"> </span><span class="p">{</span><span class="w">      </span><span class="c1">// new press</span>
+<span class="w">    </span><span class="n">counter</span><span class="o">++</span><span class="p">;</span>
+<span class="w">    </span><span class="n">showBinary</span><span class="p">(</span><span class="n">counter</span><span class="p">);</span><span class="w">      </span><span class="c1">// 0..15 on the LEDs</span>
+<span class="w">  </span><span class="p">}</span>
+<span class="w">  </span><span class="n">lastKey</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">key</span><span class="p">;</span>
+<span class="w">  </span><span class="n">delay</span><span class="p">(</span><span class="mi">20</span><span class="p">);</span>
+<span class="p">}</span>
+</code></pre></div>
+<p><a download="download" href="../examples/breadboard-libraries/counter.ino">Download this example</a></p>
+<ul>
+<li>
+<p>The sketch no longer knows <strong>which pins</strong> are used, or that the buttons are active HIGH.</p>
+</li>
+<li>
+<p>A board with other pins? Only <code>CourseBoard.cpp</code> changes; every sketch keeps working.</p>
+</li>
+<li>
+<p>The names (<code>boardBegin</code>, <code>showBinary</code>) make <code>loop()</code> readable.</p>
+</li>
+</ul>
+<div class="admonition warning">
+<p class="admonition-title">Typical errors</p>
+<p><code>undefined reference to ‘showBinary’</code>: declared in the <code>.h</code> but not defined in the <code>.cpp</code> (or a typo). <code>CourseBoard.h: No such file</code>: the tab is missing or misspelled.</p>
+</div>
+<h2 id="step-4-a-library-with-a-class">Step 4: a library with a class<a class="headerlink" href="#step-4-a-library-with-a-class" title="Permanent link">&para;</a></h2>
+<div class="highlight"><span class="filename">Blinker.h</span><pre><span></span><code><span class="cp">#pragma once</span>
+<span class="cp">#include</span><span class="w"> </span><span class="cpf">&lt;Arduino.h&gt;</span>
+<span class="k">class</span><span class="w"> </span><span class="nc">Blinker</span><span class="w"> </span><span class="p">{</span>
+<span class="w">  </span><span class="k">public</span><span class="o">:</span><span class="w">                                  </span><span class="c1">// what users may call</span>
+<span class="w">    </span><span class="n">Blinker</span><span class="p">(</span><span class="kt">int</span><span class="w"> </span><span class="n">pin</span><span class="p">,</span><span class="w"> </span><span class="kt">unsigned</span><span class="w"> </span><span class="kt">long</span><span class="w"> </span><span class="n">ms</span><span class="p">);</span><span class="w">    </span><span class="c1">// constructor</span>
+<span class="w">    </span><span class="kt">void</span><span class="w"> </span><span class="nf">begin</span><span class="p">();</span>
+<span class="w">    </span><span class="kt">void</span><span class="w"> </span><span class="nf">update</span><span class="p">();</span><span class="w">                         </span><span class="c1">// call often in loop()</span>
+<span class="w">  </span><span class="k">private</span><span class="o">:</span><span class="w">                                 </span><span class="c1">// internal state</span>
+<span class="w">    </span><span class="kt">int</span><span class="w"> </span><span class="n">_pin</span><span class="p">;</span>
+<span class="w">    </span><span class="kt">unsigned</span><span class="w"> </span><span class="kt">long</span><span class="w"> </span><span class="n">_interval</span><span class="p">;</span>
+<span class="w">    </span><span class="kt">unsigned</span><span class="w"> </span><span class="kt">long</span><span class="w"> </span><span class="n">_last</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">0</span><span class="p">;</span>
+<span class="w">    </span><span class="kt">bool</span><span class="w"> </span><span class="n">_on</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nb">false</span><span class="p">;</span>
+<span class="p">};</span>
+</code></pre></div>
+<p><a download="download" href="../examples/breadboard-libraries/Blinker.h">Download this example</a></p>
+<ul>
+<li>
+<p>A <strong>class</strong> bundles data (pin, interval, state) and functions.</p>
+</li>
+<li>
+<p>Each <strong>object</strong> has its own data: two LEDs, two speeds, one code.</p>
+</li>
+<li>
+<p>Exactly how <code>DHT dht(25, DHT22); dht.begin();</code> works.</p>
+</li>
+</ul>
+<div class="highlight"><span class="filename">Blinker.cpp</span><pre><span></span><code><span class="cp">#include</span><span class="w"> </span><span class="cpf">"Blinker.h"</span>
+<span class="n">Blinker</span><span class="o">::</span><span class="n">Blinker</span><span class="p">(</span><span class="kt">int</span><span class="w"> </span><span class="n">pin</span><span class="p">,</span><span class="w"> </span><span class="kt">unsigned</span><span class="w"> </span><span class="kt">long</span><span class="w"> </span><span class="n">ms</span><span class="p">)</span>
+<span class="w">  </span><span class="o">:</span><span class="w"> </span><span class="n">_pin</span><span class="p">(</span><span class="n">pin</span><span class="p">),</span><span class="w"> </span><span class="n">_interval</span><span class="p">(</span><span class="n">ms</span><span class="p">)</span><span class="w"> </span><span class="p">{}</span>
+<span class="kt">void</span><span class="w"> </span><span class="n">Blinker</span><span class="o">::</span><span class="n">begin</span><span class="p">()</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="n">pinMode</span><span class="p">(</span><span class="n">_pin</span><span class="p">,</span><span class="w"> </span><span class="n">OUTPUT</span><span class="p">);</span><span class="w"> </span><span class="p">}</span>
+<span class="kt">void</span><span class="w"> </span><span class="n">Blinker</span><span class="o">::</span><span class="n">update</span><span class="p">()</span><span class="w"> </span><span class="p">{</span><span class="w">               </span><span class="c1">// non-blocking</span>
+<span class="w">  </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">millis</span><span class="p">()</span><span class="w"> </span><span class="o">-</span><span class="w"> </span><span class="n">_last</span><span class="w"> </span><span class="o">&gt;=</span><span class="w"> </span><span class="n">_interval</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="n">_last</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">millis</span><span class="p">();</span>
+<span class="w">    </span><span class="n">_on</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="o">!</span><span class="n">_on</span><span class="p">;</span>
+<span class="w">    </span><span class="n">digitalWrite</span><span class="p">(</span><span class="n">_pin</span><span class="p">,</span><span class="w"> </span><span class="n">_on</span><span class="p">);</span>
+<span class="w">  </span><span class="p">}</span>
+<span class="p">}</span>
+</code></pre></div>
+<p><a download="download" href="../examples/breadboard-libraries/Blinker.cpp">Download this example</a></p>
+<div class="highlight"><span class="filename">blink_two.ino</span><pre><span></span><code><span class="cp">#include</span><span class="w"> </span><span class="cpf">"Blinker.h"</span>
+<span class="n">Blinker</span><span class="w"> </span><span class="nf">blue</span><span class="p">(</span><span class="mi">23</span><span class="p">,</span><span class="w"> </span><span class="mi">250</span><span class="p">),</span><span class="w"> </span><span class="n">red</span><span class="p">(</span><span class="mi">21</span><span class="p">,</span><span class="w"> </span><span class="mi">1000</span><span class="p">);</span><span class="w">   </span><span class="c1">// two objects</span>
+<span class="kt">void</span><span class="w"> </span><span class="nf">setup</span><span class="p">()</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="n">blue</span><span class="p">.</span><span class="n">begin</span><span class="p">();</span><span class="w"> </span><span class="n">red</span><span class="p">.</span><span class="n">begin</span><span class="p">();</span><span class="w"> </span><span class="p">}</span>
+<span class="kt">void</span><span class="w"> </span><span class="nf">loop</span><span class="p">()</span><span class="w">  </span><span class="p">{</span><span class="w"> </span><span class="n">blue</span><span class="p">.</span><span class="n">update</span><span class="p">();</span><span class="w"> </span><span class="n">red</span><span class="p">.</span><span class="n">update</span><span class="p">();</span><span class="w"> </span><span class="p">}</span>
+</code></pre></div>
+<p><a download="download" href="../examples/breadboard-libraries/blink_two.ino">Download this example</a></p>
+<p><em>Sources: <a href="../references/#arduino-library-guide">Writing a Library for Arduino</a></em></p>
+<h2 id="step-5-install-it-as-a-real-library">Step 5: install it as a real library<a class="headerlink" href="#step-5-install-it-as-a-real-library" title="Permanent link">&para;</a></h2>
+<div class="highlight"><span class="filename">Documents/Arduino/libraries/</span><pre><span></span><code>CourseBoard/
+  library.properties
+  README.md
+  keywords.txt          (optional: colours in the IDE)
+  src/
+    CourseBoard.h
+    CourseBoard.cpp
+    Blinker.h
+    Blinker.cpp
+  examples/
+    Counter/
+      Counter.ino
+    BlinkTwo/
+      BlinkTwo.ino
+</code></pre></div>
+<p><a download="download" href="../examples/breadboard-libraries/DocumentsofArduinooflibrariesof.txt">Download this example</a></p>
+<p>Restart the IDE: the library appears in <em>Sketch <span class="arithmatex">\(\rightarrow\)</span> Include Library</em> and its examples in <em>File <span class="arithmatex">\(\rightarrow\)</span> Examples</em>.</p>
+<div class="highlight"><span class="filename">library.properties</span><pre><span></span><code>name=CourseBoard
+version=1.0.0
+author=Your Name
+maintainer=Your Name &lt;you@example.com&gt;
+sentence=Helpers for the Embedded Programming course board.
+paragraph=LEDs, buttons and a non-blocking Blinker class.
+category=Device Control
+url=https://github.com/you/CourseBoard
+architectures=esp32
+</code></pre></div>
+<p><a download="download" href="../examples/breadboard-libraries/library.properties">Download this example</a></p>
+<ul>
+<li>
+<p>In sketches now: <code>#include &lt;CourseBoard.h&gt;</code> (angle brackets).</p>
+</li>
+<li>
+<p>Share it as a ZIP: <em>Sketch <span class="arithmatex">\(\rightarrow\)</span> Include Library <span class="arithmatex">\(\rightarrow\)</span> Add .ZIP Library</em>.</p>
+</li>
+<li>
+<p>Increase <code>version</code> at every change; keep it in Git.</p>
+</li>
+</ul>
+<p><em>Sources: Library specification <a href="../references/#arduino-library-spec">Library specification</a></em></p>
+<h2 id="good-practices-for-your-own-library">Good practices for your own library<a class="headerlink" href="#good-practices-for-your-own-library" title="Permanent link">&para;</a></h2>
+<ul>
+<li>
+<p><strong>Unique names</strong>: a prefix or a class avoids clashes with other libraries (<code>boardBegin</code>, not <code>begin</code>).</p>
+</li>
+<li>
+<p><strong>Configurable</strong>: pins via the constructor or <code>begin(pin)</code>, not hard-coded where possible.</p>
+</li>
+<li>
+<p><strong>Non-blocking</strong>: no long <code>delay()</code> inside; offer an <code>update()</code> for <code>loop()</code>.</p>
+</li>
+<li>
+<p><strong>Private by default</strong>: <code>static</code> helpers and <code>private:</code> members.</p>
+</li>
+</ul>
+<!-- -->
+
+<ul>
+<li>
+<p><strong>Document</strong> every function in the header (what, units, ranges).</p>
+</li>
+<li>
+<p>Ship at least one <strong>example</strong> sketch per feature.</p>
+</li>
+<li>
+<p>Test each function on its own before using the library in a project.</p>
+</li>
+<li>
+<p><strong>Version</strong> it and keep it in Git.</p>
+</li>
+</ul>
+<div class="admonition info">
+<p class="admonition-title">Include guards</p>
+<p><code>#pragma once</code> is short and supported everywhere in Arduino. The classic form is <code>#ifndef COURSEBOARD_H</code> / <code>#define COURSEBOARD_H</code> … <code>#endif</code>.</p>
+</div>
+<p><em>Sources: <a href="../references/#arduino-library-guide">Writing a Library for Arduino</a>; <a href="../references/#arduino-library-spec">Library specification</a></em></p>
+<h2 id="quiz-your-own-library">Quiz: your own library<a class="headerlink" href="#quiz-your-own-library" title="Permanent link">&para;</a></h2>
+<ol>
+<li>
+<p>What goes in the <code>.h</code> file and what in the <code>.cpp</code> file?</p>
+<p><details class="lecture-answer"><summary>Check your answer</summary><p><code>.h</code>: declarations (what is available). <code>.cpp</code>: definitions (the code).</p></details></p>
+</li>
+<li>
+<p>When do you write <code>#include "CourseBoard.h"</code> and when <code>#include &lt;CourseBoard.h&gt;</code>?</p>
+<p><details class="lecture-answer"><summary>Check your answer</summary><p>Quotes: a tab in the sketch folder. Angle brackets: an installed library.</p></details></p>
+</li>
+<li>
+<p>The compiler says <code>undefined reference to ‘setLed’</code>. What is missing?</p>
+<p><details class="lecture-answer"><summary>Check your answer</summary><p>The definition of <code>setLed()</code> in the <code>.cpp</code> file (or the <code>.cpp</code> is not in the sketch/library folder).</p></details></p>
+</li>
+<li>
+<p>Why use a class for <code>Blinker</code> instead of global variables?</p>
+<p><details class="lecture-answer"><summary>Check your answer</summary><p>Each object keeps its own pin, interval and state: many blinkers with one piece of code.</p></details></p>
+</li>
+</ol>
+<h2 id="exercises-breadboard-and-libraries">Exercises: breadboard and libraries<a class="headerlink" href="#exercises-breadboard-and-libraries" title="Permanent link">&para;</a></h2>
+<div class="admonition example">
+<p class="admonition-title">Exercise 1 – First breadboard circuit</p>
+<p>Build an LED with resistor and a button (with <code>INPUT_PULLUP</code>) on the breadboard on GPIO 25 and 26. Reproduce the toggle example.</p>
+</div>
+<div class="admonition example">
+<p class="admonition-title">Exercise 2 – Install and explore</p>
+<p>Install the DHT library, run its example, then rewrite it in your own style: constants, a function <code>bool readClimate(float &amp;t, float &amp;h)</code>.</p>
+</div>
+<div class="admonition example">
+<p class="admonition-title">Exercise 3 – Display your data</p>
+<p>Show the temperature and the potentiometer value on the OLED, updated every second without <code>delay()</code>.</p>
+</div>
+<div class="admonition example">
+<p class="admonition-title">Exercise 4 – Your CourseBoard library</p>
+<p>Build the <code>CourseBoard</code> library with <code>Blinker</code> and a debounced <code>Button</code> class (<code>pressed()</code> returns <code>true</code> once per press). Install it, add two examples, and put it on GitHub.</p>
+</div>
+<h2 id="further-material-breadboard-and-libraries">Further material: breadboard and libraries<a class="headerlink" href="#further-material-breadboard-and-libraries" title="Permanent link">&para;</a></h2>
+<h3 id="read">Read<a class="headerlink" href="#read" title="Permanent link">&para;</a></h3>
+<ul>
+<li>
+<p><a href="https://learn.sparkfun.com/tutorials/how-to-use-a-breadboard">How to use a breadboard (SparkFun)</a></p>
+</li>
+<li>
+<p><a href="https://docs.espressif.com/projects/arduino-esp32/en/latest/libraries.html">Arduino-ESP32 libraries</a></p>
+</li>
+<li>
+<p><a href="https://docs.arduino.cc/learn/contributions/arduino-creating-library-guide/">Writing a library for Arduino</a></p>
+</li>
+<li>
+<p><a href="https://arduino.github.io/arduino-cli/latest/library-specification/">Arduino library specification</a></p>
+</li>
+</ul>
+<h3 id="watch">Watch<a class="headerlink" href="#watch" title="Permanent link">&para;</a></h3>
+<ul>
+<li>
+<p><a href="https://www.youtube.com/results?search_query=how+to+use+a+breadboard">YouTube: how to use a breadboard</a></p>
+</li>
+<li>
+<p><a href="https://www.youtube.com/results?search_query=arduino+ide+2+install+library">YouTube: install Arduino libraries</a></p>
+</li>
+</ul>
+<h3 id="try-it">Try it<a class="headerlink" href="#try-it" title="Permanent link">&para;</a></h3>
+<ul>
+<li>
+<p><a href="https://wokwi.com/projects/new/esp32">Wokwi: ESP32 simulator with parts</a></p>
+</li>
+<li>
+<p><a href="https://github.com/adafruit/Adafruit_SSD1306">Adafruit SSD1306 library</a></p>
+</li>
+<li>
+<p><a href="https://github.com/adafruit/DHT-sensor-library">DHT sensor library</a></p>
+</li>
+</ul>
+
+
+
+
+
+
+
+  
+  
+
+
+
+
+
+
+                
+              </article>
+            </div>
+          
+          
+  <script>var tabs=__md_get("__tabs");if(Array.isArray(tabs))e:for(var set of document.querySelectorAll(".tabbed-set")){var labels=set.querySelector(".tabbed-labels");for(var tab of tabs)for(var label of labels.getElementsByTagName("label"))if(label.innerText.trim()===tab){var input=document.getElementById(label.htmlFor);input.checked=!0;continue e}}</script>
+
+<script>var target=document.getElementById(location.hash.slice(1));target&&target.name&&(target.checked=target.name.startsWith("__tabbed_"))</script>
+        </div>
+        
+          <button type="button" class="md-top md-icon" data-md-component="top" hidden>
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M13 20h-2V8l-5.5 5.5-1.42-1.42L12 4.16l7.92 7.92-1.42 1.42L13 8z"/></svg>
+  Back to top
+</button>
+        
+      </main>
+      
+        <footer class="md-footer">
+  
+    
+      
+      <nav class="md-footer__inner md-grid" aria-label="Footer" >
+        
+          
+          <a href="../timing-interrupts/" class="md-footer__link md-footer__link--prev" aria-label="Previous: Timing, interrupts &amp; timers">
+            <div class="md-footer__button md-icon">
+              
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11z"/></svg>
+            </div>
+            <div class="md-footer__title">
+              <span class="md-footer__direction">
+                Previous
+              </span>
+              <div class="md-ellipsis">
+                Timing, interrupts & timers
+              </div>
+            </div>
+          </a>
+        
+        
+          
+          <a href="../serial-uart/" class="md-footer__link md-footer__link--next" aria-label="Next: Serial communication &amp; UART">
+            <div class="md-footer__title">
+              <span class="md-footer__direction">
+                Next
+              </span>
+              <div class="md-ellipsis">
+                Serial communication & UART
+              </div>
+            </div>
+            <div class="md-footer__button md-icon">
+              
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M4 11v2h12l-5.5 5.5 1.42 1.42L19.84 12l-7.92-7.92L10.5 5.5 16 11z"/></svg>
+            </div>
+          </a>
+        
+      </nav>
+    
+  
+  <div class="md-footer-meta md-typeset">
+    <div class="md-footer-meta__inner md-grid">
+      <div class="md-copyright">
+  
+  
+    Made with
+    <a href="https://squidfunk.github.io/mkdocs-material/" target="_blank" rel="noopener">
+      Material for MkDocs
+    </a>
+  
+</div>
+      
+    </div>
+  </div>
+</footer>
+      
+    </div>
+    <div class="md-dialog" data-md-component="dialog">
+      <div class="md-dialog__inner md-typeset"></div>
+    </div>
+    
+      <div class="md-progress" data-md-component="progress" role="progressbar"></div>
+    
+    
+    
+      
+      
+      <script id="__config" type="application/json">{"annotate": null, "base": "../..", "features": ["navigation.tabs", "navigation.tabs.sticky", "navigation.instant", "navigation.instant.progress", "navigation.tracking", "navigation.top", "navigation.footer", "content.code.copy", "content.tabs.link", "search.suggest", "search.highlight", "toc.follow"], "search": "../../assets/javascripts/workers/search.a7633da7.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": null}</script>
+    
+    
+      <script src="../../assets/javascripts/bundle.c21346df.min.js"></script>
+      
+        <script src="../../javascripts/mathjax.js"></script>
+      
+        <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+      
+        <script src="../../javascripts/dashboard.js"></script>
+      
+    
+  </body>
+</html>

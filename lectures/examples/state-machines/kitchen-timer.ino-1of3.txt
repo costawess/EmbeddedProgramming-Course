@@ -1,0 +1,19 @@
+// Course board: KEY1 starts/cancels/acknowledges a fixed 10-second timer.
+enum TimerState { READY, RUNNING, DONE };
+TimerState state = READY;
+const int BUTTON = 34, BLUE_LED = 23, RED_LED = 21;
+const unsigned long DURATION = 10000UL;
+unsigned long enteredAt = 0;
+
+bool pressEvent(unsigned long now) {
+  static bool lastRaw = false, stable = false;
+  static unsigned long changedAt = 0;
+  bool raw = digitalRead(BUTTON) == HIGH;
+  if (raw != lastRaw) {
+    lastRaw = raw;
+    changedAt = now;
+  }
+  if (now - changedAt < 30UL || raw == stable) return false;
+  stable = raw;
+  return stable;  // true only on a debounced LOW-to-HIGH edge
+}

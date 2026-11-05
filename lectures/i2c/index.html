@@ -1,0 +1,2936 @@
+
+<!doctype html>
+<html lang="en" class="no-js">
+  <head>
+    
+      <meta charset="utf-8">
+      <meta name="viewport" content="width=device-width,initial-scale=1">
+      
+        <meta name="description" content="Embedded Programming lectures, practical tutorials, and interactive ESP32 simulations at Hanze.">
+      
+      
+      
+        <link rel="canonical" href="https://costawess.github.io/EmbeddedProgramming-Course/lectures/i2c/">
+      
+      
+        <link rel="prev" href="../serial-uart/">
+      
+      
+        <link rel="next" href="../spi-logic-analyzer/">
+      
+      
+        
+      
+      
+      <link rel="icon" href="../../assets/images/favicon.png">
+      <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.8.0">
+    
+    
+      
+        <title>The I2C Bus - Embedded Programming</title>
+      
+    
+    
+      <link rel="stylesheet" href="../../assets/stylesheets/main.57a0d79d.min.css">
+      
+        
+        <link rel="stylesheet" href="../../assets/stylesheets/palette.fb2fffe2.min.css">
+      
+      
+
+
+    
+    
+      
+    
+    
+      
+        
+        
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,300i,400,400i,700,700i%7CRoboto+Mono:400,400i,700,700i&display=fallback">
+        <style>:root{--md-text-font:"Roboto";--md-code-font:"Roboto Mono"}</style>
+      
+    
+    
+      <link rel="stylesheet" href="../../stylesheets/extra.css">
+    
+    <script>__md_scope=new URL("../..",location),__md_hash=e=>[...e].reduce(((e,_)=>(e<<5)-e+_.charCodeAt(0)),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
+    
+      
+
+    
+    
+  </head>
+  
+  
+    
+    
+      
+    
+    
+    
+    
+    <body dir="ltr" data-md-color-scheme="slate" data-md-color-primary="indigo" data-md-color-accent="indigo">
+  
+    
+    <input class="md-toggle" data-md-toggle="drawer" type="checkbox" id="__drawer" autocomplete="off">
+    <input class="md-toggle" data-md-toggle="search" type="checkbox" id="__search" autocomplete="off">
+    <label class="md-overlay" for="__drawer"></label>
+    <div data-md-component="skip">
+      
+        
+        <a href="#the-i2c-bus" class="md-skip">
+          Skip to content
+        </a>
+      
+    </div>
+    <div data-md-component="announce">
+      
+    </div>
+    
+    
+      
+
+  
+
+<header class="md-header md-header--shadow md-header--lifted" data-md-component="header">
+  <nav class="md-header__inner md-grid" aria-label="Header">
+    <a href="../.." title="Embedded Programming" class="md-header__button md-logo" aria-label="Embedded Programming" data-md-component="logo">
+      
+  <img src="../../assets/hanze_logo.png" alt="logo">
+
+    </a>
+    <label class="md-header__button md-icon" for="__drawer">
+      
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M3 6h18v2H3zm0 5h18v2H3zm0 5h18v2H3z"/></svg>
+    </label>
+    <div class="md-header__title" data-md-component="header-title">
+      <div class="md-header__ellipsis">
+        <div class="md-header__topic">
+          <span class="md-ellipsis">
+            Embedded Programming
+          </span>
+        </div>
+        <div class="md-header__topic" data-md-component="header-topic">
+          <span class="md-ellipsis">
+            
+              The I2C Bus
+            
+          </span>
+        </div>
+      </div>
+    </div>
+    
+      
+        <form class="md-header__option" data-md-component="palette">
+  
+    
+    
+    
+    <input class="md-option" data-md-color-media="" data-md-color-scheme="slate" data-md-color-primary="indigo" data-md-color-accent="indigo"  aria-label="Switch to light mode"  type="radio" name="__palette" id="__palette_0">
+    
+      <label class="md-header__button md-icon" title="Switch to light mode" for="__palette_1" hidden>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 7a5 5 0 0 1 5 5 5 5 0 0 1-5 5 5 5 0 0 1-5-5 5 5 0 0 1 5-5m0 2a3 3 0 0 0-3 3 3 3 0 0 0 3 3 3 3 0 0 0 3-3 3 3 0 0 0-3-3m0-7 2.39 3.42C13.65 5.15 12.84 5 12 5s-1.65.15-2.39.42zM3.34 7l4.16-.35A7.2 7.2 0 0 0 5.94 8.5c-.44.74-.69 1.5-.83 2.29zm.02 10 1.76-3.77a7.131 7.131 0 0 0 2.38 4.14zM20.65 7l-1.77 3.79a7.02 7.02 0 0 0-2.38-4.15zm-.01 10-4.14.36c.59-.51 1.12-1.14 1.54-1.86.42-.73.69-1.5.83-2.29zM12 22l-2.41-3.44c.74.27 1.55.44 2.41.44.82 0 1.63-.17 2.37-.44z"/></svg>
+      </label>
+    
+  
+    
+    
+    
+    <input class="md-option" data-md-color-media="" data-md-color-scheme="default" data-md-color-primary="indigo" data-md-color-accent="indigo"  aria-label="Switch to dark mode"  type="radio" name="__palette" id="__palette_1">
+    
+      <label class="md-header__button md-icon" title="Switch to dark mode" for="__palette_0" hidden>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="m17.75 4.09-2.53 1.94.91 3.06-2.63-1.81-2.63 1.81.91-3.06-2.53-1.94L12.44 4l1.06-3 1.06 3zm3.5 6.91-1.64 1.25.59 1.98-1.7-1.17-1.7 1.17.59-1.98L15.75 11l2.06-.05L18.5 9l.69 1.95zm-2.28 4.95c.83-.08 1.72 1.1 1.19 1.85-.32.45-.66.87-1.08 1.27C15.17 23 8.84 23 4.94 19.07c-3.91-3.9-3.91-10.24 0-14.14.4-.4.82-.76 1.27-1.08.75-.53 1.93.36 1.85 1.19-.27 2.86.69 5.83 2.89 8.02a9.96 9.96 0 0 0 8.02 2.89m-1.64 2.02a12.08 12.08 0 0 1-7.8-3.47c-2.17-2.19-3.33-5-3.49-7.82-2.81 3.14-2.7 7.96.31 10.98 3.02 3.01 7.84 3.12 10.98.31"/></svg>
+      </label>
+    
+  
+</form>
+      
+    
+    
+      <script>var palette=__md_get("__palette");if(palette&&palette.color){if("(prefers-color-scheme)"===palette.color.media){var media=matchMedia("(prefers-color-scheme: light)"),input=document.querySelector(media.matches?"[data-md-color-media='(prefers-color-scheme: light)']":"[data-md-color-media='(prefers-color-scheme: dark)']");palette.color.media=input.getAttribute("data-md-color-media"),palette.color.scheme=input.getAttribute("data-md-color-scheme"),palette.color.primary=input.getAttribute("data-md-color-primary"),palette.color.accent=input.getAttribute("data-md-color-accent")}for(var[key,value]of Object.entries(palette.color))document.body.setAttribute("data-md-color-"+key,value)}</script>
+    
+    
+    
+      
+      
+        <label class="md-header__button md-icon" for="__search">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+        </label>
+        <div class="md-search" data-md-component="search" role="dialog">
+  <label class="md-search__overlay" for="__search"></label>
+  <div class="md-search__inner" role="search">
+    <form class="md-search__form" name="search">
+      <input type="text" class="md-search__input" name="query" aria-label="Search" placeholder="Search" autocapitalize="off" autocorrect="off" autocomplete="off" spellcheck="false" data-md-component="search-query" required>
+      <label class="md-search__icon md-icon" for="__search">
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11z"/></svg>
+      </label>
+      <nav class="md-search__options" aria-label="Search">
+        
+        <button type="reset" class="md-search__icon md-icon" title="Clear" aria-label="Clear" tabindex="-1">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M19 6.41 17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/></svg>
+        </button>
+      </nav>
+      
+        <div class="md-search__suggest" data-md-component="search-suggest"></div>
+      
+    </form>
+    <div class="md-search__output">
+      <div class="md-search__scrollwrap" tabindex="0" data-md-scrollfix>
+        <div class="md-search-result" data-md-component="search-result">
+          <div class="md-search-result__meta">
+            Initializing search
+          </div>
+          <ol class="md-search-result__list" role="presentation"></ol>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+      
+    
+    
+      <div class="md-header__source">
+        <a href="https://github.com/costawess/EmbeddedProgramming-Course" title="Go to repository" class="md-source" data-md-component="source">
+  <div class="md-source__icon md-icon">
+    
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--! Font Awesome Free 7.1.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2025 Fonticons, Inc.--><path d="M439.6 236.1 244 40.5c-5.4-5.5-12.8-8.5-20.4-8.5s-15 3-20.4 8.4L162.5 81l51.5 51.5c27.1-9.1 52.7 16.8 43.4 43.7l49.7 49.7c34.2-11.8 61.2 31 35.5 56.7-26.5 26.5-70.2-2.9-56-37.3L240.3 199v121.9c25.3 12.5 22.3 41.8 9.1 55-6.4 6.4-15.2 10.1-24.3 10.1s-17.8-3.6-24.3-10.1c-17.6-17.6-11.1-46.9 11.2-56v-123c-20.8-8.5-24.6-30.7-18.6-45L142.6 101 8.5 235.1C3 240.6 0 247.9 0 255.5s3 15 8.5 20.4l195.6 195.7c5.4 5.4 12.7 8.4 20.4 8.4s15-3 20.4-8.4l194.7-194.7c5.4-5.4 8.4-12.8 8.4-20.4s-3-15-8.4-20.4"/></svg>
+  </div>
+  <div class="md-source__repository">
+    EmbeddedProgramming-Course
+  </div>
+</a>
+      </div>
+    
+  </nav>
+  
+    
+      
+<nav class="md-tabs" aria-label="Tabs" data-md-component="tabs">
+  <div class="md-grid">
+    <ul class="md-tabs__list">
+      
+        
+  
+  
+  
+  
+    <li class="md-tabs__item">
+      <a href="../.." class="md-tabs__link">
+        
+  
+  
+    
+  
+  Home
+
+      </a>
+    </li>
+  
+
+      
+        
+  
+  
+  
+    
+  
+  
+    
+    
+      <li class="md-tabs__item md-tabs__item--active">
+        <a href="../" class="md-tabs__link">
+          
+  
+  
+  Lectures
+
+        </a>
+      </li>
+    
+  
+
+      
+        
+  
+  
+  
+  
+    
+    
+      <li class="md-tabs__item">
+        <a href="../../tutorials/" class="md-tabs__link">
+          
+  
+  
+  Tutorials
+
+        </a>
+      </li>
+    
+  
+
+      
+        
+  
+  
+  
+  
+    <li class="md-tabs__item">
+      <a href="../../dashboard/" class="md-tabs__link">
+        
+  
+  
+    
+  
+  Dashboard
+
+      </a>
+    </li>
+  
+
+      
+    </ul>
+  </div>
+</nav>
+    
+  
+</header>
+    
+    <div class="md-container" data-md-component="container">
+      
+      
+        
+      
+      <main class="md-main" data-md-component="main">
+        <div class="md-main__inner md-grid">
+          
+            
+              
+              <div class="md-sidebar md-sidebar--primary" data-md-component="sidebar" data-md-type="navigation" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+
+  
+
+
+<nav class="md-nav md-nav--primary md-nav--lifted" aria-label="Navigation" data-md-level="0">
+  <label class="md-nav__title" for="__drawer">
+    <a href="../.." title="Embedded Programming" class="md-nav__button md-logo" aria-label="Embedded Programming" data-md-component="logo">
+      
+  <img src="../../assets/hanze_logo.png" alt="logo">
+
+    </a>
+    Embedded Programming
+  </label>
+  
+    <div class="md-nav__source">
+      <a href="https://github.com/costawess/EmbeddedProgramming-Course" title="Go to repository" class="md-source" data-md-component="source">
+  <div class="md-source__icon md-icon">
+    
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--! Font Awesome Free 7.1.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2025 Fonticons, Inc.--><path d="M439.6 236.1 244 40.5c-5.4-5.5-12.8-8.5-20.4-8.5s-15 3-20.4 8.4L162.5 81l51.5 51.5c27.1-9.1 52.7 16.8 43.4 43.7l49.7 49.7c34.2-11.8 61.2 31 35.5 56.7-26.5 26.5-70.2-2.9-56-37.3L240.3 199v121.9c25.3 12.5 22.3 41.8 9.1 55-6.4 6.4-15.2 10.1-24.3 10.1s-17.8-3.6-24.3-10.1c-17.6-17.6-11.1-46.9 11.2-56v-123c-20.8-8.5-24.6-30.7-18.6-45L142.6 101 8.5 235.1C3 240.6 0 247.9 0 255.5s3 15 8.5 20.4l195.6 195.7c5.4 5.4 12.7 8.4 20.4 8.4s15-3 20.4-8.4l194.7-194.7c5.4-5.4 8.4-12.8 8.4-20.4s-3-15-8.4-20.4"/></svg>
+  </div>
+  <div class="md-source__repository">
+    EmbeddedProgramming-Course
+  </div>
+</a>
+    </div>
+  
+  <ul class="md-nav__list" data-md-scrollfix>
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../.." class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Home
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+    
+  
+  
+  
+    
+    
+    
+    
+      
+        
+        
+      
+      
+    
+    
+    <li class="md-nav__item md-nav__item--active md-nav__item--section md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_2" checked>
+        
+          
+          <label class="md-nav__link" for="__nav_2" id="__nav_2_label" tabindex="">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Lectures
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_2_label" aria-expanded="true">
+          <label class="md-nav__title" for="__nav_2">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Lectures
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Overview
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+    
+    
+      
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_2_2" >
+        
+          
+          <label class="md-nav__link" for="__nav_2_2" id="__nav_2_2_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Course & foundations
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_2_2_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_2_2">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Course & foundations
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../course/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Course organisation
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../how-programs-run/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    How programs run
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../esp32-introduction/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    The ESP32 family
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../architecture/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Architecture & memory
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+    
+    
+      
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_2_3" >
+        
+          
+          <label class="md-nav__link" for="__nav_2_3" id="__nav_2_3_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Hardware & setup
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_2_3_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_2_3">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Hardware & setup
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../pinout/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Pinout & electrical limits
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../course-board/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    The course board
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../arduino-ide/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Arduino IDE & first sketch
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+    
+    
+      
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_2_4" >
+        
+          
+          <label class="md-nav__link" for="__nav_2_4" id="__nav_2_4_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Programming
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_2_4_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_2_4">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Programming
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../variables-types/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Variables, types & numbers
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../flowcharts/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Flowcharts
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../functions-decisions/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Functions & decisions
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../loops-arrays/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Loops & arrays
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../structs/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Structs
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../code-quality-debugging/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Code quality & debugging
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+    
+    
+      
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_2_5" >
+        
+          
+          <label class="md-nav__link" for="__nav_2_5" id="__nav_2_5_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Inputs, outputs & timing
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_2_5_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_2_5">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Inputs, outputs & timing
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../digital-io/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Digital inputs & outputs
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../analog-pwm/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Analog input, PWM & DAC
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../timing-interrupts/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Timing, interrupts & timers
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../breadboard-libraries/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Breadboards & libraries
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+    
+  
+  
+  
+    
+    
+    
+    
+      
+      
+    
+    
+    <li class="md-nav__item md-nav__item--active md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_2_6" checked>
+        
+          
+          <label class="md-nav__link" for="__nav_2_6" id="__nav_2_6_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Communication & behaviour
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_2_6_label" aria-expanded="true">
+          <label class="md-nav__title" for="__nav_2_6">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Communication & behaviour
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../serial-uart/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Serial communication & UART
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+    
+  
+  
+  
+    <li class="md-nav__item md-nav__item--active">
+      
+      <input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
+      
+      
+        
+      
+      
+        <label class="md-nav__link md-nav__link--active" for="__toc">
+          
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    I2C
+  
+
+    
+  </span>
+  
+  
+
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <a href="./" class="md-nav__link md-nav__link--active">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    I2C
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+      
+        
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#i2c-at-a-glance" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        I2C at a glance
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#master-and-slaves" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Master and slaves
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#pull-up-resistors-and-open-drain-lines" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Pull-up resistors and open-drain lines
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#a-transaction-step-by-step-12" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        A transaction, step by step (1/2)
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#a-transaction-step-by-step-22" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        A transaction, step by step (2/2)
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#worked-example-the-bytes-on-the-wire" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Worked example: the bytes on the wire
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#i2c-scanning-the-bus-and-reading-a-register" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        I2C: scanning the bus and reading a register
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#the-bme280-sensor-wiring" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        The BME280 sensor: wiring
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#the-bme280-sensor-code" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        The BME280 sensor: code
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#troubleshooting-i2c" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Troubleshooting I2C
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#quiz-i2c" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Quiz: I2C
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#exercises-i2c" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Exercises: I2C
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#further-material-i2c" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Further material: I2C
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Further material: I2C">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#read" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Read
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#watch" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Watch
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#try-it" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Try it
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../spi-logic-analyzer/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    SPI & logic analysis
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../state-machines/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    State machines
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+    
+    
+      
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_2_7" >
+        
+          
+          <label class="md-nav__link" for="__nav_2_7" id="__nav_2_7_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Connected systems & projects
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_2_7_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_2_7">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Connected systems & projects
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../wifi-web/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Wi-Fi & web
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../iot-mqtt-ble/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    IoT, MQTT & BLE
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../storage-low-power-ota/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Storage, low power & OTA
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../projects-best-practices/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Projects & best practices
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../references/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    References
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+    
+    
+      
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_3" >
+        
+          
+          <label class="md-nav__link" for="__nav_3" id="__nav_3_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Tutorials
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_3_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_3">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Tutorials
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../tutorials/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Overview
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+    
+    
+      
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_3_2" >
+        
+          
+          <label class="md-nav__link" for="__nav_3_2" id="__nav_3_2_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Getting started
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_3_2_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_3_2">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Getting started
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../tutorials/arduino-setup-gpio/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Arduino setup & GPIO
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+    
+    
+      
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_3_3" >
+        
+          
+          <label class="md-nav__link" for="__nav_3_3" id="__nav_3_3_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Programming fundamentals
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_3_3_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_3_3">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Programming fundamentals
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../tutorials/variables-types/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Variables & data types
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../tutorials/conditionals-loops/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Conditionals, switch & while
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+    
+    
+      
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_3_4" >
+        
+          
+          <label class="md-nav__link" for="__nav_3_4" id="__nav_3_4_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Serial communication
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_3_4_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_3_4">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Serial communication
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../tutorials/serial-input/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Reading serial input
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+    
+    
+      
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_3_5" >
+        
+          
+          <label class="md-nav__link" for="__nav_3_5" id="__nav_3_5_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Timing
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_3_5_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_3_5">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Timing
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../tutorials/hardware-timers/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Hardware timer interrupts
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../dashboard/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Dashboard
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+  </ul>
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+            
+              
+              <div class="md-sidebar md-sidebar--secondary" data-md-component="sidebar" data-md-type="toc" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#i2c-at-a-glance" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        I2C at a glance
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#master-and-slaves" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Master and slaves
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#pull-up-resistors-and-open-drain-lines" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Pull-up resistors and open-drain lines
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#a-transaction-step-by-step-12" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        A transaction, step by step (1/2)
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#a-transaction-step-by-step-22" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        A transaction, step by step (2/2)
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#worked-example-the-bytes-on-the-wire" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Worked example: the bytes on the wire
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#i2c-scanning-the-bus-and-reading-a-register" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        I2C: scanning the bus and reading a register
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#the-bme280-sensor-wiring" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        The BME280 sensor: wiring
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#the-bme280-sensor-code" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        The BME280 sensor: code
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#troubleshooting-i2c" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Troubleshooting I2C
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#quiz-i2c" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Quiz: I2C
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#exercises-i2c" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Exercises: I2C
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#further-material-i2c" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Further material: I2C
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Further material: I2C">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#read" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Read
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#watch" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Watch
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#try-it" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Try it
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+          
+          
+            <div class="md-content" data-md-component="content">
+              
+              <article class="md-content__inner md-typeset">
+                
+                  
+
+
+  
+  
+
+
+<h1 id="the-i2c-bus">The I2C Bus<a class="headerlink" href="#the-i2c-bus" title="Permanent link">&para;</a></h1>
+<h2 id="i2c-at-a-glance">I2C at a glance<a class="headerlink" href="#i2c-at-a-glance" title="Permanent link">&para;</a></h2>
+<p><a class="md-button lecture-simulation" href="../../dashboard/?lab=simulations/course_topics_lab.html&amp;topic=i2c">Try simulation: I2C</a></p>
+<p><img alt="I2C at a glance" class="lecture-figure" loading="lazy" src="../assets/figures/i2c/i2c-bus-overview.jpg" /></p>
+<ul>
+<li>
+<p><strong>I<sup>2</sup>C</strong>: <strong>I</strong>nter-<strong>I</strong>ntegrated <strong>C</strong>ircuit (Philips, 1982).</p>
+</li>
+<li>
+<p><strong>Serial</strong> communication with <strong>multiple devices</strong> on the same wires.</p>
+</li>
+<li>
+<p>Only <strong>two signal wires</strong> (+ VCC and GND):</p>
+</li>
+<li>
+<p><strong>SDA</strong>: data</p>
+</li>
+<li>
+<p><strong>SCL</strong>: clock (timing)</p>
+</li>
+<li>
+<p>One <strong>master</strong> (controller), several <strong>slaves</strong> (targets), each with an <strong>address</strong>.</p>
+</li>
+<li>
+<p>Typical speeds: 100 kHz (standard), 400 kHz (fast).</p>
+</li>
+</ul>
+<p><em>Sources: Figure: panoxdisplay.com, via lecture 5 <a href="../references/#ep-lectures">Embedded Programming, lectures 1–6</a>; <a href="../references/#nxp-i2c">UM10204: I2C-bus specification and user manual, Rev. 7.0</a></em></p>
+<h2 id="master-and-slaves">Master and slaves<a class="headerlink" href="#master-and-slaves" title="Permanent link">&para;</a></h2>
+<div class="admonition info">
+<p class="admonition-title">Master (e.g. the ESP32)</p>
+<ul>
+<li>
+<p>controls the communication;</p>
+</li>
+<li>
+<p>generates the clock signal on SCL;</p>
+</li>
+<li>
+<p>starts every transfer;</p>
+</li>
+<li>
+<p>requests data from a slave.</p>
+</li>
+</ul>
+</div>
+<div class="admonition tip">
+<p class="admonition-title">Slave (sensor, display, memory)</p>
+<ul>
+<li>
+<p>only responds to master requests;</p>
+</li>
+<li>
+<p>every I<sup>2</sup>C device has an <strong>address</strong> (7 bits);</p>
+</li>
+<li>
+<p>other devices ignore requests not meant for them.</p>
+</li>
+</ul>
+</div>
+<p><img alt="Master and slaves" class="lecture-figure" loading="lazy" src="../assets/diagrams/i2c-087.png" /></p>
+<p>Example: the BME280 answers to <code>0x76</code>. The ESP32 sends “0x76, give me register 0xF7”: only the BME280 reacts.</p>
+<p><em>Sources: <a href="../references/#ep-lectures">Embedded Programming, lectures 1–6</a></em></p>
+<h2 id="pull-up-resistors-and-open-drain-lines">Pull-up resistors and open-drain lines<a class="headerlink" href="#pull-up-resistors-and-open-drain-lines" title="Permanent link">&para;</a></h2>
+<p><img alt="Pull-up resistors and open-drain lines" class="lecture-figure" loading="lazy" src="../assets/diagrams/i2c-088.png" /></p>
+<ul>
+<li>
+<p>The <strong>pull-up resistors</strong> make the lines HIGH by default.</p>
+</li>
+<li>
+<p>Devices can only <strong>pull the line LOW</strong> (“open drain”); they never drive it HIGH.</p>
+</li>
+<li>
+<p>So two devices can never short-circuit each other, even if both talk at once.</p>
+</li>
+<li>
+<p>Pull-ups are often <strong>already on the sensor board</strong>.</p>
+</li>
+<li>
+<p>The internal ESP32 pull-ups (<span class="arithmatex">\(\approx\)</span> 45 k<span class="arithmatex">\(\Omega\)</span>) are <strong>too weak</strong> for reliable I<sup>2</sup>C: use 2.2–10 k<span class="arithmatex">\(\Omega\)</span>.</p>
+</li>
+</ul>
+<p><em>Sources: <a href="../references/#ep-lectures">Embedded Programming, lectures 1–6</a>; <a href="../references/#nxp-i2c">UM10204: I2C-bus specification and user manual, Rev. 7.0</a></em></p>
+<h2 id="a-transaction-step-by-step-12">A transaction, step by step (1/2)<a class="headerlink" href="#a-transaction-step-by-step-12" title="Permanent link">&para;</a></h2>
+<p><a class="md-button lecture-simulation" href="../../dashboard/?lab=simulations/course_topics_lab.html&amp;topic=i2c">Try simulation: I2C</a></p>
+<p><strong>1. Start condition</strong>  </p>
+<p><img alt="A transaction, step by step (1/2)" class="lecture-figure" loading="lazy" src="../assets/figures/i2c/i2c-start-condition.png" /></p>
+<p>The master pulls <strong>SDA LOW while SCL is HIGH</strong>. All slaves start listening.</p>
+<p><strong>2. Address + read/write</strong>  </p>
+<p><img alt="A transaction, step by step (1/2)" class="lecture-figure" loading="lazy" src="../assets/figures/i2c/i2c-address-frame.png" /></p>
+<p>The master sends the <strong>7-bit address</strong> and 1 bit: <strong>R/W</strong> (0 = write, 1 = read). The addressed slave answers with <strong>ACK</strong> (pulls SDA LOW).</p>
+<div class="admonition info">
+<p class="admonition-title">Rule</p>
+<p>Data on SDA may only change while SCL is LOW. A change while SCL is HIGH is a START or STOP condition.</p>
+</div>
+<p><em>Sources: Figures: Rheingold Heavy <a href="../references/#rheingold-i2c">I2C Signals</a>, via lecture 5</em></p>
+<h2 id="a-transaction-step-by-step-22">A transaction, step by step (2/2)<a class="headerlink" href="#a-transaction-step-by-step-22" title="Permanent link">&para;</a></h2>
+<p><a class="md-button lecture-simulation" href="../../dashboard/?lab=simulations/course_topics_lab.html&amp;topic=i2c">Try simulation: I2C</a></p>
+<p><strong>3. Data bytes</strong>  </p>
+<p><img alt="A transaction, step by step (2/2)" class="lecture-figure" loading="lazy" src="../assets/figures/i2c/i2c-data-frame.png" /></p>
+<p>8 bits per byte, most significant bit first; the receiver acknowledges <strong>every</strong> byte.</p>
+<p><strong>4. Stop condition</strong>  </p>
+<p><img alt="A transaction, step by step (2/2)" class="lecture-figure" loading="lazy" src="../assets/figures/i2c/i2c-stop-condition.png" /></p>
+<p>After the last byte the master releases <strong>SDA HIGH while SCL is HIGH</strong>: the bus is free. Or it sends a <strong>repeated start</strong> to continue.</p>
+<p><img alt="A transaction, step by step (2/2)" class="lecture-figure" loading="lazy" src="../assets/diagrams/i2c-089.png" /></p>
+<p><em>Sources: Figures: Rheingold Heavy <a href="../references/#rheingold-i2c">I2C Signals</a>, via lecture 5</em></p>
+<h2 id="worked-example-the-bytes-on-the-wire">Worked example: the bytes on the wire<a class="headerlink" href="#worked-example-the-bytes-on-the-wire" title="Permanent link">&para;</a></h2>
+<p><a class="md-button lecture-simulation" href="../../dashboard/?lab=simulations/course_topics_lab.html&amp;topic=i2c">Try simulation: I2C</a></p>
+<p><strong>Read the chip ID of a BME280 at 0x76</strong></p>
+<ol>
+<li>
+<p>START</p>
+</li>
+<li>
+<p>Address byte, write: <span class="arithmatex">\((0x76 \ll 1) \,|\, 0\)</span> = <code>0xEC</code> <span class="arithmatex">\(\rightarrow\)</span> ACK</p>
+</li>
+<li>
+<p>Register number <code>0xD0</code> (chip ID) <span class="arithmatex">\(\rightarrow\)</span> ACK</p>
+</li>
+<li>
+<p>Repeated START</p>
+</li>
+<li>
+<p>Address byte, read: <span class="arithmatex">\((0x76 \ll 1) \,|\, 1\)</span> = <code>0xED</code> <span class="arithmatex">\(\rightarrow\)</span> ACK</p>
+</li>
+<li>
+<p>Slave sends <code>0x60</code> (BME280) <span class="arithmatex">\(\rightarrow\)</span> master NACK</p>
+</li>
+<li>
+<p>STOP</p>
+</li>
+</ol>
+<div class="admonition info">
+<p class="admonition-title">Why 0xEC?</p>
+<p>The 7-bit address <code>0x76</code> = 111 0110 is shifted one place left to make room for the R/W bit: 1110 110<strong>0</strong> = <code>0xEC</code>.</p>
+</div>
+<div class="admonition tip">
+<p class="admonition-title">BME280 or BMP280?</p>
+<p>Chip ID <code>0x60</code> = BME280 (with humidity), <code>0x58</code> = BMP280 (no humidity). The modules look identical!</p>
+</div>
+<div class="admonition warning">
+<p class="admonition-title">Datasheets</p>
+<p>Some datasheets give the 8-bit form (0xEC/0xED), libraries use the 7-bit form (0x76).</p>
+</div>
+<p><em>Sources: <a href="../references/#bosch-bme280">BME280 Combined humidity and pressure sensor, datasheet</a>; <a href="../references/#nxp-i2c">UM10204: I2C-bus specification and user manual, Rev. 7.0</a></em></p>
+<h2 id="i2c-scanning-the-bus-and-reading-a-register">I2C: scanning the bus and reading a register<a class="headerlink" href="#i2c-scanning-the-bus-and-reading-a-register" title="Permanent link">&para;</a></h2>
+<div class="highlight"><span class="filename">i2c_scanner.ino</span><pre><span></span><code><span class="cp">#include</span><span class="w"> </span><span class="cpf">&lt;Wire.h&gt;</span>
+
+<span class="kt">void</span><span class="w"> </span><span class="nf">setup</span><span class="p">()</span><span class="w"> </span><span class="p">{</span>
+<span class="w">  </span><span class="n">Serial</span><span class="p">.</span><span class="n">begin</span><span class="p">(</span><span class="mi">115200</span><span class="p">);</span>
+<span class="w">  </span><span class="n">Wire</span><span class="p">.</span><span class="n">begin</span><span class="p">(</span><span class="mi">19</span><span class="p">,</span><span class="w"> </span><span class="mi">18</span><span class="p">);</span><span class="w">      </span><span class="c1">// course board SDA, SCL</span>
+<span class="w">  </span><span class="n">Wire</span><span class="p">.</span><span class="n">setClock</span><span class="p">(</span><span class="mi">400000</span><span class="p">);</span><span class="w">   </span><span class="c1">// fast mode</span>
+<span class="w">  </span><span class="k">for</span><span class="w"> </span><span class="p">(</span><span class="kt">uint8_t</span><span class="w"> </span><span class="n">a</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">1</span><span class="p">;</span><span class="w"> </span><span class="n">a</span><span class="w"> </span><span class="o">&lt;</span><span class="w"> </span><span class="mi">127</span><span class="p">;</span><span class="w"> </span><span class="n">a</span><span class="o">++</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="n">Wire</span><span class="p">.</span><span class="n">beginTransmission</span><span class="p">(</span><span class="n">a</span><span class="p">);</span>
+<span class="w">    </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">Wire</span><span class="p">.</span><span class="n">endTransmission</span><span class="p">()</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="mi">0</span><span class="p">)</span>
+<span class="w">      </span><span class="n">Serial</span><span class="p">.</span><span class="n">printf</span><span class="p">(</span><span class="s">"Found 0x%02X</span><span class="se">\n</span><span class="s">"</span><span class="p">,</span><span class="w"> </span><span class="n">a</span><span class="p">);</span>
+<span class="w">  </span><span class="p">}</span>
+<span class="p">}</span>
+
+<span class="kt">void</span><span class="w"> </span><span class="nf">loop</span><span class="p">()</span><span class="w"> </span><span class="p">{}</span>
+</code></pre></div>
+<p><a download="download" href="../examples/i2c/i2c_scanner.ino">Download this example</a></p>
+<div class="highlight"><span class="filename">i2c_register.ino</span><pre><span></span><code><span class="kt">uint8_t</span><span class="w"> </span><span class="nf">readReg</span><span class="p">(</span><span class="kt">uint8_t</span><span class="w"> </span><span class="n">dev</span><span class="p">,</span><span class="w"> </span><span class="kt">uint8_t</span><span class="w"> </span><span class="n">reg</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">  </span><span class="n">Wire</span><span class="p">.</span><span class="n">beginTransmission</span><span class="p">(</span><span class="n">dev</span><span class="p">);</span>
+<span class="w">  </span><span class="n">Wire</span><span class="p">.</span><span class="n">write</span><span class="p">(</span><span class="n">reg</span><span class="p">);</span>
+<span class="w">  </span><span class="n">Wire</span><span class="p">.</span><span class="n">endTransmission</span><span class="p">(</span><span class="nb">false</span><span class="p">);</span><span class="w">   </span><span class="c1">// repeated start</span>
+<span class="w">  </span><span class="n">Wire</span><span class="p">.</span><span class="n">requestFrom</span><span class="p">(</span><span class="n">dev</span><span class="p">,</span><span class="w"> </span><span class="p">(</span><span class="kt">uint8_t</span><span class="p">)</span><span class="w"> </span><span class="mi">1</span><span class="p">);</span>
+<span class="w">  </span><span class="k">return</span><span class="w"> </span><span class="n">Wire</span><span class="p">.</span><span class="n">read</span><span class="p">();</span>
+<span class="p">}</span>
+<span class="c1">// MPU-6050: readReg(0x68, 0x75) == 0x68</span>
+</code></pre></div>
+<p><a download="download" href="../examples/i2c/i2c_register.ino">Download this example</a></p>
+<ul>
+<li>
+<p>2 wires shared by many devices, each with a 7-bit address.</p>
+</li>
+<li>
+<p>Pull-ups (2.2–10 k<span class="arithmatex">\(\Omega\)</span>) to <strong>3.3 V</strong>; most breakout boards have them.</p>
+</li>
+<li>
+<p>In practice: use the sensor’s library.</p>
+</li>
+</ul>
+<p><em>Sources: <a href="https://docs.espressif.com/projects/arduino-esp32/en/latest/tutorials/io_mux.html">Espressif: GPIO Matrix and Pin Mux</a></em></p>
+<h2 id="the-bme280-sensor-wiring">The BME280 sensor: wiring<a class="headerlink" href="#the-bme280-sensor-wiring" title="Permanent link">&para;</a></h2>
+<p><img alt="The BME280 sensor: wiring" class="lecture-figure" loading="lazy" src="../assets/figures/sensors/bme280-module.jpg" /></p>
+<div class="tabular">
+
+@l l L4.6cm@ **BME280** & **Course board** & **Note**  
+VIN / VCC & 3V3 & **not** 5 V unless the module has a regulator  
+GND & GND & common ground  
+SCL & `18` & I<sup>2</sup>C header  
+SDA & `19` & I<sup>2</sup>C header  
+SDO & GND $\rightarrow$ `0x76` & to VCC $\rightarrow$ `0x77`  
+CSB & VCC (or open) & selects I<sup>2</sup>C mode  
+
+</div>
+
+<ul>
+<li>
+<p>Measures <strong>temperature</strong>, <strong>humidity</strong> and <strong>pressure</strong>.</p>
+</li>
+<li>
+<p>Check the schematic of <strong>your</strong> board for the SDA/SCL pins!</p>
+</li>
+</ul>
+<p><em>Sources: <a href="../references/#bosch-bme280">BME280 Combined humidity and pressure sensor, datasheet</a>; <a href="../references/#ep-lectures">Embedded Programming, lectures 1–6</a></em></p>
+<h2 id="the-bme280-sensor-code">The BME280 sensor: code<a class="headerlink" href="#the-bme280-sensor-code" title="Permanent link">&para;</a></h2>
+<div class="highlight"><span class="filename">bme280.ino</span><pre><span></span><code><span class="cp">#include</span><span class="w"> </span><span class="cpf">&lt;Wire.h&gt;</span>
+<span class="cp">#include</span><span class="w"> </span><span class="cpf">&lt;Adafruit_BME280.h&gt;</span>
+
+<span class="n">Adafruit_BME280</span><span class="w"> </span><span class="n">bme</span><span class="p">;</span><span class="w">                 </span><span class="c1">// uses Wire by default</span>
+
+<span class="kt">void</span><span class="w"> </span><span class="nf">setup</span><span class="p">()</span><span class="w"> </span><span class="p">{</span>
+<span class="w">  </span><span class="n">Serial</span><span class="p">.</span><span class="n">begin</span><span class="p">(</span><span class="mi">115200</span><span class="p">);</span>
+<span class="w">  </span><span class="n">Wire</span><span class="p">.</span><span class="n">begin</span><span class="p">(</span><span class="mi">19</span><span class="p">,</span><span class="w"> </span><span class="mi">18</span><span class="p">);</span><span class="w">                </span><span class="c1">// course board SDA, SCL</span>
+<span class="w">  </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="o">!</span><span class="n">bme</span><span class="p">.</span><span class="n">begin</span><span class="p">(</span><span class="mh">0x76</span><span class="p">))</span><span class="w"> </span><span class="p">{</span><span class="w">            </span><span class="c1">// 0x77 if SDO is HIGH</span>
+<span class="w">    </span><span class="n">Serial</span><span class="p">.</span><span class="n">println</span><span class="p">(</span><span class="s">"BME280 not found: check wiring/address"</span><span class="p">);</span>
+<span class="w">    </span><span class="k">while</span><span class="w"> </span><span class="p">(</span><span class="nb">true</span><span class="p">)</span><span class="w"> </span><span class="n">delay</span><span class="p">(</span><span class="mi">10</span><span class="p">);</span>
+<span class="w">  </span><span class="p">}</span>
+<span class="p">}</span>
+
+<span class="kt">void</span><span class="w"> </span><span class="nf">loop</span><span class="p">()</span><span class="w"> </span><span class="p">{</span>
+<span class="w">  </span><span class="kt">float</span><span class="w"> </span><span class="n">t</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">bme</span><span class="p">.</span><span class="n">readTemperature</span><span class="p">();</span><span class="w">          </span><span class="c1">// Celsius</span>
+<span class="w">  </span><span class="kt">float</span><span class="w"> </span><span class="n">h</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">bme</span><span class="p">.</span><span class="n">readHumidity</span><span class="p">();</span><span class="w">             </span><span class="c1">// %</span>
+<span class="w">  </span><span class="kt">float</span><span class="w"> </span><span class="n">p</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">bme</span><span class="p">.</span><span class="n">readPressure</span><span class="p">()</span><span class="w"> </span><span class="o">/</span><span class="w"> </span><span class="mf">100.0F</span><span class="p">;</span><span class="w">    </span><span class="c1">// Pa -&gt; hPa</span>
+<span class="w">  </span><span class="n">Serial</span><span class="p">.</span><span class="n">printf</span><span class="p">(</span><span class="s">"T=%.2f C  RH=%.1f %%  p=%.1f hPa</span><span class="se">\n</span><span class="s">"</span><span class="p">,</span><span class="w"> </span><span class="n">t</span><span class="p">,</span><span class="w"> </span><span class="n">h</span><span class="p">,</span><span class="w"> </span><span class="n">p</span><span class="p">);</span>
+<span class="w">  </span><span class="n">delay</span><span class="p">(</span><span class="mi">2000</span><span class="p">);</span>
+<span class="p">}</span>
+</code></pre></div>
+<p><a download="download" href="../examples/i2c/bme280.ino">Download this example</a></p>
+<ul>
+<li>
+<p>Library: <em>Adafruit BME280</em> (+ <em>Adafruit Unified Sensor</em>).</p>
+</li>
+<li>
+<p><code>bme.begin(0x76)</code> uses the <code>Wire</code> bus you started.</p>
+</li>
+<li>
+<p>Check the return value: <code>false</code> = no answer at that address.</p>
+</li>
+</ul>
+<div class="admonition tip">
+<p class="admonition-title">Test the connection first</p>
+<p>Run the I<sup>2</sup>C scanner: it must list <code>0x76</code> before the library can work.</p>
+</div>
+<p><em>Sources: <a href="../references/#adafruit-bme280">Adafruit BME280 Library</a>; <a href="../references/#ep-lectures">Embedded Programming, lectures 1–6</a></em></p>
+<h2 id="troubleshooting-i2c">Troubleshooting I2C<a class="headerlink" href="#troubleshooting-i2c" title="Permanent link">&para;</a></h2>
+<div class="tabular">
+
+@L5cm L8.3cm@ **Symptom** & **Check**  
+Scanner finds **nothing** & power and GND; SDA/SCL swapped; wrong pins in `Wire.begin()`; no pull-ups  
+Found `0x77` instead of `0x76` & SDO is connected to VCC: change the address in `begin()`  
+Found, but no humidity / wrong values & it is a BMP280 (chip ID `0x58`), not a BME280  
+Works, then randomly fails & long or loose wires, missing pull-ups, too high clock: try 100 kHz  
+Two devices, one disappears & both have the **same address**: change one (address pin) or use a second bus  
+
+</div>
+
+<div class="admonition info">
+<p class="admonition-title">Second bus</p>
+<p>The ESP32 has two I<sup>2</sup>C controllers: <code>TwoWire Wire1 = TwoWire(1); Wire1.begin(25, 26);</code></p>
+</div>
+<h2 id="quiz-i2c">Quiz: I2C<a class="headerlink" href="#quiz-i2c" title="Permanent link">&para;</a></h2>
+<ol>
+<li>
+<p>Which two signal lines does I<sup>2</sup>C use, and what does each carry?</p>
+<p><details class="lecture-answer"><summary>Check your answer</summary><p>SDA (data) and SCL (clock).</p></details></p>
+</li>
+<li>
+<p>How does a slave know a message is meant for it?</p>
+<p><details class="lecture-answer"><summary>Check your answer</summary><p>The master sends the 7-bit address first; only the device with that address answers (ACK).</p></details></p>
+</li>
+<li>
+<p>Why do I<sup>2</sup>C lines need pull-up resistors?</p>
+<p><details class="lecture-answer"><summary>Check your answer</summary><p>Devices can only pull the lines LOW; the resistors provide the HIGH level.</p></details></p>
+</li>
+<li>
+<p>What byte appears on the wire when the master wants to <strong>read</strong> from address <code>0x3C</code>?</p>
+<p><details class="lecture-answer"><summary>Check your answer</summary><p><span class="arithmatex"><span class="arithmatex">\((0x3C \ll 1) | 1\)</span></span> = <code>0x79</code>.</p></details></p>
+</li>
+<li>
+<p>How many addresses does a 7-bit address field allow?</p>
+<p><details class="lecture-answer"><summary>Check your answer</summary><p>128 (some are reserved: about 112 usable).</p></details></p>
+</li>
+</ol>
+<h2 id="exercises-i2c">Exercises: I2C<a class="headerlink" href="#exercises-i2c" title="Permanent link">&para;</a></h2>
+<div class="admonition example">
+<p class="admonition-title">Exercise 1 – Bus inventory</p>
+<p>Connect the BME280 and the OLED to the I<sup>2</sup>C header at the same time. Run the scanner and print a name for each known address.</p>
+</div>
+<div class="admonition example">
+<p class="admonition-title">Exercise 2 – Without library</p>
+<p>Read the chip ID register (<code>0xD0</code>) with only the <code>Wire</code> functions. Decide: BME280 or BMP280?</p>
+</div>
+<div class="admonition example">
+<p class="admonition-title">Exercise 3 – Weather station</p>
+<p>Show temperature, humidity and pressure on the OLED every 2 s; light the red LED if the humidity is above 70 %.</p>
+</div>
+<h2 id="further-material-i2c">Further material: I2C<a class="headerlink" href="#further-material-i2c" title="Permanent link">&para;</a></h2>
+<h3 id="read">Read<a class="headerlink" href="#read" title="Permanent link">&para;</a></h3>
+<ul>
+<li>
+<p><a href="https://rheingoldheavy.com/i2c-signals/">I2C signals (Rheingold Heavy)</a></p>
+</li>
+<li>
+<p><a href="https://www.panoxdisplay.com/knowledge/i2c-communication-interface.html">I2C communication interface</a></p>
+</li>
+<li>
+<p><a href="https://learn.sparkfun.com/tutorials/i2c">I2C (SparkFun)</a></p>
+</li>
+<li>
+<p><a href="https://docs.espressif.com/projects/arduino-esp32/en/latest/api/i2c.html">Arduino-ESP32 I2C API</a></p>
+</li>
+<li>
+<p><a href="https://www.nxp.com/docs/en/user-guide/UM10204.pdf">NXP I2C specification UM10204</a></p>
+</li>
+</ul>
+<h3 id="watch">Watch<a class="headerlink" href="#watch" title="Permanent link">&para;</a></h3>
+<ul>
+<li>
+<p><a href="https://www.youtube.com/results?search_query=i2c+protocol+explained">YouTube: I2C explained</a></p>
+</li>
+<li>
+<p><a href="https://www.youtube.com/results?search_query=esp32+bme280+arduino+ide">YouTube: ESP32 BME280</a></p>
+</li>
+</ul>
+<h3 id="try-it">Try it<a class="headerlink" href="#try-it" title="Permanent link">&para;</a></h3>
+<ul>
+<li>
+<p><a href="../../dashboard/?lab=simulations/course_topics_lab.html&amp;topic=i2c">I2C simulation</a></p>
+</li>
+<li>
+<p><a href="https://www.bosch-sensortec.com/media/boschsensortec/downloads/datasheets/bst-bme280-ds002.pdf">BME280 datasheet</a></p>
+</li>
+</ul>
+
+
+
+
+
+
+
+  
+  
+
+
+
+
+
+
+                
+              </article>
+            </div>
+          
+          
+  <script>var tabs=__md_get("__tabs");if(Array.isArray(tabs))e:for(var set of document.querySelectorAll(".tabbed-set")){var labels=set.querySelector(".tabbed-labels");for(var tab of tabs)for(var label of labels.getElementsByTagName("label"))if(label.innerText.trim()===tab){var input=document.getElementById(label.htmlFor);input.checked=!0;continue e}}</script>
+
+<script>var target=document.getElementById(location.hash.slice(1));target&&target.name&&(target.checked=target.name.startsWith("__tabbed_"))</script>
+        </div>
+        
+          <button type="button" class="md-top md-icon" data-md-component="top" hidden>
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M13 20h-2V8l-5.5 5.5-1.42-1.42L12 4.16l7.92 7.92-1.42 1.42L13 8z"/></svg>
+  Back to top
+</button>
+        
+      </main>
+      
+        <footer class="md-footer">
+  
+    
+      
+      <nav class="md-footer__inner md-grid" aria-label="Footer" >
+        
+          
+          <a href="../serial-uart/" class="md-footer__link md-footer__link--prev" aria-label="Previous: Serial communication &amp; UART">
+            <div class="md-footer__button md-icon">
+              
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11z"/></svg>
+            </div>
+            <div class="md-footer__title">
+              <span class="md-footer__direction">
+                Previous
+              </span>
+              <div class="md-ellipsis">
+                Serial communication & UART
+              </div>
+            </div>
+          </a>
+        
+        
+          
+          <a href="../spi-logic-analyzer/" class="md-footer__link md-footer__link--next" aria-label="Next: SPI &amp; logic analysis">
+            <div class="md-footer__title">
+              <span class="md-footer__direction">
+                Next
+              </span>
+              <div class="md-ellipsis">
+                SPI & logic analysis
+              </div>
+            </div>
+            <div class="md-footer__button md-icon">
+              
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M4 11v2h12l-5.5 5.5 1.42 1.42L19.84 12l-7.92-7.92L10.5 5.5 16 11z"/></svg>
+            </div>
+          </a>
+        
+      </nav>
+    
+  
+  <div class="md-footer-meta md-typeset">
+    <div class="md-footer-meta__inner md-grid">
+      <div class="md-copyright">
+  
+  
+    Made with
+    <a href="https://squidfunk.github.io/mkdocs-material/" target="_blank" rel="noopener">
+      Material for MkDocs
+    </a>
+  
+</div>
+      
+    </div>
+  </div>
+</footer>
+      
+    </div>
+    <div class="md-dialog" data-md-component="dialog">
+      <div class="md-dialog__inner md-typeset"></div>
+    </div>
+    
+      <div class="md-progress" data-md-component="progress" role="progressbar"></div>
+    
+    
+    
+      
+      
+      <script id="__config" type="application/json">{"annotate": null, "base": "../..", "features": ["navigation.tabs", "navigation.tabs.sticky", "navigation.instant", "navigation.instant.progress", "navigation.tracking", "navigation.top", "navigation.footer", "content.code.copy", "content.tabs.link", "search.suggest", "search.highlight", "toc.follow"], "search": "../../assets/javascripts/workers/search.a7633da7.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": null}</script>
+    
+    
+      <script src="../../assets/javascripts/bundle.c21346df.min.js"></script>
+      
+        <script src="../../javascripts/mathjax.js"></script>
+      
+        <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+      
+        <script src="../../javascripts/dashboard.js"></script>
+      
+    
+  </body>
+</html>
