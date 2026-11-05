@@ -143,7 +143,7 @@ Large image/audio buffer & PSRAM, if the module has it & More volatile working s
 
 ## Flash vs RAM: where does what live?
 
-[Try simulation: Memory layout](../dashboard.md?lab=simulations/memory_layout_lab.html){ .md-button .lecture-simulation }
+[Try simulation: Memory layout](https://costawess.github.io/Programming-Dashboard/web/simulations/memory_layout_lab.html){ .md-button .lecture-simulation }
 
 <div class="tabular">
 
@@ -275,6 +275,6 @@ Lifetime & $\approx$ 100 000 erase cycles & unlimited & unlimited
 
 ### Try it
 
-- [Memory layout (course dashboard)](../dashboard.md?lab=simulations/memory_layout_lab.html)
+- [Memory layout (course dashboard)](https://costawess.github.io/Programming-Dashboard/web/simulations/memory_layout_lab.html)
 
 - [Wokwi: ESP32 simulator](https://wokwi.com/projects/new/esp32)

@@ -132,4 +132,4 @@ title: "The Course"
 
 ### Try it
 
-- [Course dashboard: simulations and experiments](../dashboard.md?lab=index.html)
+- [Course dashboard: simulations and experiments](https://costawess.github.io/Programming-Dashboard/web/index.html)

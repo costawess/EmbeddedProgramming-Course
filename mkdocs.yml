@@ -63,16 +63,13 @@ extra_css:
 extra_javascript:
   - javascripts/mathjax.js
   - https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js
-  - javascripts/dashboard.js
 
 plugins:
   - search
   - mermaid2
 
 hooks:
-  - hooks/dashboard.py
-watch:
-  - dashboard
+  - hooks/redirects.py
 
 nav:
   - Home: index.md
@@ -121,4 +118,4 @@ nav:
           - Reading serial input: tutorials/serial-input/index.md
       - Timing:
           - Hardware timer interrupts: tutorials/hardware-timers/index.md
-  - Dashboard: dashboard.md
+  - Dashboard: https://costawess.github.io/Programming-Dashboard/web/index.html

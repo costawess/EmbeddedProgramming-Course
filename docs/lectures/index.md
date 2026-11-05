@@ -70,4 +70,4 @@ Understand how embedded programs work, then connect that knowledge to the ESP32.
 Use the expandable sidebar to browse every chapter. Code examples can be copied or downloaded; complete project sketches are provided with the timer, logic-analyzer, and state-machine chapters.
 
 [Open practical tutorials](../tutorials/index.md){ .md-button }
-[Explore the dashboard](../dashboard.md){ .md-button }
+[Explore the dashboard](https://costawess.github.io/Programming-Dashboard/web/index.html){ .md-button }

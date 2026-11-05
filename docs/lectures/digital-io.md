@@ -6,7 +6,7 @@ title: "Digital Inputs and Outputs"
 
 ## Digital signals: only two values
 
-[Try simulation: Digital I/O](../dashboard.md?lab=simulations/course_topics_lab.html&topic=foundations){ .md-button .lecture-simulation }
+[Try simulation: Digital I/O](https://costawess.github.io/Programming-Dashboard/web/simulations/course_topics_lab.html?topic=foundations){ .md-button .lecture-simulation }
 
 - A **digital** signal is either `HIGH` (1, 3.3 V) or `LOW` (0, 0 V).
 
@@ -55,7 +55,7 @@ l L5.2cm L5.4cm **Mode** & **What the pin does** & **Use it for**
 
 ## digitalWrite(): switching an output
 
-[Try simulation: Digital I/O](../dashboard.md?lab=simulations/course_topics_lab.html&topic=foundations){ .md-button .lecture-simulation }
+[Try simulation: Digital I/O](https://costawess.github.io/Programming-Dashboard/web/simulations/course_topics_lab.html?topic=foundations){ .md-button .lecture-simulation }
 
 ```cpp title="led_on.ino"
 // Version 1: magic numbers
@@ -164,7 +164,7 @@ void loop() {
 
 ## digitalRead(): what counts as HIGH or LOW?
 
-[Try simulation: Digital I/O](../dashboard.md?lab=simulations/course_topics_lab.html&topic=foundations){ .md-button .lecture-simulation }
+[Try simulation: Digital I/O](https://costawess.github.io/Programming-Dashboard/web/simulations/course_topics_lab.html?topic=foundations){ .md-button .lecture-simulation }
 
 ![digitalRead(): what counts as HIGH or LOW?](assets/diagrams/digital-io-035.png){ .lecture-figure loading=lazy }
 
@@ -185,7 +185,7 @@ void loop() {
 
 ## Floating inputs and pull resistors
 
-[Try simulation: Pull-up / pull-down](../dashboard.md?lab=simulations/pull_resistors_lab.html){ .md-button .lecture-simulation }
+[Try simulation: Pull-up / pull-down](https://costawess.github.io/Programming-Dashboard/web/simulations/pull_resistors_lab.html){ .md-button .lecture-simulation }
 
 **Floating**  
 
@@ -246,7 +246,7 @@ No external resistor; button to 3V3 & `INPUT_PULLDOWN`\* & LOW & HIGH
 
 ## Reading the course-board buttons
 
-[Try simulation: Pull-up / pull-down](../dashboard.md?lab=simulations/pull_resistors_lab.html){ .md-button .lecture-simulation }
+[Try simulation: Pull-up / pull-down](https://costawess.github.io/Programming-Dashboard/web/simulations/pull_resistors_lab.html){ .md-button .lecture-simulation }
 
 ```cpp title="buttons.ino"
 const int KEY1 = 34;        // active HIGH (pull-down)
@@ -285,7 +285,7 @@ void loop() {
 
 ## Level vs edge: toggling an LED
 
-[Try simulation: Button debouncing](../dashboard.md?lab=simulations/debouncing_lab.html){ .md-button .lecture-simulation }
+[Try simulation: Button debouncing](https://costawess.github.io/Programming-Dashboard/web/simulations/debouncing_lab.html){ .md-button .lecture-simulation }
 
 ```cpp title="toggle.ino"
 const int KEY1 = 34;
@@ -326,9 +326,9 @@ void loop() {
 
 ## Flowchart: edge detection (toggle)
 
-[Try simulation: Digital I/O](../dashboard.md?lab=simulations/course_topics_lab.html&topic=foundations){ .md-button .lecture-simulation }
+[Try simulation: Digital I/O](https://costawess.github.io/Programming-Dashboard/web/simulations/course_topics_lab.html?topic=foundations){ .md-button .lecture-simulation }
 
-[Try simulation: Arduino to flowchart](../dashboard.md?lab=simulations/arduino_flowchart_converter.html){ .md-button .lecture-simulation }
+[Try simulation: Arduino to flowchart](https://costawess.github.io/Programming-Dashboard/web/simulations/arduino_flowchart_converter.html){ .md-button .lecture-simulation }
 
 ![Flowchart: edge detection (toggle)](assets/diagrams/digital-io-040.png){ .lecture-figure loading=lazy }
 
@@ -381,7 +381,7 @@ void loop() {
 
 ## Exercises: digital I/O
 
-[Try simulation: Traffic lights](../dashboard.md?lab=experiments/traffic_lights.html){ .md-button .lecture-simulation }
+[Try simulation: Traffic lights](https://costawess.github.io/Programming-Dashboard/web/experiments/traffic_lights.html){ .md-button .lecture-simulation }
 
 !!! example "Exercise 1 – Traffic light"
     
@@ -421,8 +421,8 @@ void loop() {
 
 ### Try it
 
-- [Digital input & output](../dashboard.md?lab=simulations/course_topics_lab.html&topic=foundations)
+- [Digital input & output](https://costawess.github.io/Programming-Dashboard/web/simulations/course_topics_lab.html?topic=foundations)
 
-- [Pull-up / pull-down](../dashboard.md?lab=simulations/pull_resistors_lab.html)
+- [Pull-up / pull-down](https://costawess.github.io/Programming-Dashboard/web/simulations/pull_resistors_lab.html)
 
-- [Experiment: traffic lights](../dashboard.md?lab=experiments/traffic_lights.html)
+- [Experiment: traffic lights](https://costawess.github.io/Programming-Dashboard/web/experiments/traffic_lights.html)

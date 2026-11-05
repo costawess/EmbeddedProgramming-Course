@@ -6,7 +6,7 @@ title: "Analog Input, PWM and DAC"
 
 ## From voltage to number: the ADC
 
-[Try simulation: ADC](../dashboard.md?lab=simulations/course_topics_lab.html&topic=adc){ .md-button .lecture-simulation }
+[Try simulation: ADC](https://costawess.github.io/Programming-Dashboard/web/simulations/course_topics_lab.html?topic=adc){ .md-button .lecture-simulation }
 
 - Many sensors produce a **voltage** that tells **how much**: light, temperature, position, humidity.
 
@@ -28,7 +28,7 @@ title: "Analog Input, PWM and DAC"
 
 ## Sampling: reading a changing signal
 
-[Try simulation: ADC](../dashboard.md?lab=simulations/course_topics_lab.html&topic=adc){ .md-button .lecture-simulation }
+[Try simulation: ADC](https://costawess.github.io/Programming-Dashboard/web/simulations/course_topics_lab.html?topic=adc){ .md-button .lecture-simulation }
 
 ![Sampling: reading a changing signal](assets/figures/analog/adc-sampling.png){ .lecture-figure loading=lazy }
 
@@ -49,7 +49,7 @@ title: "Analog Input, PWM and DAC"
 
 ## Connecting a potentiometer
 
-[Try simulation: ADC](../dashboard.md?lab=simulations/course_topics_lab.html&topic=adc){ .md-button .lecture-simulation }
+[Try simulation: ADC](https://costawess.github.io/Programming-Dashboard/web/simulations/course_topics_lab.html?topic=adc){ .md-button .lecture-simulation }
 
 ![Connecting a potentiometer](assets/diagrams/analog-pwm-064.png){ .lecture-figure loading=lazy }
 
@@ -72,7 +72,7 @@ title: "Analog Input, PWM and DAC"
 
 ## From ADC value to voltage, step by step
 
-[Try simulation: ADC](../dashboard.md?lab=simulations/course_topics_lab.html&topic=adc){ .md-button .lecture-simulation }
+[Try simulation: ADC](https://costawess.github.io/Programming-Dashboard/web/simulations/course_topics_lab.html?topic=adc){ .md-button .lecture-simulation }
 
 **The steps**
 
@@ -109,7 +109,7 @@ Example: raw $= 2048$ $\Rightarrow$ $2048 \times 3.3 / 4095 = 1.650$ V
 
 ## Code: read the potentiometer and convert to volts
 
-[Try simulation: ADC](../dashboard.md?lab=simulations/course_topics_lab.html&topic=adc){ .md-button .lecture-simulation }
+[Try simulation: ADC](https://costawess.github.io/Programming-Dashboard/web/simulations/course_topics_lab.html?topic=adc){ .md-button .lecture-simulation }
 
 ```cpp title="pot_voltage.ino"
 const int POT_PIN = 36;            // AD1 terminal (wiper)
@@ -151,7 +151,7 @@ void loop() {
 
 ## Analog input: the 12-bit ADC
 
-[Try simulation: ADC](../dashboard.md?lab=simulations/course_topics_lab.html&topic=adc){ .md-button .lecture-simulation }
+[Try simulation: ADC](https://costawess.github.io/Programming-Dashboard/web/simulations/course_topics_lab.html?topic=adc){ .md-button .lecture-simulation }
 
 ```cpp title="adc.ino"
 const int POT_PIN = 36;    // AD1 terminal: ADC1, OK with Wi-Fi
@@ -556,6 +556,6 @@ This sketch has $250/10=25$ samples per cycle: **50 points show 2 cycles**; 500 
 
 ### Try it
 
-- [ADC simulation](../dashboard.md?lab=simulations/course_topics_lab.html&topic=adc)
+- [ADC simulation](https://costawess.github.io/Programming-Dashboard/web/simulations/course_topics_lab.html?topic=adc)
 
 - [Pulse width modulation (SparkFun)](https://learn.sparkfun.com/tutorials/pulse-width-modulation)

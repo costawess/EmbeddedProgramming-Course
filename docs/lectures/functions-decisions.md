@@ -6,7 +6,7 @@ title: "Functions and Decisions"
 
 ## Functions: give a name to a job
 
-[Try simulation: Functions](../dashboard.md?lab=simulations/course_topics_lab.html&topic=functions){ .md-button .lecture-simulation }
+[Try simulation: Functions](https://costawess.github.io/Programming-Dashboard/web/simulations/course_topics_lab.html?topic=functions){ .md-button .lecture-simulation }
 
 - A **function** is a block of code with a name that you can **call** whenever you need it.
 
@@ -72,7 +72,7 @@ void loop() {
 
 ## Parameters: functions with input
 
-[Try simulation: Functions](../dashboard.md?lab=simulations/course_topics_lab.html&topic=functions){ .md-button .lecture-simulation }
+[Try simulation: Functions](https://costawess.github.io/Programming-Dashboard/web/simulations/course_topics_lab.html?topic=functions){ .md-button .lecture-simulation }
 
 ```cpp title="blink_times.ino"
 void blinkTimes(int pin, int times, int ms) {
@@ -110,9 +110,9 @@ void loop() {
 
 ## Flowchart: calling a function
 
-[Try simulation: Functions](../dashboard.md?lab=simulations/course_topics_lab.html&topic=functions){ .md-button .lecture-simulation }
+[Try simulation: Functions](https://costawess.github.io/Programming-Dashboard/web/simulations/course_topics_lab.html?topic=functions){ .md-button .lecture-simulation }
 
-[Try simulation: Arduino to flowchart](../dashboard.md?lab=simulations/arduino_flowchart_converter.html){ .md-button .lecture-simulation }
+[Try simulation: Arduino to flowchart](https://costawess.github.io/Programming-Dashboard/web/simulations/arduino_flowchart_converter.html){ .md-button .lecture-simulation }
 
 ![Flowchart: calling a function](assets/diagrams/functions-decisions-043.png){ .lecture-figure loading=lazy }
 
@@ -126,7 +126,7 @@ void loop() {
 
 ## Return values: functions with output
 
-[Try simulation: Functions](../dashboard.md?lab=simulations/course_topics_lab.html&topic=functions){ .md-button .lecture-simulation }
+[Try simulation: Functions](https://costawess.github.io/Programming-Dashboard/web/simulations/course_topics_lab.html?topic=functions){ .md-button .lecture-simulation }
 
 ```cpp title="convert.ino"
 const int POT_PIN = 36;
@@ -165,7 +165,7 @@ void loop() {
 
 ## Kinds of functions: input and output
 
-[Try simulation: Functions](../dashboard.md?lab=simulations/course_topics_lab.html&topic=functions){ .md-button .lecture-simulation }
+[Try simulation: Functions](https://costawess.github.io/Programming-Dashboard/web/simulations/course_topics_lab.html?topic=functions){ .md-button .lecture-simulation }
 
 <div class="tabular">
 
@@ -187,7 +187,7 @@ several outputs & `void minMax(const float v[], int n,`
 
 ## Example: geometric figures
 
-[Try simulation: Functions](../dashboard.md?lab=simulations/course_topics_lab.html&topic=functions){ .md-button .lecture-simulation }
+[Try simulation: Functions](https://costawess.github.io/Programming-Dashboard/web/simulations/course_topics_lab.html?topic=functions){ .md-button .lecture-simulation }
 
 ```cpp title="geometry.ino"
 // PI is already defined by Arduino.h
@@ -443,7 +443,7 @@ void loop() {}
 
 ## if: making decisions
 
-[Try simulation: Conditionals](../dashboard.md?lab=simulations/course_topics_lab.html&topic=conditionals){ .md-button .lecture-simulation }
+[Try simulation: Conditionals](https://costawess.github.io/Programming-Dashboard/web/simulations/course_topics_lab.html?topic=conditionals){ .md-button .lecture-simulation }
 
 ```cpp title="if.ino"
 // if: do something only when true
@@ -487,9 +487,9 @@ if (temperature > 30) {
 
 ## Flowcharts: if, if / else and else if
 
-[Try simulation: Conditionals](../dashboard.md?lab=simulations/course_topics_lab.html&topic=conditionals){ .md-button .lecture-simulation }
+[Try simulation: Conditionals](https://costawess.github.io/Programming-Dashboard/web/simulations/course_topics_lab.html?topic=conditionals){ .md-button .lecture-simulation }
 
-[Try simulation: Arduino to flowchart](../dashboard.md?lab=simulations/arduino_flowchart_converter.html){ .md-button .lecture-simulation }
+[Try simulation: Arduino to flowchart](https://costawess.github.io/Programming-Dashboard/web/simulations/arduino_flowchart_converter.html){ .md-button .lecture-simulation }
 
 ![Flowcharts: if, if / else and else if](assets/diagrams/functions-decisions-045.png){ .lecture-figure loading=lazy }
 
@@ -546,7 +546,7 @@ void loop() {}
 
 ## Comparison and logical operators
 
-[Try simulation: Conditionals](../dashboard.md?lab=simulations/course_topics_lab.html&topic=conditionals){ .md-button .lecture-simulation }
+[Try simulation: Conditionals](https://costawess.github.io/Programming-Dashboard/web/simulations/course_topics_lab.html?topic=conditionals){ .md-button .lecture-simulation }
 
 | **Op.** | **Meaning** | **Example (x = 5)** |
 |:---|:---|:---|
@@ -574,7 +574,7 @@ void loop() {}
 
 ## Combining conditions
 
-[Try simulation: Conditionals](../dashboard.md?lab=simulations/course_topics_lab.html&topic=conditionals){ .md-button .lecture-simulation }
+[Try simulation: Conditionals](https://costawess.github.io/Programming-Dashboard/web/simulations/course_topics_lab.html?topic=conditionals){ .md-button .lecture-simulation }
 
 ```cpp title="conditions.ino"
 // inside a range: AND
@@ -613,7 +613,7 @@ if (!k1)       Serial.println("KEY1 released");
 
 ## Flowchart: combining conditions with && and \|\|
 
-[Try simulation: Conditionals](../dashboard.md?lab=simulations/course_topics_lab.html&topic=conditionals){ .md-button .lecture-simulation }
+[Try simulation: Conditionals](https://costawess.github.io/Programming-Dashboard/web/simulations/course_topics_lab.html?topic=conditionals){ .md-button .lecture-simulation }
 
 ![Flowchart: combining conditions with && and ||](assets/diagrams/functions-decisions-046.png){ .lecture-figure loading=lazy }
 
@@ -625,9 +625,9 @@ if (!k1)       Serial.println("KEY1 released");
 
 ## Example: a thermostat with hysteresis
 
-[Try simulation: Hysteresis](../dashboard.md?lab=simulations/hysteresis_lab.html){ .md-button .lecture-simulation }
+[Try simulation: Hysteresis](https://costawess.github.io/Programming-Dashboard/web/simulations/hysteresis_lab.html){ .md-button .lecture-simulation }
 
-[Try simulation: Heating and cooling](../dashboard.md?lab=experiments/heating_cooling_lab.html){ .md-button .lecture-simulation }
+[Try simulation: Heating and cooling](https://costawess.github.io/Programming-Dashboard/web/experiments/heating_cooling_lab.html){ .md-button .lecture-simulation }
 
 ```cpp title="thermostat.ino"
 const int POT_PIN = 36;     // pot simulates 0..30 C
@@ -667,9 +667,9 @@ void loop() {
 
 ## Flowchart: thermostat with hysteresis
 
-[Try simulation: Hysteresis](../dashboard.md?lab=simulations/hysteresis_lab.html){ .md-button .lecture-simulation }
+[Try simulation: Hysteresis](https://costawess.github.io/Programming-Dashboard/web/simulations/hysteresis_lab.html){ .md-button .lecture-simulation }
 
-[Try simulation: Arduino to flowchart](../dashboard.md?lab=simulations/arduino_flowchart_converter.html){ .md-button .lecture-simulation }
+[Try simulation: Arduino to flowchart](https://costawess.github.io/Programming-Dashboard/web/simulations/arduino_flowchart_converter.html){ .md-button .lecture-simulation }
 
 ![Flowchart: thermostat with hysteresis](assets/diagrams/functions-decisions-048.png){ .lecture-figure loading=lazy }
 
@@ -703,9 +703,9 @@ void loop() {
 
 ## Exercises: functions and decisions (1/2)
 
-[Try simulation: Hysteresis](../dashboard.md?lab=simulations/hysteresis_lab.html){ .md-button .lecture-simulation }
+[Try simulation: Hysteresis](https://costawess.github.io/Programming-Dashboard/web/simulations/hysteresis_lab.html){ .md-button .lecture-simulation }
 
-[Try simulation: Heating and cooling](../dashboard.md?lab=experiments/heating_cooling_lab.html){ .md-button .lecture-simulation }
+[Try simulation: Heating and cooling](https://costawess.github.io/Programming-Dashboard/web/experiments/heating_cooling_lab.html){ .md-button .lecture-simulation }
 
 !!! example "Exercise 1 – Battery indicator"
     
@@ -750,10 +750,10 @@ void loop() {
 
 ### Try it
 
-- [Functions](../dashboard.md?lab=simulations/course_topics_lab.html&topic=functions)
+- [Functions](https://costawess.github.io/Programming-Dashboard/web/simulations/course_topics_lab.html?topic=functions)
 
-- [Conditionals](../dashboard.md?lab=simulations/course_topics_lab.html&topic=conditionals)
+- [Conditionals](https://costawess.github.io/Programming-Dashboard/web/simulations/course_topics_lab.html?topic=conditionals)
 
-- [Hysteresis](../dashboard.md?lab=simulations/hysteresis_lab.html)
+- [Hysteresis](https://costawess.github.io/Programming-Dashboard/web/simulations/hysteresis_lab.html)
 
-- [Experiment: heating & cooling](../dashboard.md?lab=experiments/heating_cooling_lab.html)
+- [Experiment: heating & cooling](https://costawess.github.io/Programming-Dashboard/web/experiments/heating_cooling_lab.html)

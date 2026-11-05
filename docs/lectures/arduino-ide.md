@@ -255,7 +255,7 @@ Garbage in the Serial Monitor & Baud rate in the monitor $\neq$ `Serial.begin()`
 
 - [Course repository: documentation, tutorials and tools](https://github.com/costawess/EmbeddedProgramming-Course)
 
-- [Example dashboard and interactive tools](../dashboard.md?lab=index.html)
+- [Example dashboard and interactive tools](https://costawess.github.io/Programming-Dashboard/web/index.html)
 
 - [Arduino IDE documentation](https://docs.arduino.cc/software/ide/)
 

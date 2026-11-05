@@ -6,7 +6,7 @@ title: "Flowcharts"
 
 ## Why flowcharts?
 
-[Try simulation: Arduino to flowchart](../dashboard.md?lab=simulations/arduino_flowchart_converter.html){ .md-button .lecture-simulation }
+[Try simulation: Arduino to flowchart](https://costawess.github.io/Programming-Dashboard/web/simulations/arduino_flowchart_converter.html){ .md-button .lecture-simulation }
 
 - A **visual diagram** of a program or process.
 
@@ -55,7 +55,7 @@ title: "Flowcharts"
 
 ## Example 1: blink as a flowchart
 
-[Try simulation: Arduino to flowchart](../dashboard.md?lab=simulations/arduino_flowchart_converter.html){ .md-button .lecture-simulation }
+[Try simulation: Arduino to flowchart](https://costawess.github.io/Programming-Dashboard/web/simulations/arduino_flowchart_converter.html){ .md-button .lecture-simulation }
 
 ![Example 1: blink as a flowchart](assets/diagrams/flowcharts-030.png){ .lecture-figure loading=lazy }
 
@@ -143,7 +143,7 @@ void loop() {
 
 ## Example 3: robot sorting (decisions in a row)
 
-[Try simulation: Robot sorting logic](../dashboard.md?lab=simulations/robot_sorting_lab.html){ .md-button .lecture-simulation }
+[Try simulation: Robot sorting logic](https://costawess.github.io/Programming-Dashboard/web/simulations/robot_sorting_lab.html){ .md-button .lecture-simulation }
 
 ![Example 3: robot sorting (decisions in a row)](assets/diagrams/flowcharts-032.png){ .lecture-figure loading=lazy }
 
@@ -221,7 +221,7 @@ void loop() {
 
 ## Exercises: flowcharts
 
-[Try simulation: Arduino to flowchart](../dashboard.md?lab=simulations/arduino_flowchart_converter.html){ .md-button .lecture-simulation }
+[Try simulation: Arduino to flowchart](https://costawess.github.io/Programming-Dashboard/web/simulations/arduino_flowchart_converter.html){ .md-button .lecture-simulation }
 
 !!! example "Exercise 1 – Night light"
     
@@ -257,6 +257,6 @@ void loop() {
 
 ### Try it
 
-- [Arduino to Flowchart converter](../dashboard.md?lab=simulations/arduino_flowchart_converter.html)
+- [Arduino to Flowchart converter](https://costawess.github.io/Programming-Dashboard/web/simulations/arduino_flowchart_converter.html)
 
-- [Robot sorting logic](../dashboard.md?lab=simulations/robot_sorting_lab.html)
+- [Robot sorting logic](https://costawess.github.io/Programming-Dashboard/web/simulations/robot_sorting_lab.html)

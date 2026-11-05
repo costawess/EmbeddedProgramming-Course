@@ -1,6 +1,6 @@
 # Embedded Programming
 
-Lecture chapters, practical tutorials and the EP Dashboard are maintained here and published together with MkDocs Material on GitHub Pages.
+Lecture chapters and practical tutorials are maintained here and published with MkDocs Material on GitHub Pages.
 
 ## Preview locally
 
@@ -16,15 +16,14 @@ Open the local URL printed by MkDocs. The site starts in dark mode and includes 
 
 - `docs/lectures/`: 25 lecture chapters, references, diagrams, quizzes, exercises and downloadable examples.
 - `docs/tutorials/`: practical tutorials named after their actual subjects, with sketches and images alongside each page.
-- `docs/stylesheets/` and `docs/javascripts/`: course styling, mathematical typesetting and dashboard integration.
+- `docs/stylesheets/` and `docs/javascripts/`: course styling and mathematical typesetting.
 - `mkdocs.yml`: top tabs, expandable topic groups and theme configuration.
-- `dashboard/`: the simulation and experiment application, its shared assets and tests.
-- `hooks/dashboard.py`: publishes dashboard assets under `dashboard-app/` and keeps old tutorial URLs working through redirects.
+- `hooks/redirects.py`: keeps old tutorial URLs working through redirects.
 - `tools/import_lectures.py`: optional importer for the external Beamer course material.
 - `tools/lecture-import-manifest.json`: chapter and content counts from the last import.
 - `tests/`: built-site link checks and browser integration tests.
 
-The Dashboard tab embeds the local dashboard while retaining course navigation. Lecture links can open a particular simulation directly in that tab. **Open full screen** provides the standalone version. Both use the same source files. Web Serial requires a supported browser such as Chrome or Edge and HTTPS (or localhost).
+The **Dashboard** menu links to [Programming Dashboard](https://costawess.github.io/Programming-Dashboard/web/index.html), maintained separately. Lecture simulation links open activities on that external site. This repository contains only the course book and its teaching examples.
 
 ## Build and publication
 
@@ -32,7 +31,7 @@ The Dashboard tab embeds the local dashboard while retaining course navigation. 
 .\.venv\Scripts\python -m mkdocs build --strict
 ```
 
-The existing `.github/workflows/gh-pages.yml` builds the complete site after a push to `main` and publishes `site/` to GitHub Pages. The integration does not need another repository or hosting service.
+The existing `.github/workflows/gh-pages.yml` builds the course site after a push to `main` and publishes `site/` to GitHub Pages.
 
 ## Updating the lecture import
 
@@ -61,4 +60,4 @@ The browser test uses an installed Chrome or the executable specified by `CHROME
 
 ## Cleanup and original material
 
-The original external LaTeX and `EP Dashboard` directories remain intact. The integrated dashboard is maintained here. Unrelated firmware, old landing-page templates, empty tutorial drafts and authoring shortcuts were removed from the tracked/published tree. For this cleanup, their full contents were preserved locally in `artifacts/cleanup-backup/`, ignored by Git. Editor settings, environments, generated builds and caches are also ignored.
+The original external LaTeX directory remains intact. Empty tutorial drafts and authoring shortcuts were removed from the tracked/published tree; their local backup is in `artifacts/cleanup-backup/`, ignored by Git. Editor settings, environments, generated builds and caches are also ignored.

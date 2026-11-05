@@ -6,9 +6,9 @@ title: "State Machines"
 
 ## Why state machines?
 
-[Try simulation: State machines](../dashboard.md?lab=simulations/course_topics_lab.html&topic=state_machines){ .md-button .lecture-simulation }
+[Try simulation: State machines](https://costawess.github.io/Programming-Dashboard/web/simulations/course_topics_lab.html?topic=state_machines){ .md-button .lecture-simulation }
 
-[Try simulation: Coffee machine, step by step](../dashboard.md?lab=simulations/coffee_machine.html){ .md-button .lecture-simulation }
+[Try simulation: Coffee machine, step by step](https://costawess.github.io/Programming-Dashboard/web/simulations/coffee_machine.html){ .md-button .lecture-simulation }
 
 - Real systems have **modes**: a washing machine is idle, washing, paused, spinning …
 
@@ -75,7 +75,7 @@ The system is always in **exactly one** state.
 
 ## State diagrams: the design
 
-[Try simulation: Coffee machine, step by step](../dashboard.md?lab=simulations/coffee_machine.html){ .md-button .lecture-simulation }
+[Try simulation: Coffee machine, step by step](https://costawess.github.io/Programming-Dashboard/web/simulations/coffee_machine.html){ .md-button .lecture-simulation }
 
 ![State diagrams: the design](assets/diagrams/state-machines-097.png){ .lecture-figure loading=lazy }
 
@@ -118,7 +118,7 @@ The system is always in **exactly one** state.
 
 ## Example: a washing machine
 
-[Try simulation: State machines](../dashboard.md?lab=simulations/course_topics_lab.html&topic=state_machines){ .md-button .lecture-simulation }
+[Try simulation: State machines](https://costawess.github.io/Programming-Dashboard/web/simulations/course_topics_lab.html?topic=state_machines){ .md-button .lecture-simulation }
 
 ![Example: a washing machine](assets/diagrams/state-machines-099.png){ .lecture-figure loading=lazy }
 
@@ -153,9 +153,9 @@ The previous example uses a start/pause button. The original lecture also asks w
 
 ## Example: a pedestrian crossing
 
-[Try simulation: Traffic lights](../dashboard.md?lab=experiments/traffic_lights.html){ .md-button .lecture-simulation }
+[Try simulation: Traffic lights](https://costawess.github.io/Programming-Dashboard/web/experiments/traffic_lights.html){ .md-button .lecture-simulation }
 
-[Try simulation: Intersection controller](../dashboard.md?lab=experiments/intersection_controller.html){ .md-button .lecture-simulation }
+[Try simulation: Intersection controller](https://costawess.github.io/Programming-Dashboard/web/experiments/intersection_controller.html){ .md-button .lecture-simulation }
 
 ![Example: a pedestrian crossing](assets/diagrams/state-machines-100.png){ .lecture-figure loading=lazy }
 
@@ -210,7 +210,7 @@ Serial.println(currentState);   // prints 0
 
 ## switch / case
 
-[Try simulation: State machines](../dashboard.md?lab=simulations/course_topics_lab.html&topic=state_machines){ .md-button .lecture-simulation }
+[Try simulation: State machines](https://costawess.github.io/Programming-Dashboard/web/simulations/course_topics_lab.html?topic=state_machines){ .md-button .lecture-simulation }
 
 ```cpp title="switch.ino"
 switch (currentState) {
@@ -249,9 +249,9 @@ switch (currentState) {
 
 ## Flowchart: switch / case
 
-[Try simulation: State machines](../dashboard.md?lab=simulations/course_topics_lab.html&topic=state_machines){ .md-button .lecture-simulation }
+[Try simulation: State machines](https://costawess.github.io/Programming-Dashboard/web/simulations/course_topics_lab.html?topic=state_machines){ .md-button .lecture-simulation }
 
-[Try simulation: Arduino to flowchart](../dashboard.md?lab=simulations/arduino_flowchart_converter.html){ .md-button .lecture-simulation }
+[Try simulation: Arduino to flowchart](https://costawess.github.io/Programming-Dashboard/web/simulations/arduino_flowchart_converter.html){ .md-button .lecture-simulation }
 
 ![Flowchart: switch / case](assets/diagrams/state-machines-101.png){ .lecture-figure loading=lazy }
 
@@ -373,7 +373,7 @@ void enterState(State s) {              // the ONLY place where
 
 ## Implementing the crossing: states with time (2/2)
 
-[Try simulation: Intersection controller](../dashboard.md?lab=experiments/intersection_controller.html){ .md-button .lecture-simulation }
+[Try simulation: Intersection controller](https://costawess.github.io/Programming-Dashboard/web/experiments/intersection_controller.html){ .md-button .lecture-simulation }
 
 ```cpp title="crossing.ino (part 2)"
 void setup() {
@@ -648,9 +648,9 @@ void loop() {
 
 ## Exercises: state machines
 
-[Try simulation: Coffee machine experiment](../dashboard.md?lab=experiments/coffee_machine.html){ .md-button .lecture-simulation }
+[Try simulation: Coffee machine experiment](https://costawess.github.io/Programming-Dashboard/web/experiments/coffee_machine.html){ .md-button .lecture-simulation }
 
-[Try simulation: Dual elevator](../dashboard.md?lab=experiments/dual_elevator.html){ .md-button .lecture-simulation }
+[Try simulation: Dual elevator](https://costawess.github.io/Programming-Dashboard/web/experiments/dual_elevator.html){ .md-button .lecture-simulation }
 
 !!! example "Exercise 1 – Washing machine, complete"
     
@@ -688,13 +688,13 @@ void loop() {
 
 ### Try it
 
-- [State machines](../dashboard.md?lab=simulations/course_topics_lab.html&topic=state_machines)
+- [State machines](https://costawess.github.io/Programming-Dashboard/web/simulations/course_topics_lab.html?topic=state_machines)
 
-- [Coffee machine, step by step](../dashboard.md?lab=simulations/coffee_machine.html)
+- [Coffee machine, step by step](https://costawess.github.io/Programming-Dashboard/web/simulations/coffee_machine.html)
 
-- [Experiment: intersection controller](../dashboard.md?lab=experiments/intersection_controller.html)
+- [Experiment: intersection controller](https://costawess.github.io/Programming-Dashboard/web/experiments/intersection_controller.html)
 
-- [Experiment: dual elevator](../dashboard.md?lab=experiments/dual_elevator.html)
+- [Experiment: dual elevator](https://costawess.github.io/Programming-Dashboard/web/experiments/dual_elevator.html)
 
 ## Complete project sketches
 

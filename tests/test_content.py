@@ -39,12 +39,17 @@ def main():
         assert "EPPLACEHOLDER" not in text
         assert "EPBOX" not in text
         assert "$`" not in text
-        assert "Programming-Dashboard/web" not in text
+        assert "dashboard.md" not in text
+        assert "dashboard-app/" not in text
     assert len(list((lectures / "assets/diagrams").glob("*.png"))) == manifest["diagram_count"]
     assert len(list((lectures / "examples/projects").rglob("*.ino"))) == 7
-    assert not (ROOT / "dashboard/esp32/medication_logger/medication_logger.ino").exists()
+    assert not (ROOT / "dashboard").exists()
+    assert not (ROOT / "docs/dashboard.md").exists()
+    assert not (ROOT / "docs/javascripts/dashboard.js").exists()
     assert not (ROOT / "docs/tutorials/tutorial7/ReadMe.md").exists()
     assert SITE.is_dir(), "Build the site first."
+    assert not (SITE / "dashboard-app").exists()
+    assert not (SITE / "dashboard").exists()
     pages = {}
     for path in SITE.rglob("*.html"):
         parser = PageLinks()

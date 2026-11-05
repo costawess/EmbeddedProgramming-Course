@@ -6,7 +6,7 @@ title: "Variables, Types and Numbers"
 
 ## What is a variable?
 
-[Try simulation: Variables](../dashboard.md?lab=simulations/course_topics_lab.html&topic=variables){ .md-button .lecture-simulation }
+[Try simulation: Variables](https://costawess.github.io/Programming-Dashboard/web/simulations/course_topics_lab.html?topic=variables){ .md-button .lecture-simulation }
 
 - A **named place in memory** that holds a value your program can read and change.
 
@@ -28,7 +28,7 @@ title: "Variables, Types and Numbers"
 
 ## Variables in memory
 
-[Try simulation: Memory layout](../dashboard.md?lab=simulations/memory_layout_lab.html){ .md-button .lecture-simulation }
+[Try simulation: Memory layout](https://costawess.github.io/Programming-Dashboard/web/simulations/memory_layout_lab.html){ .md-button .lecture-simulation }
 
 ![Variables in memory](assets/figures/variables/variables-in-memory.png){ .lecture-figure loading=lazy }
 
@@ -44,7 +44,7 @@ title: "Variables, Types and Numbers"
 
 ## Declaring and using variables
 
-[Try simulation: Variables](../dashboard.md?lab=simulations/course_topics_lab.html&topic=variables){ .md-button .lecture-simulation }
+[Try simulation: Variables](https://costawess.github.io/Programming-Dashboard/web/simulations/course_topics_lab.html?topic=variables){ .md-button .lecture-simulation }
 
 ```cpp title="declare.ino"
 const int ledPin = 2;   // constant: never changes
@@ -110,7 +110,7 @@ does not compile; `delay` hides the Arduino function.
 
 ## Data types on the ESP32
 
-[Try simulation: Variable types](../dashboard.md?lab=simulations/variable_types_lab.html){ .md-button .lecture-simulation }
+[Try simulation: Variable types](https://costawess.github.io/Programming-Dashboard/web/simulations/variable_types_lab.html){ .md-button .lecture-simulation }
 
 | **Type** | **Bytes** | **Range** | **Typical use** |
 |:---|:--:|:---|:---|
@@ -132,7 +132,7 @@ does not compile; `delay` hides the Arduino function.
 
 ## Binary: how a computer stores numbers
 
-[Try simulation: Number representation](../dashboard.md?lab=simulations/number_representation_lab.html){ .md-button .lecture-simulation }
+[Try simulation: Number representation](https://costawess.github.io/Programming-Dashboard/web/simulations/number_representation_lab.html){ .md-button .lecture-simulation }
 
 - A **bit** is 0 or 1: off/on, false/true, no current/current.
 
@@ -156,7 +156,7 @@ does not compile; `delay` hides the Arduino function.
 
 ## Decimal, binary and hexadecimal
 
-[Try simulation: Number representation](../dashboard.md?lab=simulations/number_representation_lab.html){ .md-button .lecture-simulation }
+[Try simulation: Number representation](https://costawess.github.io/Programming-Dashboard/web/simulations/number_representation_lab.html){ .md-button .lecture-simulation }
 
 | **Dec** | **Bin** | **Hex** |
 |--------:|:-------:|:-------:|
@@ -190,7 +190,7 @@ does not compile; `delay` hides the Arduino function.
 
 ## Converting decimal to binary: step by step
 
-[Try simulation: Number representation](../dashboard.md?lab=simulations/number_representation_lab.html){ .md-button .lecture-simulation }
+[Try simulation: Number representation](https://costawess.github.io/Programming-Dashboard/web/simulations/number_representation_lab.html){ .md-button .lecture-simulation }
 
 **Method: divide by 2, keep the remainders**  
 
@@ -270,7 +270,7 @@ count *= 2;           // 2040
 
 ## Integer pitfalls: division and overflow
 
-[Try simulation: Variable types](../dashboard.md?lab=simulations/variable_types_lab.html){ .md-button .lecture-simulation }
+[Try simulation: Variable types](https://costawess.github.io/Programming-Dashboard/web/simulations/variable_types_lab.html){ .md-button .lecture-simulation }
 
 ```cpp title="pitfalls.ino"
 int sum = 10 + 20 + 30;
@@ -305,7 +305,7 @@ big = big + 1;                  // -2147483648
 
 ## Floating point, characters and text
 
-[Try simulation: ASCII characters](../dashboard.md?lab=simulations/ascii_char_lab.html){ .md-button .lecture-simulation }
+[Try simulation: ASCII characters](https://costawess.github.io/Programming-Dashboard/web/simulations/ascii_char_lab.html){ .md-button .lecture-simulation }
 
 ```cpp title="text.ino"
 double pi = 3.14159;
@@ -336,7 +336,7 @@ Serial.println(volts, 3);          // 1.260
 
 ## The ASCII table
 
-[Try simulation: ASCII characters](../dashboard.md?lab=simulations/ascii_char_lab.html){ .md-button .lecture-simulation }
+[Try simulation: ASCII characters](https://costawess.github.io/Programming-Dashboard/web/simulations/ascii_char_lab.html){ .md-button .lecture-simulation }
 
 ![The ASCII table](assets/figures/variables/ascii-table.png){ .lecture-figure loading=lazy }
 
@@ -377,9 +377,9 @@ Serial.println(volts, 3);          // 1.260
 
 ## Exercises: variables and numbers
 
-[Try simulation: Number representation](../dashboard.md?lab=simulations/number_representation_lab.html){ .md-button .lecture-simulation }
+[Try simulation: Number representation](https://costawess.github.io/Programming-Dashboard/web/simulations/number_representation_lab.html){ .md-button .lecture-simulation }
 
-[Try simulation: Variable types](../dashboard.md?lab=simulations/variable_types_lab.html){ .md-button .lecture-simulation }
+[Try simulation: Variable types](https://costawess.github.io/Programming-Dashboard/web/simulations/variable_types_lab.html){ .md-button .lecture-simulation }
 
 !!! example "Exercise 1 – Number printer"
     
@@ -416,10 +416,10 @@ Serial.println(volts, 3);          // 1.260
 
 ### Try it
 
-- [Variables](../dashboard.md?lab=simulations/course_topics_lab.html&topic=variables)
+- [Variables](https://costawess.github.io/Programming-Dashboard/web/simulations/course_topics_lab.html?topic=variables)
 
-- [Variable types](../dashboard.md?lab=simulations/variable_types_lab.html)
+- [Variable types](https://costawess.github.io/Programming-Dashboard/web/simulations/variable_types_lab.html)
 
-- [Number representation](../dashboard.md?lab=simulations/number_representation_lab.html)
+- [Number representation](https://costawess.github.io/Programming-Dashboard/web/simulations/number_representation_lab.html)
 
-- [ASCII characters](../dashboard.md?lab=simulations/ascii_char_lab.html)
+- [ASCII characters](https://costawess.github.io/Programming-Dashboard/web/simulations/ascii_char_lab.html)

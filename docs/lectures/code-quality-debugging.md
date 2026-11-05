@@ -455,4 +455,4 @@ void loop() {
 
 - [Course repository (GitHub)](https://github.com/costawess/EmbeddedProgramming-Course)
 
-- [Course dashboard](../dashboard.md?lab=index.html)
+- [Course dashboard](https://costawess.github.io/Programming-Dashboard/web/index.html)

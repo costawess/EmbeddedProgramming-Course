@@ -210,6 +210,6 @@ Touch & `4` `13` `27` `32` `33`
 
 ### Try it
 
-- [Digital input & output (dashboard)](../dashboard.md?lab=simulations/course_topics_lab.html&topic=foundations)
+- [Digital input & output (dashboard)](https://costawess.github.io/Programming-Dashboard/web/simulations/course_topics_lab.html?topic=foundations)
 
 - [Falstad circuit simulator](https://www.falstad.com/circuit/)

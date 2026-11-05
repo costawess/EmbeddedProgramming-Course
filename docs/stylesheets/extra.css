@@ -95,29 +95,6 @@
   overflow: hidden !important;
 }
 
-/* Isolate the dashboard's application CSS while preserving course navigation. */
-.md-content:has(.ep-dashboard) { min-width: 0; }
-.ep-dashboard iframe {
-  display: block;
-  width: 100%;
-  min-height: 42rem;
-  border: 1px solid var(--ep-border);
-  border-radius: .5rem;
-  background: var(--md-default-bg-color);
-}
-
-.ep-dashboard-toolbar {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  flex-wrap: wrap;
-  gap: .5rem;
-  margin: 0 0 1rem;
-}
-
-.ep-dashboard-toolbar p { margin: 0; }
-.ep-dashboard-toolbar a { white-space: nowrap; }
-
 @media (max-width: 600px) {
   .ep-intro { font-size: .9rem; }
   .ep-actions .md-button { width: 100%; text-align: center; }

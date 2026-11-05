@@ -12,7 +12,7 @@ hide:
 <div class="ep-actions" markdown>
 
 [Start learning :material-arrow-right:](lectures/index.md){ .md-button .md-button--primary }
-[Explore the dashboard :material-view-dashboard-outline:](dashboard.md){ .md-button }
+[Explore the dashboard :material-view-dashboard-outline:](https://costawess.github.io/Programming-Dashboard/web/index.html){ .md-button }
 
 </div>
 
@@ -34,7 +34,7 @@ hide:
 
     Explore inputs, outputs, communication, and timing in your browser. Use the same dashboard throughout the course.
 
-    [:material-arrow-right: Open EP Dashboard](dashboard.md)
+    [:material-arrow-right: Open EP Dashboard](https://costawess.github.io/Programming-Dashboard/web/index.html)
 
 -   :material-chip:{ .lg .middle } **Practical tutorials**
 

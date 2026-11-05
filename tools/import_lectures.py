@@ -285,8 +285,7 @@ class Importer:
         return self.block('<details class="lecture-answer"><summary>Check your answer</summary>' + html.replace("\n", " ") + '</details>')
 
     def dashboard_url(self, relative):
-        app, _, query = relative.partition("?")
-        return "../dashboard.md?lab=" + app + ("&" + query if query else "")
+        return "https://costawess.github.io/Programming-Dashboard/web/" + relative
 
     def simulation(self, title, url):
         if "/web/" in url:

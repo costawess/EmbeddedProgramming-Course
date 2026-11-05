@@ -6,7 +6,7 @@ title: "Loops and Arrays"
 
 ## The for loop: repeat a known number of times
 
-[Try simulation: Loops](../dashboard.md?lab=simulations/course_topics_lab.html&topic=loops){ .md-button .lecture-simulation }
+[Try simulation: Loops](https://costawess.github.io/Programming-Dashboard/web/simulations/course_topics_lab.html?topic=loops){ .md-button .lecture-simulation }
 
 (int i = 0; i \< 10; i++) { … }  
 
@@ -37,9 +37,9 @@ for (int i = 0; i < 10; i++) {
 
 ## Flowchart: the for loop
 
-[Try simulation: Loops](../dashboard.md?lab=simulations/course_topics_lab.html&topic=loops){ .md-button .lecture-simulation }
+[Try simulation: Loops](https://costawess.github.io/Programming-Dashboard/web/simulations/course_topics_lab.html?topic=loops){ .md-button .lecture-simulation }
 
-[Try simulation: Arduino to flowchart](../dashboard.md?lab=simulations/arduino_flowchart_converter.html){ .md-button .lecture-simulation }
+[Try simulation: Arduino to flowchart](https://costawess.github.io/Programming-Dashboard/web/simulations/arduino_flowchart_converter.html){ .md-button .lecture-simulation }
 
 ![Flowchart: the for loop](assets/diagrams/loops-arrays-050.png){ .lecture-figure loading=lazy }
 
@@ -62,7 +62,7 @@ Serial.println(i);
 
 ## for loops in practice
 
-[Try simulation: Loops](../dashboard.md?lab=simulations/course_topics_lab.html&topic=loops){ .md-button .lecture-simulation }
+[Try simulation: Loops](https://costawess.github.io/Programming-Dashboard/web/simulations/course_topics_lab.html?topic=loops){ .md-button .lecture-simulation }
 
 ```cpp title="for_examples.ino"
 // blink 5 times
@@ -104,7 +104,7 @@ for (int row = 1; row <= 5; row++) {
 
 ## The while loop: repeat until something happens
 
-[Try simulation: Loops](../dashboard.md?lab=simulations/course_topics_lab.html&topic=loops){ .md-button .lecture-simulation }
+[Try simulation: Loops](https://costawess.github.io/Programming-Dashboard/web/simulations/course_topics_lab.html?topic=loops){ .md-button .lecture-simulation }
 
 ```cpp title="while.ino"
 // keep reading until the pot is high
@@ -146,9 +146,9 @@ do {
 
 ## Flowcharts: while vs do-while
 
-[Try simulation: Loops](../dashboard.md?lab=simulations/course_topics_lab.html&topic=loops){ .md-button .lecture-simulation }
+[Try simulation: Loops](https://costawess.github.io/Programming-Dashboard/web/simulations/course_topics_lab.html?topic=loops){ .md-button .lecture-simulation }
 
-[Try simulation: Arduino to flowchart](../dashboard.md?lab=simulations/arduino_flowchart_converter.html){ .md-button .lecture-simulation }
+[Try simulation: Arduino to flowchart](https://costawess.github.io/Programming-Dashboard/web/simulations/arduino_flowchart_converter.html){ .md-button .lecture-simulation }
 
 ![Flowcharts: while vs do-while](assets/diagrams/loops-arrays-051.png){ .lecture-figure loading=lazy }
 
@@ -191,7 +191,7 @@ int first = pins[0];      // 23
 
 ## Arrays + loops: a perfect team
 
-[Try simulation: Loops](../dashboard.md?lab=simulations/course_topics_lab.html&topic=loops){ .md-button .lecture-simulation }
+[Try simulation: Loops](https://costawess.github.io/Programming-Dashboard/web/simulations/course_topics_lab.html?topic=loops){ .md-button .lecture-simulation }
 
 ```cpp title="samples.ino"
 const int N = 10;
@@ -449,9 +449,9 @@ void loop() {
 
 ## Exercises: loops and arrays
 
-[Try simulation: Seven-segment displays](../dashboard.md?lab=experiments/dual_seven_segment.html){ .md-button .lecture-simulation }
+[Try simulation: Seven-segment displays](https://costawess.github.io/Programming-Dashboard/web/experiments/dual_seven_segment.html){ .md-button .lecture-simulation }
 
-[Try simulation: Maze](../dashboard.md?lab=experiments/maze.html){ .md-button .lecture-simulation }
+[Try simulation: Maze](https://costawess.github.io/Programming-Dashboard/web/experiments/maze.html){ .md-button .lecture-simulation }
 
 !!! example "Exercise 1 – Bar graph"
     
@@ -489,8 +489,8 @@ void loop() {
 
 ### Try it
 
-- [Loops](../dashboard.md?lab=simulations/course_topics_lab.html&topic=loops)
+- [Loops](https://costawess.github.io/Programming-Dashboard/web/simulations/course_topics_lab.html?topic=loops)
 
-- [Experiment: seven-segment displays](../dashboard.md?lab=experiments/dual_seven_segment.html)
+- [Experiment: seven-segment displays](https://costawess.github.io/Programming-Dashboard/web/experiments/dual_seven_segment.html)
 
-- [Experiment: maze](../dashboard.md?lab=experiments/maze.html)
+- [Experiment: maze](https://costawess.github.io/Programming-Dashboard/web/experiments/maze.html)

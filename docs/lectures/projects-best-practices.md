@@ -112,7 +112,7 @@ title: "Projects and Best Practices"
 
 ## Lab challenges across the whole course
 
-[Try simulation: Tic-tac-toe](../dashboard.md?lab=experiments/tic_tac_toe.html){ .md-button .lecture-simulation }
+[Try simulation: Tic-tac-toe](https://costawess.github.io/Programming-Dashboard/web/experiments/tic_tac_toe.html){ .md-button .lecture-simulation }
 
 <div class="tabular">
 
@@ -244,8 +244,8 @@ c L11.8cm **Level** & **Challenge**
 
 ### Try it
 
-- [Course dashboard: all simulations and experiments](../dashboard.md?lab=index.html)
+- [Course dashboard: all simulations and experiments](https://costawess.github.io/Programming-Dashboard/web/index.html)
 
-- [Experiment: tic-tac-toe](../dashboard.md?lab=experiments/tic_tac_toe.html)
+- [Experiment: tic-tac-toe](https://costawess.github.io/Programming-Dashboard/web/experiments/tic_tac_toe.html)
 
 - [Wokwi: ESP32 simulator](https://wokwi.com/projects/new/esp32)

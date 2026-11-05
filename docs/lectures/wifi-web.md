@@ -193,4 +193,4 @@ void printTemperature() {
 
 - [Wokwi: ESP32 with Wi-Fi simulation](https://wokwi.com/projects/new/esp32)
 
-- [Course dashboard example](../dashboard.md?lab=index.html)
+- [Course dashboard example](https://costawess.github.io/Programming-Dashboard/web/index.html)

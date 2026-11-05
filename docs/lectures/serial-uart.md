@@ -6,7 +6,7 @@ title: "Serial Communication (UART)"
 
 ## Why serial communication?
 
-[Try simulation: UART](../dashboard.md?lab=simulations/course_topics_lab.html&topic=uart){ .md-button .lecture-simulation }
+[Try simulation: UART](https://costawess.github.io/Programming-Dashboard/web/simulations/course_topics_lab.html?topic=uart){ .md-button .lecture-simulation }
 
 **A microcontroller talks to a computer to**
 
@@ -37,7 +37,7 @@ title: "Serial Communication (UART)"
 
 ## The UART frame: one byte on the wire
 
-[Try simulation: UART](../dashboard.md?lab=simulations/course_topics_lab.html&topic=uart){ .md-button .lecture-simulation }
+[Try simulation: UART](https://costawess.github.io/Programming-Dashboard/web/simulations/course_topics_lab.html?topic=uart){ .md-button .lecture-simulation }
 
 ![The UART frame: one byte on the wire](assets/diagrams/serial-uart-055.png){ .lecture-figure loading=lazy }
 
@@ -58,7 +58,7 @@ title: "Serial Communication (UART)"
 
 ## RX, TX and the UARTs of the ESP32
 
-[Try simulation: UART](../dashboard.md?lab=simulations/course_topics_lab.html&topic=uart){ .md-button .lecture-simulation }
+[Try simulation: UART](https://costawess.github.io/Programming-Dashboard/web/simulations/course_topics_lab.html?topic=uart){ .md-button .lecture-simulation }
 
 ![RX, TX and the UARTs of the ESP32](assets/figures/serial-uart/uart-crossed-lines.png){ .lecture-figure loading=lazy }
 
@@ -181,7 +181,7 @@ l L8.6cm **Function** & **What it does**
 
 ## r and n: a lesson from the typewriter
 
-[Try simulation: ASCII characters](../dashboard.md?lab=simulations/ascii_char_lab.html){ .md-button .lecture-simulation }
+[Try simulation: ASCII characters](https://costawess.github.io/Programming-Dashboard/web/simulations/ascii_char_lab.html){ .md-button .lecture-simulation }
 
 ![r and n: a lesson from the typewriter](assets/diagrams/serial-uart-057.png){ .lecture-figure loading=lazy }
 
@@ -331,7 +331,7 @@ void loop() {
 
 ## What does SERIAL_8N1 mean?
 
-[Try simulation: UART](../dashboard.md?lab=simulations/course_topics_lab.html&topic=uart){ .md-button .lecture-simulation }
+[Try simulation: UART](https://costawess.github.io/Programming-Dashboard/web/simulations/course_topics_lab.html?topic=uart){ .md-button .lecture-simulation }
 
 Serial2.begin(9600, SERIAL_8N1, 16, 17);  
 
@@ -365,7 +365,7 @@ Serial2.begin(9600, SERIAL_8N1, 16, 17);
 
 ## Parity: a simple error check
 
-[Try simulation: UART](../dashboard.md?lab=simulations/course_topics_lab.html&topic=uart){ .md-button .lecture-simulation }
+[Try simulation: UART](https://costawess.github.io/Programming-Dashboard/web/simulations/course_topics_lab.html?topic=uart){ .md-button .lecture-simulation }
 
 ![Parity: a simple error check](assets/diagrams/serial-uart-060.png){ .lecture-figure loading=lazy }
 
@@ -563,4 +563,4 @@ void loop() {
 
 ### Try it
 
-- [UART simulation](../dashboard.md?lab=simulations/course_topics_lab.html&topic=uart)
+- [UART simulation](https://costawess.github.io/Programming-Dashboard/web/simulations/course_topics_lab.html?topic=uart)

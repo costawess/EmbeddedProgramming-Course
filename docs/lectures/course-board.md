@@ -54,7 +54,7 @@ Analog terminals AD1 / AD2 & `36` `39` & – & VP / VN, ADC1: usable with Wi-Fi
 
 ## The buttons: active HIGH with hardware debounce
 
-[Try simulation: Button debouncing](../dashboard.md?lab=simulations/debouncing_lab.html){ .md-button .lecture-simulation }
+[Try simulation: Button debouncing](https://costawess.github.io/Programming-Dashboard/web/simulations/debouncing_lab.html){ .md-button .lecture-simulation }
 
 ![The buttons: active HIGH with hardware debounce](assets/diagrams/course-board-020.png){ .lecture-figure loading=lazy }
 
@@ -109,6 +109,6 @@ One press can still give several edges: debounce in software.
 
 ### Try it
 
-- [Pull-up / pull-down (dashboard)](../dashboard.md?lab=simulations/pull_resistors_lab.html)
+- [Pull-up / pull-down (dashboard)](https://costawess.github.io/Programming-Dashboard/web/simulations/pull_resistors_lab.html)
 
-- [Button debouncing (dashboard)](../dashboard.md?lab=simulations/debouncing_lab.html)
+- [Button debouncing (dashboard)](https://costawess.github.io/Programming-Dashboard/web/simulations/debouncing_lab.html)

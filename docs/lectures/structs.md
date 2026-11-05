@@ -324,6 +324,6 @@ void enter(Machine &m, State s) {
 
 ### Try it
 
-- [Memory layout (dashboard)](../dashboard.md?lab=simulations/memory_layout_lab.html)
+- [Memory layout (dashboard)](https://costawess.github.io/Programming-Dashboard/web/simulations/memory_layout_lab.html)
 
 - [Wokwi: ESP32 simulator](https://wokwi.com/projects/new/esp32)

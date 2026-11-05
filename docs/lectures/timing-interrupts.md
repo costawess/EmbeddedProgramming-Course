@@ -6,7 +6,7 @@ title: "Time and Interrupts"
 
 ## delay() vs millis()
 
-[Try simulation: Timers](../dashboard.md?lab=simulations/course_topics_lab.html&topic=timers){ .md-button .lecture-simulation }
+[Try simulation: Timers](https://costawess.github.io/Programming-Dashboard/web/simulations/course_topics_lab.html?topic=timers){ .md-button .lecture-simulation }
 
 !!! warning "delay(ms)"
     
@@ -32,7 +32,7 @@ title: "Time and Interrupts"
 
 ## Non-blocking timing with millis()
 
-[Try simulation: Timers](../dashboard.md?lab=simulations/course_topics_lab.html&topic=timers){ .md-button .lecture-simulation }
+[Try simulation: Timers](https://costawess.github.io/Programming-Dashboard/web/simulations/course_topics_lab.html?topic=timers){ .md-button .lecture-simulation }
 
 ```cpp title="nonblocking.ino"
 const int LED_PIN = 2;
@@ -72,9 +72,9 @@ void loop() {
 
 ## Flowchart: non-blocking timing with millis()
 
-[Try simulation: Timers](../dashboard.md?lab=simulations/course_topics_lab.html&topic=timers){ .md-button .lecture-simulation }
+[Try simulation: Timers](https://costawess.github.io/Programming-Dashboard/web/simulations/course_topics_lab.html?topic=timers){ .md-button .lecture-simulation }
 
-[Try simulation: Arduino to flowchart](../dashboard.md?lab=simulations/arduino_flowchart_converter.html){ .md-button .lecture-simulation }
+[Try simulation: Arduino to flowchart](https://costawess.github.io/Programming-Dashboard/web/simulations/arduino_flowchart_converter.html){ .md-button .lecture-simulation }
 
 ![Flowchart: non-blocking timing with millis()](assets/diagrams/timing-interrupts-072.png){ .lecture-figure loading=lazy }
 
@@ -91,9 +91,9 @@ void loop() {
 
 ## Several independent timers
 
-[Try simulation: Timers](../dashboard.md?lab=simulations/course_topics_lab.html&topic=timers){ .md-button .lecture-simulation }
+[Try simulation: Timers](https://costawess.github.io/Programming-Dashboard/web/simulations/course_topics_lab.html?topic=timers){ .md-button .lecture-simulation }
 
-[Try simulation: Real-time challenge](../dashboard.md?lab=experiments/real_time_challenge.html){ .md-button .lecture-simulation }
+[Try simulation: Real-time challenge](https://costawess.github.io/Programming-Dashboard/web/experiments/real_time_challenge.html){ .md-button .lecture-simulation }
 
 ```cpp title="three_timers.ino"
 const int LED_BLUE = 23, LED_RED = 21;
@@ -137,7 +137,7 @@ void loop() {
 
 ## Polling vs interrupts
 
-[Try simulation: Interrupts](../dashboard.md?lab=simulations/interrupts.html){ .md-button .lecture-simulation }
+[Try simulation: Interrupts](https://costawess.github.io/Programming-Dashboard/web/simulations/interrupts.html){ .md-button .lecture-simulation }
 
 **Polling: “has it happened yet?”**
 
@@ -164,7 +164,7 @@ void loop() {
 
 ## attachInterrupt(): connecting a pin to a function
 
-[Try simulation: Interrupts](../dashboard.md?lab=simulations/interrupts.html){ .md-button .lecture-simulation }
+[Try simulation: Interrupts](https://costawess.github.io/Programming-Dashboard/web/simulations/interrupts.html){ .md-button .lecture-simulation }
 
 (digitalPinToInterrupt(pin), **isrName**, mode);  
 (digitalPinToInterrupt(34), buttonISR, RISING);  
@@ -294,7 +294,7 @@ void setup() {
 
 ## What happens when an interrupt fires
 
-[Try simulation: Interrupts](../dashboard.md?lab=simulations/interrupts.html){ .md-button .lecture-simulation }
+[Try simulation: Interrupts](https://costawess.github.io/Programming-Dashboard/web/simulations/interrupts.html){ .md-button .lecture-simulation }
 
 ![What happens when an interrupt fires](assets/diagrams/timing-interrupts-077.png){ .lecture-figure loading=lazy }
 
@@ -345,7 +345,7 @@ buttonPressed = true;
 
 ## Example: a button interrupt on the course board
 
-[Try simulation: Interrupts](../dashboard.md?lab=simulations/interrupts.html){ .md-button .lecture-simulation }
+[Try simulation: Interrupts](https://costawess.github.io/Programming-Dashboard/web/simulations/interrupts.html){ .md-button .lecture-simulation }
 
 ```cpp title="button_interrupt.ino"
 const int KEY1 = 34;               // active HIGH
@@ -389,9 +389,9 @@ void loop() {
 
 ## Flowchart: main loop and interrupt
 
-[Try simulation: Interrupts](../dashboard.md?lab=simulations/interrupts.html){ .md-button .lecture-simulation }
+[Try simulation: Interrupts](https://costawess.github.io/Programming-Dashboard/web/simulations/interrupts.html){ .md-button .lecture-simulation }
 
-[Try simulation: Arduino to flowchart](../dashboard.md?lab=simulations/arduino_flowchart_converter.html){ .md-button .lecture-simulation }
+[Try simulation: Arduino to flowchart](https://costawess.github.io/Programming-Dashboard/web/simulations/arduino_flowchart_converter.html){ .md-button .lecture-simulation }
 
 ![Flowchart: main loop and interrupt](assets/diagrams/timing-interrupts-078.png){ .lecture-figure loading=lazy }
 
@@ -400,7 +400,7 @@ The ISR is a **separate, short** flowchart started by the hardware. It only sets
 
 ## Bouncing: one press, many edges
 
-[Try simulation: Button debouncing](../dashboard.md?lab=simulations/debouncing_lab.html){ .md-button .lecture-simulation }
+[Try simulation: Button debouncing](https://costawess.github.io/Programming-Dashboard/web/simulations/debouncing_lab.html){ .md-button .lecture-simulation }
 
 ![Bouncing: one press, many edges](assets/figures/interrupts/switch-bouncing.jpg){ .lecture-figure loading=lazy }
 
@@ -416,7 +416,7 @@ The ISR is a **separate, short** flowchart started by the hardware. It only sets
 
 ## Debouncing in software
 
-[Try simulation: Button debouncing](../dashboard.md?lab=simulations/debouncing_lab.html){ .md-button .lecture-simulation }
+[Try simulation: Button debouncing](https://costawess.github.io/Programming-Dashboard/web/simulations/debouncing_lab.html){ .md-button .lecture-simulation }
 
 **In the ISR (time stamp)**
 
@@ -465,9 +465,9 @@ void loop() {
 
 ## Flowchart: software debounce
 
-[Try simulation: Button debouncing](../dashboard.md?lab=simulations/debouncing_lab.html){ .md-button .lecture-simulation }
+[Try simulation: Button debouncing](https://costawess.github.io/Programming-Dashboard/web/simulations/debouncing_lab.html){ .md-button .lecture-simulation }
 
-[Try simulation: Arduino to flowchart](../dashboard.md?lab=simulations/arduino_flowchart_converter.html){ .md-button .lecture-simulation }
+[Try simulation: Arduino to flowchart](https://costawess.github.io/Programming-Dashboard/web/simulations/arduino_flowchart_converter.html){ .md-button .lecture-simulation }
 
 ![Flowchart: software debounce](assets/diagrams/timing-interrupts-079.png){ .lecture-figure loading=lazy }
 
@@ -479,7 +479,7 @@ void loop() {
 
 ## Hardware timers: interrupts from the clock
 
-[Try simulation: Timers](../dashboard.md?lab=simulations/course_topics_lab.html&topic=timers){ .md-button .lecture-simulation }
+[Try simulation: Timers](https://costawess.github.io/Programming-Dashboard/web/simulations/course_topics_lab.html?topic=timers){ .md-button .lecture-simulation }
 
 - A **timer** counts clock ticks, independent of `loop()`.
 
@@ -682,7 +682,7 @@ void loop() {
 
 ## Ticker: timers made easy
 
-[Try simulation: Timers](../dashboard.md?lab=simulations/course_topics_lab.html&topic=timers){ .md-button .lecture-simulation }
+[Try simulation: Timers](https://costawess.github.io/Programming-Dashboard/web/simulations/course_topics_lab.html?topic=timers){ .md-button .lecture-simulation }
 
 ```cpp title="ticker.ino"
 #include <Ticker.h>
@@ -841,9 +841,9 @@ void loop() {
 
 ## Exercises: time and interrupts
 
-[Try simulation: Kitchen timer](../dashboard.md?lab=experiments/kitchen_timer.html){ .md-button .lecture-simulation }
+[Try simulation: Kitchen timer](https://costawess.github.io/Programming-Dashboard/web/experiments/kitchen_timer.html){ .md-button .lecture-simulation }
 
-[Try simulation: Real-time challenge](../dashboard.md?lab=experiments/real_time_challenge.html){ .md-button .lecture-simulation }
+[Try simulation: Real-time challenge](https://costawess.github.io/Programming-Dashboard/web/experiments/real_time_challenge.html){ .md-button .lecture-simulation }
 
 !!! example "Exercise 1 – Two blinkers, one button"
     
@@ -883,13 +883,13 @@ void loop() {
 
 ### Try it
 
-- [Interrupts](../dashboard.md?lab=simulations/interrupts.html)
+- [Interrupts](https://costawess.github.io/Programming-Dashboard/web/simulations/interrupts.html)
 
-- [Timers](../dashboard.md?lab=simulations/course_topics_lab.html&topic=timers)
+- [Timers](https://costawess.github.io/Programming-Dashboard/web/simulations/course_topics_lab.html?topic=timers)
 
-- [Button debouncing](../dashboard.md?lab=simulations/debouncing_lab.html)
+- [Button debouncing](https://costawess.github.io/Programming-Dashboard/web/simulations/debouncing_lab.html)
 
-- [Experiment: kitchen timer](../dashboard.md?lab=experiments/kitchen_timer.html)
+- [Experiment: kitchen timer](https://costawess.github.io/Programming-Dashboard/web/experiments/kitchen_timer.html)
 
 ## Complete project sketches
 

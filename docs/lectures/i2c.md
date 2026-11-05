@@ -6,7 +6,7 @@ title: "The I2C Bus"
 
 ## I2C at a glance
 
-[Try simulation: I2C](../dashboard.md?lab=simulations/course_topics_lab.html&topic=i2c){ .md-button .lecture-simulation }
+[Try simulation: I2C](https://costawess.github.io/Programming-Dashboard/web/simulations/course_topics_lab.html?topic=i2c){ .md-button .lecture-simulation }
 
 ![I2C at a glance](assets/figures/i2c/i2c-bus-overview.jpg){ .lecture-figure loading=lazy }
 
@@ -72,7 +72,7 @@ Example: the BME280 answers to `0x76`. The ESP32 sends “0x76, give me register
 
 ## A transaction, step by step (1/2)
 
-[Try simulation: I2C](../dashboard.md?lab=simulations/course_topics_lab.html&topic=i2c){ .md-button .lecture-simulation }
+[Try simulation: I2C](https://costawess.github.io/Programming-Dashboard/web/simulations/course_topics_lab.html?topic=i2c){ .md-button .lecture-simulation }
 
 **1. Start condition**  
 
@@ -97,7 +97,7 @@ The master sends the **7-bit address** and 1 bit: **R/W** (0 = write, 1 = read).
 
 ## A transaction, step by step (2/2)
 
-[Try simulation: I2C](../dashboard.md?lab=simulations/course_topics_lab.html&topic=i2c){ .md-button .lecture-simulation }
+[Try simulation: I2C](https://costawess.github.io/Programming-Dashboard/web/simulations/course_topics_lab.html?topic=i2c){ .md-button .lecture-simulation }
 
 **3. Data bytes**  
 
@@ -119,7 +119,7 @@ After the last byte the master releases **SDA HIGH while SCL is HIGH**: the bus 
 
 ## Worked example: the bytes on the wire
 
-[Try simulation: I2C](../dashboard.md?lab=simulations/course_topics_lab.html&topic=i2c){ .md-button .lecture-simulation }
+[Try simulation: I2C](https://costawess.github.io/Programming-Dashboard/web/simulations/course_topics_lab.html?topic=i2c){ .md-button .lecture-simulation }
 
 **Read the chip ID of a BME280 at 0x76**
 
@@ -338,6 +338,6 @@ Two devices, one disappears & both have the **same address**: change one (addres
 
 ### Try it
 
-- [I2C simulation](../dashboard.md?lab=simulations/course_topics_lab.html&topic=i2c)
+- [I2C simulation](https://costawess.github.io/Programming-Dashboard/web/simulations/course_topics_lab.html?topic=i2c)
 
 - [BME280 datasheet](https://www.bosch-sensortec.com/media/boschsensortec/downloads/datasheets/bst-bme280-ds002.pdf)

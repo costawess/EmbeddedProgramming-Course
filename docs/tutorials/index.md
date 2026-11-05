@@ -56,4 +56,4 @@ For I2C, state machines, and the kitchen timer, use the complete lecture example
 
 - [I2C and the scanner example](../lectures/i2c.md)
 - [State machines and complete project sketches](../lectures/state-machines.md)
-- [Kitchen timer experiment](../dashboard.md?lab=experiments/kitchen_timer.html)
+- [Kitchen timer experiment](https://costawess.github.io/Programming-Dashboard/web/experiments/kitchen_timer.html)
