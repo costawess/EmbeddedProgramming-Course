@@ -1,55 +1,69 @@
-<!-- !!! tip
-    Use the left sidebar to navigate. Try the code copy button on code blocks. -->
-
-# Embedded Programming - Tutorials
-
-## Objectives
-
-Here you will find a set of tutorials to practice the Embedded Programming concepts using the ESP32 and the Arduino IDE.
-
-![pcb used in the practicals.](figures/pcb.png)
-
-This repository is intended to facilitate the understanding of the concepts presented in class, providing step-by-step examples, exercises, and references that students can reproduce and expand upon independently. By following the tutorials, you will gradually build the skills necessary to work with embedded systems in a structured and practical way.
-
-This page is available at: [https://github.com/costawess/EmbeddedProgramming-Course/](https://github.com/costawess/EmbeddedProgramming-Course/)
-
+---
+hide:
+  - toc
 ---
 
-## EP Content
+<p class="ep-eyebrow">Hanze · ESP32 · Arduino</p>
 
-The content of each tutorial is listed below:
+# Embedded Programming
 
-- [Workshop 1](./tutorials/tutorial1/ReadMe.md) - Setting up the Arduino IDE. Hello World.
-- [Workshop 2](./tutorials/tutorial2/ReadMe.md) - Flowcharts, if-else, while.
-- [Workshop 3](./tutorials/tutorial3/ReadMe.md) - Variables, Data types, If and Loops.
-- [Workshop 4](./tutorials/tutorial4/ReadMe.md) - UART and ADC.
-- [Workshop 5](./tutorials/tutorial5/ReadMe.md) - Functions, Libraries, Interrupts, Timers
-- [Workshop 6](./tutorials/tutorial6/ReadMe.md) - Kitchen Timer.
-- [Workshop 7](./tutorials/tutorial7/ReadMe.md) - I2C protocol and State Machine.
+<p class="ep-intro">From your first LED to connected embedded systems. Learn through guided workshops, explore concepts in interactive simulations, and bring your code to life on the ESP32.</p>
 
----
+<div class="ep-actions" markdown>
 
-## Extra Tutorials
+[Start learning :material-arrow-right:](tutorials/tutorial1/ReadMe.md){ .md-button .md-button--primary }
+[Explore the dashboard :material-view-dashboard-outline:](dashboard.md){ .md-button }
 
-⚠️ This section is still in progress.
+</div>
 
----
+## Your course, in one place
 
-## How to use
+<div class="grid cards" markdown>
 
-### Organization
-The tutorials are presented in sequence, starting from the simplest concepts and gradually moving to more complex and broader topics.  
-Each concept is introduced step by step, followed by clear examples that can be reproduced directly.  
-Students are encouraged to modify the provided code and apply it to other small projects, reinforcing understanding and solidifying knowledge through experimentation.
+-   :material-book-open-page-variant-outline:{ .lg .middle } **Guided workshops**
 
-### Compatibility
-All code examples have been developed and tested using **Arduino IDE version 2.3.5**.  
-The reference hardware used throughout this repository is the **ESP32-WROOM-1** development board.  
-While most sketches should work on other ESP32 variants, minor adjustments may be required (e.g., pin mappings).
+    ---
 
-<!-- ## License
-==to be included== -->
+    Seven practical workshops, from Arduino IDE setup to interrupts, I2C, and state machines. Follow the examples and put each concept into practice.
 
-## External links
+    [:material-arrow-right: Browse workshops](workshops/index.md)
 
-- ESP32-WROOM-32: Datasheet Version 3.6 - [https://www.espressif.com/sites/default/files/documentation/esp32-wroom-32_datasheet_en.pdf](https://www.espressif.com/sites/default/files/documentation/esp32-wroom-32_datasheet_en.pdf)
+-   :material-flask-outline:{ .lg .middle } **Simulations & experiments**
+
+    ---
+
+    Explore inputs, outputs, communication, and timing in your browser. Use the same dashboard throughout the course.
+
+    [:material-arrow-right: Open EP Dashboard](dashboard.md)
+
+-   :material-chip:{ .lg .middle } **Build on real hardware**
+
+    ---
+
+    Connect your ESP32, upload a sketch, and observe how your program interacts with buttons, sensors, and displays.
+
+    [:material-arrow-right: Set up your environment](tutorials/tutorial1/ReadMe.md)
+
+</div>
+
+## Learn by doing
+
+The workshops build from simple concepts to more complete embedded systems. Each topic includes explanations, examples, and exercises you can reproduce and adapt independently.
+
+1. **Follow a workshop** to understand the concept and run the examples.
+2. **Explore the dashboard** to observe and experiment with the behaviour.
+3. **Try it on the ESP32** and modify the code to test your own ideas.
+
+!!! tip "Find your way"
+    Switch between **Home**, **Workshops**, and **Dashboard** using the top menu. Within Workshops, click a topic group in the left sidebar to expand it. On smaller screens, open the menu using the top-left icon.
+
+## Hardware & software
+
+![PCB used in the practicals](figures/pcb.png){ .ep-hardware loading=lazy }
+
+The examples were developed with **Arduino IDE 2.3.5**. The workshops use an **ESP32-WROOM** development board; other ESP32 variants may require adjustments to pin mappings.
+
+## Resources
+
+- [Course source code on GitHub](https://github.com/costawess/EmbeddedProgramming-Course/)
+- [ESP32-WROOM-32 datasheet](https://www.espressif.com/sites/default/files/documentation/esp32-wroom-32_datasheet_en.pdf)

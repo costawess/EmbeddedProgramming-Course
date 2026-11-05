@@ -1,0 +1,58 @@
+:root{font-family:'Segoe UI',sans-serif;color:#e6f3f5;background:#102633;color-scheme:dark}*{box-sizing:border-box}body{margin:0;background:radial-gradient(ellipse at 20% 10%,#244954,transparent 65%);min-height:100vh}.app{max-width:1400px;margin:auto;padding:26px}.header{display:flex;justify-content:space-between;align-items:center;gap:20px;margin-bottom:26px}.eyebrow{font-size:11px;letter-spacing:.18em;color:#82cbc7}h1{font-size:clamp(28px,4vw,44px);margin:8px 0}p{color:#aec8d0;line-height:1.6;margin:8px 0 16px}a{color:#e6f3f5;text-decoration:none;white-space:nowrap}a,button{border:1px solid #50717e;background:#233e4b;border-radius:12px;padding:11px 16px}button{font:inherit;color:inherit;cursor:pointer;min-height:44px}button:hover{background:#355867}button:focus-visible,a:focus-visible{outline:3px solid #ffda8a;outline-offset:3px}button.queued{background:#f4cb76;color:#182c34;border-color:#f4cb76}.layout{display:grid;grid-template-columns:minmax(0,1.6fr) minmax(280px,1fr);gap:24px;align-items:start}.scene{padding:28px 24px 0;background:linear-gradient(#98c3ca,#d7ded0 65%,#adc2b8);border-radius:24px;overflow:hidden;box-shadow:0 20px 50px #0003}.roof{background:#284952;border-top:7px solid #efc981;color:#f6efda;border-radius:12px 12px 0 0;padding:18px 22px;display:flex;justify-content:space-between;letter-spacing:.25em}.building{position:relative;height:560px;background:#eadfc9;border:10px solid #36555d;border-top:0}.floors{height:100%;display:grid;grid-template-rows:repeat(4,1fr)}.floor{border-bottom:7px solid #36555d;display:flex;justify-content:space-between;align-items:center;padding:12px;position:relative;background:linear-gradient(90deg,#ece3cd 0 33%,#d0e3df 33% 100%)}.floor:last-child{border-bottom:0}.floor-label{color:#36555d;font-weight:800;font-size:22px}.floor-label small{display:block;font-size:10px;letter-spacing:.08em;margin-top:6px}.hall-buttons{display:flex;gap:5px;position:absolute;left:20%;z-index:3;flex-direction:column}.hall-buttons button{padding:0;width:38px;min-height:38px;background:#36555d;color:#fff;border-radius:50%;font-size:23px}.hall-buttons button.queued{background:#f4cb76;color:#182c34}.decoration{position:absolute;right:8%;width:12%;height:65%;border:4px solid #98b6b0;background:repeating-linear-gradient(0deg,#afccc4 0 25px,#d6e7db 25px 30px);border-radius:40px 40px 0 0;opacity:.8}.shaft{position:absolute;top:0;bottom:0;width:21%;background:repeating-linear-gradient(90deg,#29424c 0 9%,#3e5961 9% 11%,#29424c 11% 89%,#3e5961 89% 91%,#29424c 91%);border-left:5px solid #59777c;border-right:5px solid #59777c}.shaft-a{left:38%}.shaft-b{left:62%}.cabin{position:absolute;bottom:0;width:100%;height:25%;padding:9px 5px 5px;border:4px solid #efd097;background:linear-gradient(#3a6e77,#75a9aa);display:flex;flex-direction:column;align-items:center;overflow:hidden;will-change:bottom}.shaft-b .cabin{border-color:#b8d8e4;background:linear-gradient(#46718b,#9ab9c2)}.cabin>span{font-weight:800;color:#fff;font-size:14px;margin-bottom:5px}.doors{display:flex;width:100%;flex:1;overflow:hidden;background:#ffdda0}.doors i{width:50%;background:linear-gradient(90deg,#bdcbd0,#789298);border:1px solid #486870;transition:transform .35s}.cabin.open .doors i:first-of-type{transform:translateX(-95%)}.cabin.open .doors i:last-of-type{transform:translateX(95%)}.foundation{color:#36555d;text-align:center;padding:18px 0 22px;font-size:10px;letter-spacing:.1em}aside{display:grid;gap:18px}.panel{background:#193440;border:1px solid #3b5b67;border-radius:20px;padding:22px}h2{font-size:19px;margin:0 0 14px}.control{padding:14px 0;border-top:1px solid #3b5b67}.control-heading{display:flex;justify-content:space-between;gap:12px;margin-bottom:12px}.status{color:#92d4ce;font-size:13px}.destinations{display:flex;gap:8px}.destinations button{flex:1;padding:10px 5px}@media(max-width:900px){.layout{grid-template-columns:1fr}.scene{max-width:720px;width:100%;margin:auto}}@media(max-width:480px){.app{padding:14px}.header{align-items:start;flex-direction:column}.scene{padding:16px 8px 0}.building{height:480px;border-width:6px}.floor{padding:7px}.floor-label{font-size:17px}.hall-buttons{left:21%}.hall-buttons button{width:32px;min-height:36px}.floor-label small{font-size:8px}.roof{padding:16px}.decoration{right:3%;width:10%}}
+
+/* Glass doors keep the passenger visible during the entire trip. */
+.doors{position:relative;min-height:0;isolation:isolate;background:linear-gradient(#ffdda0,#f7edcf)}
+.passenger{position:absolute;height:88%;width:70%;left:15%;bottom:3%;z-index:-1}
+.doors i{background:linear-gradient(110deg,rgba(220,242,249,.42),rgba(120,161,180,.2));box-shadow:inset 0 0 0 1px #ffffff50}
+.passenger path:nth-of-type(2),.waiting-passenger path:nth-of-type(2){fill:var(--shirt-color,#df6b53)}
+
+.passenger{opacity:1;transition:opacity .5s ease}
+.cabin.passenger-hidden .passenger{opacity:0}
+
+.waiting-passenger{position:absolute;height:64%;width:9%;bottom:8%;z-index:2}
+.destinations button:disabled{opacity:.4;cursor:not-allowed}
+
+.mode-buttons{display:flex;gap:10px;margin-bottom:12px}.mode-buttons button{flex:1}.mode-buttons button[aria-pressed="true"]{background:#f4cb76;color:#182c34;border-color:#f4cb76}
+.waiting-passenger{width:6%;height:55%}
+
+/* A gutter before the floor labels holds each waiting person's timer. */
+.scene{padding-left:112px}
+.wait-times{position:absolute;right:calc(100% + 16px);top:8px;bottom:8px;width:82px;display:flex;flex-direction:column;justify-content:safe center;gap:4px;overflow-y:auto;color:#24414b;font-size:12px;font-variant-numeric:tabular-nums;scrollbar-width:thin}
+.wait-time{flex-shrink:0;padding:4px 5px;border:1px solid #799b9e;border-radius:6px;background:#ecf3e9;white-space:nowrap}
+@media(max-width:480px){.scene{padding-left:88px}.wait-times{right:calc(100% + 10px);width:68px;font-size:10px}.wait-time{padding:3px}}
+
+.doors .passenger{width:30%;height:84%}.passenger.slot-hidden{opacity:0}
+
+/* Both shafts have a landing entrance on every floor. */
+.landing-door{position:absolute;width:100%;height:25%;padding:9px 5px 5px;z-index:2;display:flex;flex-direction:column;align-items:center;border:4px solid #59777c;pointer-events:none;overflow:hidden}
+.landing-door>span{font-size:14px;font-weight:800;margin-bottom:5px;color:#fff;background:#36555d;padding:0 4px;border-radius:3px}
+.landing-panels{display:flex;width:100%;flex:1;min-height:0;overflow:hidden}
+.landing-panels i{width:50%;border:1px solid #486870;background:linear-gradient(110deg,#b8d4dd65,#789aa33b);transition:transform .35s}
+.landing-door.open .landing-panels i:first-child{transform:translateX(-100%)}
+.landing-door.open .landing-panels i:last-child{transform:translateX(100%)}
+
+/* Match the common experiment header, panels and controls. */
+:root{--bg:#102633;--panel:#193440;--line:#3b5b67;--text:#e6f3f5;--subtle:#aec8d0;--ctrl:#233e4b;--ctrl-line:#50717e;--accent:#92d4ce}
+.app{max-width:none;padding:22px;display:grid;gap:18px}.header{margin:0;padding:18px 20px;display:grid;grid-template-columns:minmax(0,1fr) auto;background:var(--panel);border:1px solid var(--line);border-radius:28px;box-shadow:0 16px 34px #0004}.title h1{margin:0;font-size:clamp(28px,3vw,46px)}.back{border:2px solid var(--ctrl-line);border-radius:16px;font-weight:800;background:var(--ctrl);padding:12px 16px}.panel{border-radius:28px;padding:18px;box-shadow:0 16px 34px #0004}.layout{grid-template-columns:minmax(0,1.6fr) minmax(330px,1fr);gap:20px}.serial{display:grid;gap:12px}.serial h2{margin:0}.serial-controls{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:10px;align-items:end}.field{display:grid;gap:6px;color:var(--subtle);font-size:14px;font-weight:700}select,.uart-test-input{width:100%;padding:11px 12px;border:2px solid var(--ctrl-line);border-radius:14px;background:var(--ctrl);color:var(--text);font:inherit}.serial-state{color:var(--accent);font-weight:800}#uartFeedback{font-size:13px;color:var(--subtle)}button:disabled{opacity:.5;cursor:not-allowed}[hidden]{display:none!important}@media(max-width:1000px){.layout{grid-template-columns:1fr}}@media(max-width:720px){.header,.serial-controls{grid-template-columns:1fr}.ep-header-actions{justify-content:flex-start}.app{padding:14px}}
+
+.random-settings{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:14px}#runStatus{font-size:13px}
+
+.score-summary{display:flex;align-items:center;justify-content:space-between;gap:12px}.score-summary strong{font-size:30px;color:var(--accent);font-variant-numeric:tabular-nums}.score-summary span{color:var(--subtle);font-size:13px}#personScores{padding-left:24px;max-height:220px;overflow-y:auto;font-size:13px;font-variant-numeric:tabular-nums}#personScores li{padding:5px 0}#personScores li::marker{color:var(--shirt-color)}#startRandomRun{margin-bottom:12px}
+
+.elevator-uart-row{display:grid;grid-template-columns:minmax(0,1fr) auto;align-items:center;gap:10px}.elevator-uart-row input{min-width:0}.elevator-uart-row button{white-space:nowrap}@media(max-width:480px){.elevator-uart-row button{padding:10px 8px;font-size:12px}}
+
+.score-strip{display:flex;align-items:center;justify-content:center;flex-wrap:wrap;gap:8px 14px;padding:10px 0 12px;letter-spacing:normal;font-size:12px;text-align:left}
+.score-strip strong{font-size:22px;font-variant-numeric:tabular-nums;color:#24414b}
+.score-strip #scoreCount{font-size:11px}
+.score-details summary{cursor:pointer;text-decoration:underline;text-underline-offset:3px}
+.score-details[open]{flex-basis:100%}
+.score-details #personScores{display:flex;flex-wrap:wrap;gap:4px 18px;max-height:110px;margin:8px 0 0;padding-left:24px;font-size:11px}
+.score-details #personScores li{padding:2px 0}
+
+.elevator-tabs{display:flex;gap:10px;flex-wrap:wrap}.elevator-tabs button[aria-selected="true"]{background:#f4cb76;color:#182c34;border-color:#f4cb76}.single-elevator .shaft-a{left:48%;width:25%}.single-elevator .decoration{right:7%;width:14%}
+
+#serialToggleBtn.serial-disconnected{background:#8f3037;border-color:#e07178;color:#fff}#serialToggleBtn.serial-connected{background:#216443;border-color:#6dc99a;color:#fff}
+
+.run-controls{display:flex;align-items:center;gap:14px;flex-wrap:wrap}.run-controls #startRandomRun{margin-bottom:0}
+
+.cabin{z-index:3}.doors .passenger{height:68%}.cabin-person-time{position:absolute;top:4px;width:30%;z-index:3;text-align:center;font:700 clamp(8px,1vw,12px) monospace;color:#18343e;background:#fff1c9e8;border-radius:4px;padding:2px 0;pointer-events:none}

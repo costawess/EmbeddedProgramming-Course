@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="en" data-sync-dashboard-lights="true">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Embedded Programming - Dual Elevator</title>
+  <link rel="stylesheet" href="dual_elevator.css" />
+  <script src="../shared/mouse_glow.js" defer></script>
+  <script src="../shared/page_header.js" defer></script>
+  <script src="../shared/web_serial_bridge.js" defer></script>
+  <script src="dual_elevator.js" defer></script>
+</head>
+<body>
+  <main class="app">
+    <header class="header"><div class="title"><h1>Dual Elevator</h1></div><a class="back" href="../index.html">Back to menu</a></header>
+    <div class="elevator-tabs" role="tablist" aria-label="Elevator difficulty"><button id="singleElevatorTab" type="button" role="tab" aria-selected="true" aria-controls="elevatorExperiment">Single Elevator</button><button id="dualElevatorTab" type="button" role="tab" aria-selected="false" aria-controls="elevatorExperiment" tabindex="-1">Dual Elevator</button></div>
+    <div class="layout" id="elevatorExperiment" role="tabpanel" aria-labelledby="singleElevatorTab">
+      <section class="scene" aria-label="Interactive four-floor building with two elevators">
+        <div class="roof"><span>ATRIUM</span><small> A &nbsp; / &nbsp; B </small></div>
+        <div class="building">
+          <div class="floors" id="floors"></div>
+          <div class="shaft shaft-a"><div class="cabin passenger-hidden" id="cabin-a"><span>A</span><div class="doors"><svg class="passenger" viewBox="0 0 48 88" role="img" aria-label="Passenger inside the elevator" aria-hidden="true"><ellipse cx="24" cy="84" rx="18" ry="3" fill="#36555d" opacity=".25"/><circle cx="24" cy="12" r="9" fill="#e9af83"/><path d="M15 10a9 9 0 0 1 18 0l-5-3-13 3" fill="#403c49"/><path d="M15 26Q24 21 33 26L38 49 32 51 28 34V54H20V34L16 51 10 49Z" fill="#df6b53"/><path d="M20 52h8l5 28h-8l-1-19-1 19h-8Z" fill="#29465c"/><path d="M15 80h8v4H13Zm10 0h8l2 4H25Z" fill="#253742"/></svg><i></i><i></i></div></div></div>
+          <div class="shaft shaft-b"><div class="cabin passenger-hidden" id="cabin-b"><span>B</span><div class="doors"><svg class="passenger" viewBox="0 0 48 88" role="img" aria-label="Passenger inside the elevator" aria-hidden="true"><ellipse cx="24" cy="84" rx="18" ry="3" fill="#36555d" opacity=".25"/><circle cx="24" cy="12" r="9" fill="#e9af83"/><path d="M15 10a9 9 0 0 1 18 0l-5-3-13 3" fill="#403c49"/><path d="M15 26Q24 21 33 26L38 49 32 51 28 34V54H20V34L16 51 10 49Z" fill="#df6b53"/><path d="M20 52h8l5 28h-8l-1-19-1 19h-8Z" fill="#29465c"/><path d="M15 80h8v4H13Zm10 0h8l2 4H25Z" fill="#253742"/></svg><i></i><i></i></div></div></div>
+        </div>
+        <div class="foundation score-strip"><span>Waiting score (total)</span><strong id="totalWaitingScore">0.0 s</strong><span>Cabin score (total)</span><strong id="totalCabinScore">0.0 s</strong><span>Total time</span><strong id="totalTimeScore">0.0 s</strong><span id="scoreCount">0 people</span><details class="score-details"><summary>People</summary><ol id="personScores" aria-label="Waiting and cabin time per person"></ol></details></div>
+      </section>
+      <aside>
+        <section class="panel serial"><div class="serial-state" id="serialStatus" role="status" hidden>Not connected</div><div id="serialHint" hidden>Send newline-terminated CALL:1:UP, CALL:4:DOWN, DEST:A:3, DEST:B:2, MODE:MANUAL, MODE:RANDOM, or RESET. Floors are 1-4. The browser runs movement, doors and queues; the ESP32 can generate calls and select destinations. Browser events: CALL:person:floor:direction, BOARDED:lift:person:floor, ARRIVED:lift:floor, EXITED:lift:person:floor, plus STATE:lift:position:door:occupancy once per second.</div><div class="elevator-uart-row"><input id="uartTestInput" class="uart-test-input" aria-label="UART test command" placeholder="UART test: CALL:1:UP" /><button id="serialToggleBtn" class="serial-disconnected" type="button" title="Connect (Key C)">Connect (115200 baud)</button></div><div id="uartFeedback" role="status"></div></section>
+        <section class="panel"><h2>People arriving</h2><div class="mode-buttons"><button id="manualMode" type="button" aria-pressed="true">Manual</button><button id="randomMode" type="button" aria-pressed="false">Random</button></div><div class="random-settings" id="randomSettings" hidden><label class="field">Seed<select id="seedSelect"><option value="101">Seed 1</option><option value="202">Seed 2</option><option value="303">Seed 3</option><option value="404">Seed 4</option><option value="505">Seed 5</option></select></label><label class="field">Duration<select id="durationSelect"><option value="10">10s</option><option value="30">30s</option><option value="60" selected>60s</option><option value="120">2min</option><option value="300">5min</option><option value="unlimited">Indefinite</option></select></label></div><div class="run-controls"><button id="startRandomRun" type="button" hidden>Start run</button><div id="runStatus" class="serial-state" role="status">Ready</div></div></section>
+
+        <section class="panel"><h2>Cabin controls</h2><div id="controls"></div></section>
+      </aside>
+    </div>
+    <section id="instructions" hidden><p>Single Elevator uses one cabin; Dual Elevator uses two. Each cabin carries up to three people. Changing tabs starts a fresh simulation. Manual mode lets you call elevators and assign a destination to each passenger. Random mode generates up to four waiting people and assigns destinations automatically. Choose one of five fixed seeds and a duration, select Random and press Start run to start a fresh repeatable run. The score sums each person's time from arrival until boarding, including people still waiting. Cabin score separately sums the time from boarding until the passenger disappears on exit, including time spent stopped inside the cabin. Lower is better. Scores remain visible after boarding and reset with each new run. Indefinite duration runs without a time limit. For a timed run, the entire simulation stops at the selected duration. The final score includes the accumulated waiting time of all people, including those still waiting at the deadline. Use UART commands to call elevators and select destinations from an ESP32. Movement and door timing run in the browser.</p></section>
+  </main>
+</body>
+</html>

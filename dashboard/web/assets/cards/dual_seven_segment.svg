@@ -1,0 +1,30 @@
+<svg width="220" height="220" viewBox="0 0 220 220" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="220" y2="220" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#382B4C"/>
+      <stop offset="1" stop-color="#15111D"/>
+    </linearGradient>
+  </defs>
+  <rect width="220" height="220" rx="26" fill="url(#bg)"/>
+  <rect x="14" y="14" width="192" height="192" rx="22" fill="#20192B" stroke="#6D6285"/>
+  <rect x="34" y="34" width="64" height="128" rx="14" fill="#120F17" stroke="#0A0910" stroke-width="3"/>
+  <rect x="122" y="34" width="64" height="128" rx="14" fill="#120F17" stroke="#0A0910" stroke-width="3"/>
+  <g fill="#FF3F3F">
+    <path d="M53 44H79L87 52L79 60H53L45 52L53 44Z"/>
+    <path d="M85 62L92 69V103L85 110L78 103V69L85 62Z"/>
+    <path d="M85 118L92 125V159L85 166L78 159V125L85 118Z"/>
+    <path d="M53 162H79L87 170L79 178H53L45 170L53 162Z"/>
+    <path d="M47 118L54 125V159L47 166L40 159V125L47 118Z"/>
+    <path d="M47 62L54 69V103L47 110L40 103V69L47 62Z"/>
+    <path d="M53 102H79L87 110L79 118H53L45 110L53 102Z"/>
+  </g>
+  <g fill="#FF3F3F" opacity=".35">
+    <path d="M141 44H167L175 52L167 60H141L133 52L141 44Z"/>
+    <path d="M173 62L180 69V103L173 110L166 103V69L173 62Z"/>
+    <path d="M173 118L180 125V159L173 166L166 159V125L173 118Z"/>
+    <path d="M141 162H167L175 170L167 178H141L133 170L141 162Z"/>
+    <path d="M135 118L142 125V159L135 166L128 159V125L135 118Z"/>
+    <path d="M135 62L142 69V103L135 110L128 103V69L135 62Z"/>
+    <path d="M141 102H167L175 110L167 118H141L133 110L141 102Z"/>
+  </g>
+</svg>

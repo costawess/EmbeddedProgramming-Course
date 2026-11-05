@@ -1,0 +1,9 @@
+.arduino-source{tab-size:2;font-variant-ligatures:none}
+.arduino-type{color:#9c5100}.arduino-keyword{color:#975400;font-weight:600}.arduino-function{color:#007c83}.arduino-constant{color:#075f91}.arduino-number{color:#7546a0}.arduino-string{color:#177535}.arduino-comment{color:#64757d;font-style:italic}
+html.theme-dark .arduino-type,:host(.dark) .arduino-type{color:#ffb66c}
+html.theme-dark .arduino-keyword,:host(.dark) .arduino-keyword{color:#ffd086}
+html.theme-dark .arduino-function,:host(.dark) .arduino-function{color:#69d6d1}
+html.theme-dark .arduino-constant,:host(.dark) .arduino-constant{color:#82c7ff}
+html.theme-dark .arduino-number,:host(.dark) .arduino-number{color:#ceadff}
+html.theme-dark .arduino-string,:host(.dark) .arduino-string{color:#a4df9d}
+html.theme-dark .arduino-comment,:host(.dark) .arduino-comment{color:#a2b3bd}

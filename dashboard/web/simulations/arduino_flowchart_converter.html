@@ -1,0 +1,314 @@
+﻿<!DOCTYPE html>
+<html lang="en" data-sync-dashboard-lights="true">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Embedded Programming - Arduino to Flowchart</title>
+    <script>
+    (() => {
+      try {
+        const storedLights = localStorage.getItem("embedded-dashboard-lights-on");
+        const legacyStoredLights = localStorage.getItem("embedded-lights-on");
+        const resolvedLights = storedLights ?? legacyStoredLights;
+        if (resolvedLights === "false") {
+          document.documentElement.classList.add("theme-dark");
+        }
+      } catch (error) {
+        // Ignore storage failures and keep the light theme.
+      }
+    })();
+  </script>
+  <script src="../shared/mouse_glow.js"></script>
+  <script src="../shared/page_header.js"></script>
+  <style>
+    :root {
+      --bg:#102633; --panel:rgba(18,32,42,.94); --line:#37586d; --text:#eef8fc; --subtle:#9db9c8;
+      --accent:#63c4ff; --green:#2fc76b; --yellow:#ffcc45; --orange:#ff9f43; --purple:#b98cff;
+      --button-bg:#173245; --card:rgba(27,47,60,.96); --code:#0d1720; --shadow:0 14px 34px rgba(0,0,0,.28);
+    }
+    html:not(.theme-dark){--code:#f4f8fd}
+    *{box-sizing:border-box} body{margin:0;min-height:100vh;font-family:"Segoe UI",Arial,sans-serif;color:var(--text);background:radial-gradient(circle at top,#193549 0%,var(--bg) 58%,#081118 100%)}
+    .app{padding:22px;display:grid;gap:18px}
+    .header,.panel{background:var(--panel);border:1px solid var(--line);border-radius:28px;box-shadow:var(--shadow)}
+    .header{padding:18px 20px;display:grid;grid-template-columns:auto minmax(0,1fr) auto;gap:16px;align-items:center}
+    .back{color:var(--text);text-decoration:none;border:2px solid var(--line);border-radius:16px;padding:12px 16px;background:var(--button-bg);font-weight:800}
+    .brand-logo{width:132px;max-width:100%;height:auto;object-fit:contain}
+    .title h1{margin:0;font-size:clamp(28px,3vw,46px)} .title p{margin:6px 0 0;color:var(--subtle)}
+    .layout{display:grid;grid-template-columns:minmax(340px,1fr) minmax(360px,1.1fr) minmax(280px,.7fr);gap:18px;align-items:start}
+    .panel{padding:18px;display:grid;gap:14px} h2,h3,p{margin:0}
+    .toolbar{display:flex;gap:10px;flex-wrap:wrap}
+    button,.sample-btn{appearance:none;border:2px solid var(--line);border-radius:14px;padding:10px 14px;background:var(--button-bg);color:var(--text);font-weight:800;cursor:pointer;text-decoration:none}
+    textarea{width:100%;min-height:540px;resize:vertical;border-radius:20px;border:1px solid var(--line);background:var(--code);color:#d8f2ff;padding:16px;font:13px/1.5 Consolas,"Courier New",monospace}
+    html:not(.theme-dark) textarea{color:#355775}
+    .note,.legend{color:var(--subtle);font-size:14px;line-height:1.45}
+    .flow-wrap{border-radius:22px;border:1px solid var(--line);background:rgba(8,16,22,.82);padding:12px;overflow:auto;min-height:620px}
+    html:not(.theme-dark) .flow-wrap{background:rgba(255,255,255,.76)}
+    .flow-svg{width:100%;min-height:600px;display:block}
+    .info-card{background:var(--card);border:1px solid var(--line);border-radius:22px;padding:14px;display:grid;gap:10px}
+    .pill{justify-self:start;border:2px solid var(--accent);border-radius:999px;padding:10px 14px;background:rgba(99,196,255,.14);color:var(--accent);font-weight:800}
+    .legend-list{display:grid;gap:8px}
+    .legend-row{display:grid;grid-template-columns:auto 1fr;gap:10px;align-items:center}
+    .swatch{width:20px;height:20px;border-radius:6px}
+    .swatch.proc{background:var(--accent)} .swatch.io{background:var(--green)} .swatch.dec{background:var(--yellow)} .swatch.loop{background:var(--purple)} .swatch.wait{background:var(--orange)}
+    @media (max-width:1320px){.layout{grid-template-columns:1fr}}
+    @media (max-width:760px){.header{grid-template-columns:1fr}}
+  </style>
+</head>
+<body>
+  <div class="app">
+    <header class="header">
+      <a class="back" href="../index.html">Back to menu</a>
+      <div class="title">
+        <h1>Arduino to Flowchart</h1>
+        <p>Paste an Arduino sketch, then generate a teaching-friendly flowchart that highlights setup, loop logic, conditions, loops, input/output, and waits.</p>
+      </div>
+      <img class="brand-logo" src="../../assets/branding/hanze_logo.png" alt="Hanze logo" />
+    </header>
+
+    <section class="layout">
+      <section class="panel">
+        <h2>Arduino C++ input</h2>
+        <div class="toolbar">
+          <button id="generateBtn" type="button">Generate flowchart</button>
+          <button class="sample-btn" id="sampleBasicBtn" type="button">Load conditional example</button>
+          <button class="sample-btn" id="sampleLoopBtn" type="button">Load loop example</button>
+          <button class="sample-btn" id="sampleStateBtn" type="button">Load state machine example</button>
+        </div>
+        <textarea id="codeInput" spellcheck="false"></textarea>
+        <p class="note">This converter is intentionally educational, not a full C++ compiler. It focuses on the most common Arduino classroom patterns.</p>
+      </section>
+
+      <section class="panel">
+        <h2>Generated flowchart</h2>
+        <div class="pill" id="statusPill">Ready to convert</div>
+        <div class="flow-wrap">
+          <svg class="flow-svg" id="flowSvg" viewBox="0 0 760 1200" xmlns="http://www.w3.org/2000/svg"></svg>
+        </div>
+      </section>
+
+      <aside class="panel">
+        <div class="info-card">
+          <h3>Detected blocks</h3>
+          <p class="note" id="summaryText">Paste code and press Generate flowchart.</p>
+        </div>
+        <div class="info-card">
+          <h3>Shape legend</h3>
+          <div class="legend-list">
+            <div class="legend-row"><div class="swatch proc"></div><div class="legend">Process: assignments, pin setup, function calls, general logic</div></div>
+            <div class="legend-row"><div class="swatch io"></div><div class="legend">Input/Output: digitalRead, analogRead, digitalWrite, analogWrite, Serial</div></div>
+            <div class="legend-row"><div class="swatch dec"></div><div class="legend">Decision: if, else if, else, comparisons</div></div>
+            <div class="legend-row"><div class="swatch loop"></div><div class="legend">Loop: for and while structures</div></div>
+            <div class="legend-row"><div class="swatch wait"></div><div class="legend">Time: delay and timing checks</div></div>
+          </div>
+        </div>
+        <div class="info-card">
+          <h3>Teaching note</h3>
+          <p class="note">Use this block to help students move from source code to algorithmic reasoning. It works especially well for conditionals, loops, and state machines.</p>
+        </div>
+      </aside>
+    </section>
+  </div>
+
+  <script src="../shared/sound_fx.js"></script>
+  <script>
+    const SAMPLE_BASIC = `const int buttonPin = 2;
+const int ledPin = 13;
+
+void setup() {
+  pinMode(buttonPin, INPUT_PULLUP);
+  pinMode(ledPin, OUTPUT);
+}
+
+void loop() {
+  bool pressed = digitalRead(buttonPin) == LOW;
+
+  if (pressed) {
+    digitalWrite(ledPin, HIGH);
+  } else {
+    digitalWrite(ledPin, LOW);
+  }
+
+  delay(100);
+}`;
+
+    const SAMPLE_LOOP = `const int leds[] = {4, 5, 6, 7};
+
+void setup() {
+  for (int i = 0; i < 4; i++) {
+    pinMode(leds[i], OUTPUT);
+  }
+}
+
+void loop() {
+  for (int i = 0; i < 4; i++) {
+    digitalWrite(leds[i], HIGH);
+    delay(200);
+    digitalWrite(leds[i], LOW);
+  }
+}`;
+
+    const SAMPLE_STATE = `enum TrafficState {
+  RED,
+  GREEN,
+  YELLOW
+};
+
+TrafficState currentState = RED;
+unsigned long lastChange = 0;
+
+void setup() {
+  pinMode(8, OUTPUT);
+  pinMode(9, OUTPUT);
+  pinMode(10, OUTPUT);
+}
+
+void loop() {
+  if (millis() - lastChange > 2000) {
+    if (currentState == RED) {
+      currentState = GREEN;
+    } else if (currentState == GREEN) {
+      currentState = YELLOW;
+    } else {
+      currentState = RED;
+    }
+    lastChange = millis();
+  }
+
+  switch (currentState) {
+    case RED:
+      digitalWrite(8, HIGH);
+      break;
+    case GREEN:
+      digitalWrite(10, HIGH);
+      break;
+    case YELLOW:
+      digitalWrite(9, HIGH);
+      break;
+  }
+}`;
+
+    const codeInput = document.getElementById("codeInput");
+    const generateBtn = document.getElementById("generateBtn");
+    const sampleBasicBtn = document.getElementById("sampleBasicBtn");
+    const sampleLoopBtn = document.getElementById("sampleLoopBtn");
+    const sampleStateBtn = document.getElementById("sampleStateBtn");
+    const flowSvg = document.getElementById("flowSvg");
+    const summaryText = document.getElementById("summaryText");
+    const statusPill = document.getElementById("statusPill");
+
+    function normalizeLine(raw) {
+      return raw.replace(/\/\/.*$/g, "").trim();
+    }
+
+    function classifyLine(line) {
+      if (!line || line === "{" || line === "}") return null;
+      if (/^void\s+\w+\s*\(/.test(line)) return { type: "process", label: line.replace("{", "").trim() };
+      if (/^if\s*\(/.test(line)) return { type: "decision", label: line.replace("{", "").trim() };
+      if (/^else if\s*\(/.test(line)) return { type: "decision", label: line.replace("{", "").trim() };
+      if (/^else\b/.test(line)) return { type: "decision", label: "else" };
+      if (/^for\s*\(/.test(line) || /^while\s*\(/.test(line)) return { type: "loop", label: line.replace("{", "").trim() };
+      if (/delay\s*\(/.test(line) || /millis\s*\(/.test(line)) return { type: "wait", label: line.replace(/;$/, "") };
+      if (/digitalRead|analogRead/.test(line)) return { type: "io", label: line.replace(/;$/, "") };
+      if (/digitalWrite|analogWrite|Serial\./.test(line)) return { type: "io", label: line.replace(/;$/, "") };
+      if (/switch\s*\(/.test(line) || /^case\s+/.test(line)) return { type: "decision", label: line.replace("{", "").replace(/:$/, "").trim() };
+      if (/return\b/.test(line)) return { type: "process", label: line.replace(/;$/, "") };
+      return { type: "process", label: line.replace(/;$/, "") };
+    }
+
+    function convertCodeToNodes(code) {
+      const rawLines = code.split(/\r?\n/).map(normalizeLine).filter(Boolean);
+      const nodes = [{ type: "terminator", label: "Start" }];
+      let stats = { process: 0, io: 0, decision: 0, loop: 0, wait: 0 };
+      for (const line of rawLines) {
+        const node = classifyLine(line);
+        if (!node) continue;
+        if (node.type in stats) stats[node.type] += 1;
+        nodes.push(node);
+      }
+      nodes.push({ type: "terminator", label: "End" });
+      return { nodes, stats };
+    }
+
+    function nodeColors(type) {
+      if (type === "io") return { fill: "#2fc76b", stroke: "#1e9e53" };
+      if (type === "decision") return { fill: "#ffcc45", stroke: "#c79a16" };
+      if (type === "loop") return { fill: "#b98cff", stroke: "#865ed0" };
+      if (type === "wait") return { fill: "#ff9f43", stroke: "#da7f28" };
+      if (type === "terminator") return { fill: "#63c4ff", stroke: "#3a90c0" };
+      return { fill: "#63c4ff", stroke: "#3a90c0" };
+    }
+
+    function escapeXml(value) {
+      return String(value).replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/\"/g, "&quot;");
+    }
+
+    function wrapLabel(text, limit = 34) {
+      const words = text.split(/\s+/);
+      const lines = [];
+      let current = "";
+      for (const word of words) {
+        if (!current.length || `${current} ${word}`.length <= limit) current = current ? `${current} ${word}` : word;
+        else {
+          lines.push(current);
+          current = word;
+        }
+      }
+      if (current) lines.push(current);
+      return lines.slice(0, 3);
+    }
+
+    function shapeSvg(node, x, y, width, height) {
+      const { fill, stroke } = nodeColors(node.type);
+      if (node.type === "terminator") return `<rect x="${x}" y="${y}" rx="26" ry="26" width="${width}" height="${height}" fill="${fill}" stroke="${stroke}" stroke-width="3" />`;
+      if (node.type === "decision") return `<polygon points="${x + width / 2},${y} ${x + width},${y + height / 2} ${x + width / 2},${y + height} ${x},${y + height / 2}" fill="${fill}" stroke="${stroke}" stroke-width="3" />`;
+      if (node.type === "io") return `<polygon points="${x + 24},${y} ${x + width},${y} ${x + width - 24},${y + height} ${x},${y + height}" fill="${fill}" stroke="${stroke}" stroke-width="3" />`;
+      return `<rect x="${x}" y="${y}" rx="18" ry="18" width="${width}" height="${height}" fill="${fill}" stroke="${stroke}" stroke-width="3" />`;
+    }
+
+    function renderFlowchart(nodes, stats) {
+      const width = 760;
+      const nodeWidth = 360;
+      const nodeHeight = 78;
+      const centerX = width / 2 - nodeWidth / 2;
+      const spacing = 58;
+      const height = Math.max(1200, 80 + nodes.length * (nodeHeight + spacing));
+      flowSvg.setAttribute("viewBox", `0 0 ${width} ${height}`);
+
+      let svg = `<defs><marker id="arrowHead" markerWidth="12" markerHeight="12" refX="9" refY="6" orient="auto"><path d="M0,0 L12,6 L0,12 z" fill="#8bb9cf"/></marker></defs>`;
+      svg += `<rect x="0" y="0" width="${width}" height="${height}" fill="transparent" />`;
+
+      nodes.forEach((node, index) => {
+        const y = 40 + index * (nodeHeight + spacing);
+        svg += shapeSvg(node, centerX, y, nodeWidth, nodeHeight);
+        const lines = wrapLabel(node.label);
+        lines.forEach((line, lineIndex) => {
+          svg += `<text x="${width / 2}" y="${y + 28 + lineIndex * 18}" text-anchor="middle" fill="#081118" font-size="16" font-weight="700" font-family="Segoe UI, Arial">${escapeXml(line)}</text>`;
+        });
+        if (index < nodes.length - 1) {
+          const nextY = 40 + (index + 1) * (nodeHeight + spacing);
+          svg += `<line x1="${width / 2}" y1="${y + nodeHeight}" x2="${width / 2}" y2="${nextY - 10}" stroke="#8bb9cf" stroke-width="4" marker-end="url(#arrowHead)" />`;
+        }
+      });
+
+      flowSvg.innerHTML = svg;
+      statusPill.textContent = `Generated ${nodes.length} blocks`;
+      summaryText.textContent = `Process: ${stats.process} | I/O: ${stats.io} | Decisions: ${stats.decision} | Loops: ${stats.loop} | Time blocks: ${stats.wait}`;
+    }
+
+    function generateFlowchart() {
+      const { nodes, stats } = convertCodeToNodes(codeInput.value);
+      renderFlowchart(nodes, stats);
+    }
+
+    sampleBasicBtn.addEventListener("click", () => { codeInput.value = SAMPLE_BASIC; generateFlowchart(); });
+    sampleLoopBtn.addEventListener("click", () => { codeInput.value = SAMPLE_LOOP; generateFlowchart(); });
+    sampleStateBtn.addEventListener("click", () => { codeInput.value = SAMPLE_STATE; generateFlowchart(); });
+    generateBtn.addEventListener("click", generateFlowchart);
+
+    codeInput.value = SAMPLE_BASIC;
+    generateFlowchart();
+  </script>
+</body>
+</html>
+
+

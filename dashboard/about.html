@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="description" content="About the embedded programming interactive website." />
+  <title>About | Embedded Programming Hub</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@500;700;800&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="./css/style.css" />
+  <script src="./js/site_contact.js"></script>
+</head>
+<body data-page="about">
+  <div class="page-shell">
+    <header class="site-header">
+      <a class="brand" href="./index.html">
+        <img src="./images/logo.png" alt="Project logo" />
+        <span>Embedded Programming Hub</span>
+      </a>
+      <nav class="site-nav" aria-label="Main navigation">
+        <a href="./index.html">Home</a>
+        <a href="./about.html">About</a>
+        <a href="./contact.html">Contact</a>
+        <a class="nav-cta" href="./web/index.html">Open dashboard</a>
+      </nav>
+    </header>
+
+    <main class="page-main">
+      <section class="page-intro">
+        <p class="eyebrow">About this site</p>
+        <h1>One publishable site, one teaching dashboard.</h1>
+        <p>
+          The root pages provide a simple public-facing website, while the `web/` folder keeps the
+          interactive simulations and experiments organized for classroom use.
+        </p>
+      </section>
+
+      <section class="content-grid two-up">
+        <article class="info-card">
+          <h2>Why this structure works</h2>
+          <p>
+            Static hosting platforms such as GitHub Pages expect a clear root entry page. With this
+            structure, the site opens at `index.html` and links students into the full interactive menu.
+          </p>
+        </article>
+
+        <article class="info-card">
+          <h2>Where the learning content lives</h2>
+          <p>
+            The main dashboard remains inside `web/index.html`, with topic pages in `web/simulations/`
+            and experiment pages in `web/experiments/`.
+          </p>
+        </article>
+      </section>
+
+      <section class="info-card">
+        <h2>Recommended publish flow</h2>
+        <ul class="clean-list">
+          <li>Publish the repository root as the static site source.</li>
+          <li>Use `index.html` as the public landing page.</li>
+          <li>Send students directly to the dashboard button when they need the full app.</li>
+        </ul>
+      </section>
+    </main>
+
+    <footer class="site-footer">
+      <p>Embedded Programming Workspace</p>
+      <p>Contact: <span data-contact-name>Your Name</span> | <a data-contact-email-link href="mailto:your.email@example.com">your.email@example.com</a></p>
+      <p>Last edition: <span data-last-edition>October 1, 2026</span></p>
+      <p>&copy; <span data-current-year></span></p>
+    </footer>
+  </div>
+
+  <script src="./js/script.js"></script>
+</body>
+</html>

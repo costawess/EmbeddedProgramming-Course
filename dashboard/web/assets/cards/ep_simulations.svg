@@ -1,0 +1,29 @@
+<svg width="256" height="256" viewBox="0 0 256 256" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <linearGradient id="bg" x1="28" y1="24" x2="226" y2="232" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#1C3445"/>
+      <stop offset="1" stop-color="#0E1923"/>
+    </linearGradient>
+    <linearGradient id="chip" x1="64" y1="58" x2="196" y2="190" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#274A63"/>
+      <stop offset="1" stop-color="#183142"/>
+    </linearGradient>
+    <linearGradient id="wave" x1="52" y1="162" x2="204" y2="162" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#63C4FF"/>
+      <stop offset="1" stop-color="#2FD2D2"/>
+    </linearGradient>
+  </defs>
+  <rect x="16" y="16" width="224" height="224" rx="36" fill="url(#bg)" stroke="#37586D" stroke-width="8"/>
+  <rect x="56" y="48" width="144" height="92" rx="24" fill="url(#chip)" stroke="#4C7590" stroke-width="6"/>
+  <rect x="84" y="76" width="88" height="12" rx="6" fill="#9BD8FF" fill-opacity="0.9"/>
+  <rect x="84" y="100" width="58" height="12" rx="6" fill="#9BD8FF" fill-opacity="0.45"/>
+  <path d="M54 164H84L104 142L124 186L146 126L168 174L188 154H202" stroke="url(#wave)" stroke-width="10" stroke-linecap="round" stroke-linejoin="round"/>
+  <circle cx="84" cy="164" r="7" fill="#63C4FF"/>
+  <circle cx="146" cy="126" r="7" fill="#30D2D2"/>
+  <circle cx="188" cy="154" r="7" fill="#63C4FF"/>
+  <rect x="60" y="188" width="136" height="20" rx="10" fill="#173245" stroke="#4C7590" stroke-width="4"/>
+  <rect x="28" y="76" width="16" height="12" rx="4" fill="#63C4FF"/>
+  <rect x="28" y="100" width="16" height="12" rx="4" fill="#63C4FF"/>
+  <rect x="212" y="76" width="16" height="12" rx="4" fill="#63C4FF"/>
+  <rect x="212" y="100" width="16" height="12" rx="4" fill="#63C4FF"/>
+</svg>

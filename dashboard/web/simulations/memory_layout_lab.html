@@ -1,0 +1,551 @@
+﻿<!DOCTYPE html>
+<html lang="en" data-sync-dashboard-lights="true">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Embedded Programming - Memory Layout</title>
+    <script>
+    (() => {
+      try {
+        const storedLights = localStorage.getItem("embedded-dashboard-lights-on");
+        const legacyStoredLights = localStorage.getItem("embedded-lights-on");
+        const resolvedLights = storedLights ?? legacyStoredLights;
+        if (resolvedLights === "false") {
+          document.documentElement.classList.add("theme-dark");
+        }
+      } catch (error) {
+        // Ignore storage failures and keep the light theme.
+      }
+    })();
+  </script>
+  <script src="../shared/mouse_glow.js"></script>
+  <script src="../shared/page_header.js"></script>
+  <style>
+    :root {
+      --bg: #0f2230; --panel: rgba(20, 36, 48, 0.94); --card: rgba(30, 50, 65, 0.96);
+      --line: #37586d; --text: #edf7fb; --subtle: #9db9c8; --accent: #63c4ff;
+      --accent-soft: rgba(99, 196, 255, 0.14); --green: #2fc76b; --yellow: #ffcc45;
+      --purple: #b98cff; --orange: #ff9d45; --pink: #ff7cc8; --teal: #39d5c7;
+      --red: #ff7070; --white: #f6fbff; --button-bg: #173245; --code-bg: #0d1720;
+      --stage-bg: linear-gradient(180deg, #162c3b 0%, #11202a 100%);
+      --shadow: 0 14px 34px rgba(0, 0, 0, 0.28);
+    }
+    * { box-sizing: border-box; }
+    body { margin: 0; min-height: 100vh; font-family: "Segoe UI", Arial, sans-serif; color: var(--text); background: radial-gradient(circle at top, #193549 0%, var(--bg) 58%, #081118 100%); }
+    .app { padding: 22px; display: grid; gap: 18px; }
+    .header, .panel { background: var(--panel); border: 1px solid var(--line); border-radius: 28px; box-shadow: var(--shadow); }
+    .header { padding: 18px 20px; display: grid; grid-template-columns: auto minmax(0, 1fr) auto; gap: 16px; align-items: center; }
+    .back { color: var(--text); text-decoration: none; border: 2px solid var(--line); border-radius: 16px; padding: 12px 16px; background: var(--button-bg); font-weight: 800; }
+    .brand-logo { width: 132px; max-width: 100%; height: auto; object-fit: contain; }
+    .title h1 { margin: 0; font-size: clamp(28px, 3vw, 46px); }
+    .title p, .panel-note, .memory-note, .code-note, .tip-note { margin: 6px 0 0; color: var(--subtle); line-height: 1.45; }
+    .layout { display: grid; grid-template-columns: minmax(360px, 0.95fr) minmax(420px, 1.15fr) minmax(400px, 1fr); gap: 18px; align-items: start; }
+    .panel { padding: 18px; display: grid; gap: 14px; }
+    .panel h2, .panel h3, .panel p { margin: 0; }
+    .topic-head { display: grid; gap: 8px; }
+    .status-pill { justify-self: start; border: 2px solid var(--accent); border-radius: 999px; padding: 10px 16px; background: var(--accent-soft); color: var(--accent); font-weight: 800; }
+    .controls-card, .visual-card, .memory-card, .code-card { background: var(--card); border: 1px solid var(--line); border-radius: 22px; padding: 14px; display: grid; gap: 12px; }
+    .controls-grid, .control-row, .summary-grid, .bit-grid { display: grid; gap: 10px; }
+    .summary-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+    .field-label, .value-line { color: var(--subtle); font-size: 14px; font-weight: 700; }
+    .value-line { display: flex; justify-content: space-between; gap: 12px; align-items: center; flex-wrap: wrap; }
+    select, input[type="number"], input[type="text"] { width: 100%; padding: 11px 12px; border-radius: 14px; border: 2px solid var(--line); background: rgba(11, 24, 34, 0.84); color: var(--text); font: inherit; }
+    button.action-btn, .copy-btn { appearance: none; border: 2px solid var(--line); border-radius: 14px; padding: 10px 14px; background: var(--button-bg); color: var(--text); font-weight: 800; cursor: pointer; }
+    button.action-btn:hover, .copy-btn:hover { border-color: var(--accent); background: var(--accent-soft); color: var(--white); }
+    .copy-btn.copied { border-color: var(--green); background: rgba(47, 199, 107, 0.14); }
+    .inline-selects { display: grid; grid-template-columns: minmax(0, 1fr) auto auto; gap: 10px; align-items: end; }
+    .variable-list { display: grid; gap: 10px; }
+    .variable-row { border-radius: 18px; border: 1px solid var(--line); background: rgba(255, 255, 255, 0.04); padding: 12px; display: grid; gap: 10px; }
+    .variable-top { display: grid; grid-template-columns: 14px minmax(0, 1fr) 128px 116px auto; gap: 10px; align-items: center; }
+    .color-tag { width: 14px; height: 14px; border-radius: 999px; box-shadow: 0 0 0 2px rgba(255,255,255,0.08); }
+    .meta-row, .bit-row-header { display: flex; justify-content: space-between; gap: 12px; color: var(--subtle); font-size: 13px; flex-wrap: wrap; }
+    .mini-btn { padding: 8px 10px; border-radius: 12px; border: 2px solid var(--line); background: rgba(10,20,28,0.4); color: var(--subtle); font-weight: 800; cursor: pointer; }
+    .mini-btn:hover { border-color: var(--red); color: var(--white); }
+    .summary-box, .impact-box, .segment-card, .byte-cell, .memory-note-box, .bit-chip { border-radius: 16px; border: 1px solid var(--line); background: rgba(255,255,255,0.04); }
+    .summary-box, .impact-box { padding: 12px; display: grid; gap: 6px; text-align: center; }
+    .summary-box strong, .impact-box strong { font-size: 13px; color: var(--subtle); }
+    .summary-box span, .impact-box span { color: var(--white); font-size: 21px; font-weight: 900; }
+    .memory-stage { min-height: 560px; border-radius: 20px; border: 1px solid var(--line); background: var(--stage-bg); padding: 18px; display: grid; gap: 16px; align-content: start; }
+    .legend-row { display: flex; flex-wrap: wrap; gap: 10px; }
+    .legend-chip { display: inline-flex; align-items: center; gap: 8px; padding: 7px 10px; border-radius: 999px; border: 1px solid var(--line); background: rgba(255,255,255,0.04); color: var(--subtle); font-size: 12px; font-weight: 700; }
+    .legend-chip .dot { width: 10px; height: 10px; border-radius: 999px; flex: 0 0 auto; }
+    .segment-strip { display: grid; grid-template-columns: repeat(32, minmax(0, 1fr)); gap: 6px; align-items: stretch; }
+    .segment-card { min-height: 82px; padding: 10px 8px; display: grid; align-content: center; justify-items: center; text-align: center; font-size: 12px; line-height: 1.3; color: var(--white); font-weight: 800; overflow: hidden; }
+    .segment-card small { display: block; color: rgba(255,255,255,0.82); font-size: 11px; font-weight: 700; }
+    .memory-grid { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 10px; }
+    .byte-cell { min-height: 106px; padding: 10px; display: grid; gap: 4px; align-content: start; font-size: 12px; color: var(--subtle); }
+    .byte-cell.used { color: var(--white); }
+    .byte-cell .address { color: var(--accent); font-weight: 800; }
+    .byte-cell .hex { font-size: 24px; line-height: 1; font-weight: 900; letter-spacing: 0.04em; }
+    .byte-cell .owner { font-weight: 800; }
+    .memory-note-box { padding: 14px; color: var(--subtle); line-height: 1.45; }
+    .bit-row { display: grid; gap: 8px; }
+    .bit-chips { display: grid; grid-template-columns: repeat(8, minmax(0, 1fr)); gap: 6px; }
+    .bit-chip { padding: 7px 0; text-align: center; font: 800 13px Consolas, monospace; color: var(--subtle); }
+    .bit-chip.one { color: var(--white); background: rgba(99, 196, 255, 0.16); border-color: rgba(99, 196, 255, 0.4); }
+    .card-head { display: flex; justify-content: space-between; align-items: center; gap: 12px; flex-wrap: wrap; }
+    code.inline-chip { display: inline-block; padding: 3px 8px; border-radius: 999px; background: rgba(255,255,255,0.06); color: var(--white); }
+    pre.code-block { margin: 0; min-height: 560px; padding: 16px; border-radius: 18px; border: 1px solid var(--line); background: var(--code-bg); color: #d8f2ff; font-family: Consolas, "Courier New", monospace; font-size: 13px; line-height: 1.5; white-space: pre-wrap; user-select: text; -webkit-user-select: text; cursor: text; }
+    @media (max-width: 1380px) { .layout { grid-template-columns: 1fr; } .memory-stage, pre.code-block { min-height: auto; } }
+    @media (max-width: 860px) { .inline-selects, .variable-top, .memory-grid, .summary-grid { grid-template-columns: 1fr; } .header { grid-template-columns: 1fr; } }
+  </style>
+</head>
+<body>
+  <div class="app">
+    <header class="header">
+      <a class="back" href="../index.html">Back to menu</a>
+      <div class="title">
+        <h1>Memory Layout</h1>
+        <p>Place several variables in RAM, compare their sizes, and watch how each declaration consumes bytes in the memory map.</p>
+      </div>
+      <img class="brand-logo" src="../../assets/branding/hanze_logo.png" alt="Hanze logo" />
+    </header>
+
+    <section class="layout">
+      <section class="panel">
+        <div class="topic-head">
+          <h2>Variable Set</h2>
+          <p>Choose a preset or build your own list of variables. The memory map updates immediately, so the cost of each type becomes visible.</p>
+          <div class="status-pill" id="statusPill">5 variables | 12 bytes</div>
+        </div>
+        <div class="controls-card">
+          <h3>Interactive controls</h3>
+          <div class="controls-grid">
+            <div class="inline-selects">
+              <div class="control-row">
+                <div class="field-label">Preset</div>
+                <select id="presetSelect"></select>
+              </div>
+              <button class="action-btn" id="loadPresetBtn" type="button">Load preset</button>
+              <button class="action-btn" id="addVariableBtn" type="button">Add variable</button>
+            </div>
+            <div class="variable-list" id="variableList"></div>
+          </div>
+        </div>
+        <div class="visual-card">
+          <h3>Impact summary</h3>
+          <div class="summary-grid">
+            <div class="summary-box"><strong>Variables</strong><span id="summaryCount">0</span></div>
+            <div class="summary-box"><strong>Total bytes</strong><span id="summaryBytes">0 B</span></div>
+            <div class="summary-box"><strong>Largest type</strong><span id="summaryLargest">-</span></div>
+            <div class="summary-box"><strong>Free in demo RAM</strong><span id="summaryFree">32 B</span></div>
+          </div>
+          <div class="impact-box">
+            <strong>Impact note</strong>
+            <span id="impactHeadline">Compact layout</span>
+            <p class="tip-note" id="impactNote"></p>
+          </div>
+        </div>
+      </section>
+
+      <section class="panel">
+        <div class="memory-card">
+          <h2>Memory Map</h2>
+          <p class="memory-note">This lab shows a 32-byte demo RAM window starting at address <code class="inline-chip">0x2000</code>. Variables are allocated one after the other in declaration order.</p>
+          <div class="memory-stage">
+            <div class="legend-row" id="legendRow"></div>
+            <div class="segment-strip" id="segmentStrip"></div>
+            <div class="memory-grid" id="memoryGrid"></div>
+            <div class="memory-note-box" id="memoryNote"></div>
+            <div class="bit-grid" id="bitGrid"></div>
+          </div>
+        </div>
+      </section>
+
+      <section class="panel">
+        <div class="code-card">
+          <div class="card-head">
+            <h2>Code</h2>
+            <button class="copy-btn" id="copyCodeBtn" type="button">Copy code</button>
+          </div>
+          <pre class="code-block" id="codeBlock"></pre>
+        </div>
+      </section>
+    </section>
+  </div>
+  <script>
+    const TYPE_CONFIGS = {
+      boolean: { label: "boolean", kind: "bool", bytes: 1, min: 0, max: 1, step: 1, defaultValue: 0 },
+      bool: { label: "bool", kind: "bool", bytes: 1, min: 0, max: 1, step: 1, defaultValue: 1 },
+      byte: { label: "byte", kind: "uint8", bytes: 1, min: 0, max: 255, step: 1, defaultValue: 180 },
+      char: { label: "char", kind: "char", bytes: 1, min: -128, max: 127, step: 1, defaultValue: 83 },
+      uint8: { label: "uint8_t", kind: "uint8", bytes: 1, min: 0, max: 255, step: 1, defaultValue: 120 },
+      int8: { label: "int8_t", kind: "int8", bytes: 1, min: -128, max: 127, step: 1, defaultValue: -12 },
+      word: { label: "word", kind: "uint16", bytes: 2, min: 0, max: 65535, step: 1, defaultValue: 1024 },
+      uint16: { label: "uint16_t", kind: "uint16", bytes: 2, min: 0, max: 65535, step: 1, defaultValue: 2048 },
+      int16: { label: "int16_t", kind: "int16", bytes: 2, min: -32768, max: 32767, step: 1, defaultValue: -1200 },
+      short: { label: "short", kind: "int16", bytes: 2, min: -32768, max: 32767, step: 1, defaultValue: -400 },
+      int: { label: "int", kind: "int32", bytes: 4, min: -2147483648, max: 2147483647, step: 1, defaultValue: -32000 },
+      uint: { label: "unsigned int", kind: "uint32", bytes: 4, min: 0, max: 4294967295, step: 1, defaultValue: 50000 },
+      ulong: { label: "unsigned long", kind: "uint32", bytes: 4, min: 0, max: 4294967295, step: 1, defaultValue: 120000 },
+      long: { label: "long", kind: "int32", bytes: 4, min: -2147483648, max: 2147483647, step: 1, defaultValue: -123456 },
+      float32: { label: "float", kind: "float32", bytes: 4, min: -50, max: 50, step: 0.1, defaultValue: 23.5 }
+    };
+
+    const TYPE_ORDER = Object.keys(TYPE_CONFIGS);
+    const PALETTE = ["var(--accent)", "var(--green)", "var(--yellow)", "var(--purple)", "var(--orange)", "var(--pink)", "var(--teal)", "var(--red)"];
+    const BASE_ADDRESS = 0x2000;
+    const TOTAL_RAM_BYTES = 32;
+    const MAX_VARIABLES = 8;
+
+    const PRESETS = {
+      compact: {
+        label: "Compact embedded packet",
+        variables: [
+          { name: "buttonPressed", typeId: "bool", value: 1 },
+          { name: "pwmDuty", typeId: "byte", value: 180 },
+          { name: "adcValue", typeId: "uint16", value: 2048 },
+          { name: "error", typeId: "int16", value: -35 },
+          { name: "stateId", typeId: "char", value: 83 }
+        ]
+      },
+      mixed: {
+        label: "Typical mixed project",
+        variables: [
+          { name: "ready", typeId: "boolean", value: 1 },
+          { name: "temperature", typeId: "float32", value: 24.7 },
+          { name: "sampleCount", typeId: "ulong", value: 125000 },
+          { name: "setpoint", typeId: "int", value: 40 },
+          { name: "adcRaw", typeId: "uint16", value: 3120 }
+        ]
+      },
+      heavy: {
+        label: "Wide types everywhere",
+        variables: [
+          { name: "flag", typeId: "int", value: 1 },
+          { name: "pwmDuty", typeId: "int", value: 180 },
+          { name: "adcValue", typeId: "int", value: 2048 },
+          { name: "error", typeId: "long", value: -35 },
+          { name: "temperature", typeId: "float32", value: 24.7 }
+        ]
+      }
+    };
+
+    let nextVarId = 1;
+    const state = { presetId: "mixed", variables: [] };
+
+    const statusPill = document.getElementById("statusPill");
+    const presetSelect = document.getElementById("presetSelect");
+    const loadPresetBtn = document.getElementById("loadPresetBtn");
+    const addVariableBtn = document.getElementById("addVariableBtn");
+    const variableList = document.getElementById("variableList");
+    const summaryCount = document.getElementById("summaryCount");
+    const summaryBytes = document.getElementById("summaryBytes");
+    const summaryLargest = document.getElementById("summaryLargest");
+    const summaryFree = document.getElementById("summaryFree");
+    const impactHeadline = document.getElementById("impactHeadline");
+    const impactNote = document.getElementById("impactNote");
+    const legendRow = document.getElementById("legendRow");
+    const segmentStrip = document.getElementById("segmentStrip");
+    const memoryGrid = document.getElementById("memoryGrid");
+    const memoryNote = document.getElementById("memoryNote");
+    const bitGrid = document.getElementById("bitGrid");
+    const codeBlock = document.getElementById("codeBlock");
+    const copyCodeBtn = document.getElementById("copyCodeBtn");
+
+    function clamp(value, min, max) {
+      return Math.min(max, Math.max(min, value));
+    }
+
+    function normalizeValue(typeId, rawValue) {
+      const config = TYPE_CONFIGS[typeId];
+      if (config.kind === "bool") return rawValue ? 1 : 0;
+      if (config.kind === "float32") return Number(clamp(Number(rawValue) || 0, config.min, config.max).toFixed(2));
+      return Math.round(clamp(Number(rawValue) || 0, config.min, config.max));
+    }
+
+    function cloneVariable(definition, colorIndex) {
+      return {
+        id: nextVarId++,
+        name: definition.name,
+        typeId: definition.typeId,
+        value: normalizeValue(definition.typeId, definition.value),
+        color: PALETTE[colorIndex % PALETTE.length]
+      };
+    }
+
+    function encodeBytes(typeId, value) {
+      const config = TYPE_CONFIGS[typeId];
+      const buffer = new ArrayBuffer(config.bytes);
+      const view = new DataView(buffer);
+      if (config.kind === "bool" || config.kind === "uint8") view.setUint8(0, value);
+      else if (config.kind === "int8" || config.kind === "char") view.setInt8(0, value);
+      else if (config.kind === "uint16") view.setUint16(0, value, true);
+      else if (config.kind === "int16") view.setInt16(0, value, true);
+      else if (config.kind === "uint32") view.setUint32(0, value, true);
+      else if (config.kind === "int32") view.setInt32(0, value, true);
+      else if (config.kind === "float32") view.setFloat32(0, value, true);
+      return Array.from(new Uint8Array(buffer));
+    }
+
+    function getPrintableAscii(byte) {
+      return byte >= 32 && byte <= 126 ? String.fromCharCode(byte) : ".";
+    }
+
+    function getCodeLiteral(variable) {
+      const config = TYPE_CONFIGS[variable.typeId];
+      if (config.kind === "bool") return variable.value ? "true" : "false";
+      if (config.kind === "float32") return `${Number(variable.value).toFixed(2)}f`;
+      if (config.kind === "char") {
+        const printable = getPrintableAscii(variable.value & 0xFF);
+        if (printable !== "." && printable !== "'" && printable !== "\\") return `'${printable}'`;
+      }
+      return String(variable.value);
+    }
+
+    function getDisplayValue(variable) {
+      const config = TYPE_CONFIGS[variable.typeId];
+      if (config.kind === "bool") return variable.value ? "true" : "false";
+      if (config.kind === "char") {
+        const printable = getPrintableAscii(variable.value & 0xFF);
+        return printable === "." ? `${variable.value}` : `${variable.value} ('${printable}')`;
+      }
+      if (config.kind === "float32") return Number(variable.value).toFixed(2);
+      return String(variable.value);
+    }
+
+    function getLayout() {
+      let offset = 0;
+      return state.variables.map(variable => {
+        const config = TYPE_CONFIGS[variable.typeId];
+        const bytes = encodeBytes(variable.typeId, variable.value);
+        const item = { variable, config, bytes, offset, start: BASE_ADDRESS + offset };
+        item.end = item.start + config.bytes - 1;
+        offset += config.bytes;
+        return item;
+      });
+    }
+
+    function renderPresetOptions() {
+      presetSelect.innerHTML = Object.entries(PRESETS).map(([presetId, preset]) => `<option value="${presetId}">${preset.label}</option>`).join("");
+      presetSelect.value = state.presetId;
+    }
+
+    function renderVariableList() {
+      variableList.innerHTML = "";
+      state.variables.forEach(variable => {
+        const config = TYPE_CONFIGS[variable.typeId];
+        const row = document.createElement("div");
+        row.className = "variable-row";
+        row.innerHTML = `
+          <div class="variable-top">
+            <div class="color-tag" style="background:${variable.color};"></div>
+            <input type="text" value="${variable.name}" data-action="name" data-id="${variable.id}" />
+            <select data-action="type" data-id="${variable.id}">
+              ${TYPE_ORDER.map(typeId => `<option value="${typeId}"${typeId === variable.typeId ? " selected" : ""}>${TYPE_CONFIGS[typeId].label}</option>`).join("")}
+            </select>
+            <input type="number" value="${variable.value}" min="${config.min}" max="${config.max}" step="${config.step}" data-action="value" data-id="${variable.id}" />
+            <button class="mini-btn" type="button" data-action="remove" data-id="${variable.id}">Remove</button>
+          </div>
+          <div class="meta-row">
+            <span>${config.label} uses <strong>${config.bytes}</strong> byte${config.bytes > 1 ? "s" : ""}</span>
+            <span>Current value: <strong>${getDisplayValue(variable)}</strong></span>
+          </div>
+        `;
+        variableList.appendChild(row);
+      });
+    }
+
+    function renderSummary(layout) {
+      const totalBytes = layout.reduce((sum, item) => sum + item.config.bytes, 0);
+      const activeCount = layout.length;
+      const largest = layout.reduce((best, item) => !best || item.config.bytes > best.config.bytes ? item : best, null);
+      const allIntBytes = activeCount * 4;
+      const difference = allIntBytes - totalBytes;
+      statusPill.textContent = `${activeCount} variable${activeCount !== 1 ? "s" : ""} | ${totalBytes} byte${totalBytes !== 1 ? "s" : ""}`;
+      summaryCount.textContent = String(activeCount);
+      summaryBytes.textContent = `${totalBytes} B`;
+      summaryLargest.textContent = largest ? `${largest.variable.name} (${largest.config.bytes} B)` : "-";
+      summaryFree.textContent = `${Math.max(TOTAL_RAM_BYTES - totalBytes, 0)} B`;
+      if (difference > 0) {
+        impactHeadline.textContent = "Compact layout";
+        impactNote.textContent = `Compared with declaring every variable as a 4-byte int, this layout saves ${difference} byte${difference !== 1 ? "s" : ""}. Smaller types like bool, byte, char, and uint16_t reduce RAM usage noticeably.`;
+      } else if (difference < 0) {
+        impactHeadline.textContent = "Wide layout";
+        impactNote.textContent = `This variable set uses ${Math.abs(difference)} extra byte${Math.abs(difference) !== 1 ? "s" : ""} compared with using only 4-byte ints, mainly because types such as float or long keep wider storage.`;
+      } else {
+        impactHeadline.textContent = "Balanced layout";
+        impactNote.textContent = "This set currently uses the same total RAM as allocating each variable as a 4-byte int.";
+      }
+    }
+
+    function renderLegend(layout) {
+      legendRow.innerHTML = "";
+      layout.forEach(item => {
+        const chip = document.createElement("div");
+        chip.className = "legend-chip";
+        chip.innerHTML = `<span class="dot" style="background:${item.variable.color};"></span>${item.variable.name} (${item.config.label})`;
+        legendRow.appendChild(chip);
+      });
+    }
+
+    function renderSegments(layout) {
+      segmentStrip.innerHTML = "";
+      layout.forEach(item => {
+        const segment = document.createElement("div");
+        segment.className = "segment-card";
+        segment.style.gridColumn = `${item.offset + 1} / span ${item.config.bytes}`;
+        segment.style.background = item.variable.color;
+        segment.style.borderColor = item.variable.color;
+        segment.innerHTML = `${item.variable.name}<small>${item.config.bytes} B</small>`;
+        segmentStrip.appendChild(segment);
+      });
+    }
+
+    function renderMemoryGrid(layout) {
+      memoryGrid.innerHTML = "";
+      const lookup = new Map();
+      layout.forEach(item => item.bytes.forEach((byte, index) => lookup.set(item.offset + index, { item, byte, byteIndex: index })));
+      for (let index = 0; index < TOTAL_RAM_BYTES; index++) {
+        const address = BASE_ADDRESS + index;
+        const entry = lookup.get(index);
+        const cell = document.createElement("div");
+        cell.className = `byte-cell${entry ? " used" : ""}`;
+        if (entry) {
+          cell.style.borderColor = entry.item.variable.color;
+          cell.style.boxShadow = `inset 0 0 0 1px ${entry.item.variable.color}`;
+          cell.innerHTML = `<div class="address">0x${address.toString(16).toUpperCase()}</div><div class="owner">${entry.item.variable.name}</div><div>${entry.item.config.label} | byte ${entry.byteIndex}</div><div class="hex">${entry.byte.toString(16).toUpperCase().padStart(2, "0")}</div><div>ASCII ${getPrintableAscii(entry.byte)}</div>`;
+        } else {
+          cell.innerHTML = `<div class="address">0x${address.toString(16).toUpperCase()}</div><div class="owner">free</div><div>unused</div><div class="hex">--</div><div>available</div>`;
+        }
+        memoryGrid.appendChild(cell);
+      }
+    }
+
+    function renderBits(layout) {
+      bitGrid.innerHTML = "";
+      layout.forEach(item => {
+        item.bytes.forEach((byte, index) => {
+          const row = document.createElement("div");
+          row.className = "bit-row";
+          row.innerHTML = `<div class="bit-row-header"><span>${item.variable.name} | byte ${index}</span><span>0x${(item.start + index).toString(16).toUpperCase()} | 0x${byte.toString(16).toUpperCase().padStart(2, "0")}</span></div><div class="bit-chips">${byte.toString(2).padStart(8, "0").split("").map(bit => `<div class="bit-chip${bit === "1" ? " one" : ""}">${bit}</div>`).join("")}</div>`;
+          bitGrid.appendChild(row);
+        });
+      });
+    }
+
+    function renderMemoryNote(layout) {
+      const totalBytes = layout.reduce((sum, item) => sum + item.config.bytes, 0);
+      if (!layout.length) {
+        memoryNote.textContent = "No variables are currently allocated in the demo RAM window.";
+        return;
+      }
+      const last = layout[layout.length - 1];
+      memoryNote.innerHTML = `The first variable starts at <code class="inline-chip">0x${BASE_ADDRESS.toString(16).toUpperCase()}</code>. The current list ends at <code class="inline-chip">0x${last.end.toString(16).toUpperCase()}</code>, consuming <code class="inline-chip">${totalBytes} byte${totalBytes !== 1 ? "s" : ""}</code> in declaration order.`;
+    }
+
+    function renderCode(layout) {
+      const declarations = layout.map(item => `${item.config.label} ${item.variable.name} = ${getCodeLiteral(item.variable)};`).join("\n");
+      const totalExpr = layout.map(item => `sizeof(${item.variable.name})`).join(" + ") || "0";
+      const lines = layout.map(item => `  Serial.println("${item.variable.name}: ${item.config.bytes} B");`).join("\n");
+      const codeText = `#include <Arduino.h>\n\n${declarations}\n\nvoid setup() {\n  Serial.begin(115200);\n\n  Serial.print("Total bytes = ");\n  Serial.println(${totalExpr});\n\n${lines}\n}\n\nvoid loop() {\n}\n\n// Layout starts at 0x${BASE_ADDRESS.toString(16).toUpperCase()} in this lab.\n// Current total bytes: ${layout.reduce((sum, item) => sum + item.config.bytes, 0)}`;
+      codeBlock.textContent = codeText;
+      codeBlock.dataset.rawCode = codeText;
+    }
+
+    function renderAll() {
+      const layout = getLayout();
+      renderVariableList();
+      renderSummary(layout);
+      renderLegend(layout);
+      renderSegments(layout);
+      renderMemoryGrid(layout);
+      renderBits(layout);
+      renderMemoryNote(layout);
+      renderCode(layout);
+    }
+
+    function loadPreset(presetId) {
+      state.presetId = presetId;
+      state.variables = PRESETS[presetId].variables.map((variable, index) => cloneVariable(variable, index));
+      renderPresetOptions();
+      renderAll();
+    }
+
+    function addVariable() {
+      if (state.variables.length >= MAX_VARIABLES) return;
+      const typeId = TYPE_ORDER[Math.min(state.variables.length, TYPE_ORDER.length - 1)];
+      const config = TYPE_CONFIGS[typeId];
+      state.variables.push({
+        id: nextVarId++,
+        name: `var${state.variables.length + 1}`,
+        typeId,
+        value: config.defaultValue,
+        color: PALETTE[state.variables.length % PALETTE.length]
+      });
+      renderAll();
+    }
+
+    variableList.addEventListener("input", event => {
+      const rowId = Number(event.target.dataset.id);
+      const variable = state.variables.find(item => item.id === rowId);
+      if (!variable) return;
+      if (event.target.dataset.action === "name") {
+        variable.name = (event.target.value || "").replace(/[^a-zA-Z0-9_]/g, "_") || `var${rowId}`;
+      } else if (event.target.dataset.action === "type") {
+        variable.typeId = event.target.value;
+        variable.value = TYPE_CONFIGS[variable.typeId].defaultValue;
+      } else if (event.target.dataset.action === "value") {
+        variable.value = normalizeValue(variable.typeId, event.target.value);
+      }
+      renderAll();
+    });
+
+    variableList.addEventListener("change", event => {
+      if (!event.target.dataset.action) return;
+      const rowId = Number(event.target.dataset.id);
+      const variable = state.variables.find(item => item.id === rowId);
+      if (!variable) return;
+      if (event.target.dataset.action === "type") {
+        variable.typeId = event.target.value;
+        variable.value = TYPE_CONFIGS[variable.typeId].defaultValue;
+      } else if (event.target.dataset.action === "value") {
+        variable.value = normalizeValue(variable.typeId, event.target.value);
+      } else if (event.target.dataset.action === "name") {
+        variable.name = (event.target.value || "").replace(/[^a-zA-Z0-9_]/g, "_") || `var${rowId}`;
+      }
+      renderAll();
+    });
+
+    variableList.addEventListener("click", event => {
+      if (event.target.dataset.action !== "remove") return;
+      const rowId = Number(event.target.dataset.id);
+      state.variables = state.variables.filter(item => item.id !== rowId);
+      renderAll();
+    });
+
+    presetSelect.addEventListener("change", event => {
+      state.presetId = event.target.value;
+    });
+
+    loadPresetBtn.addEventListener("click", () => {
+      loadPreset(state.presetId);
+    });
+
+    addVariableBtn.addEventListener("click", () => {
+      addVariable();
+    });
+
+    copyCodeBtn.addEventListener("click", async () => {
+      const originalLabel = copyCodeBtn.textContent;
+      try {
+        await navigator.clipboard.writeText(codeBlock.dataset.rawCode || codeBlock.textContent);
+        copyCodeBtn.textContent = "Copied";
+        copyCodeBtn.classList.add("copied");
+      } catch (error) {
+        copyCodeBtn.textContent = "Copy failed";
+      }
+      window.setTimeout(() => {
+        copyCodeBtn.textContent = originalLabel;
+        copyCodeBtn.classList.remove("copied");
+      }, 1400);
+    });
+
+    renderPresetOptions();
+    loadPreset(state.presetId);
+  </script>
+  <script src="../shared/sound_fx.js"></script>
+</body>
+</html>
+
+

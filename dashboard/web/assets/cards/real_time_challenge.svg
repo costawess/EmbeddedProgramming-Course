@@ -1,0 +1,15 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 360">
+  <rect width="640" height="360" rx="28" fill="#102634"/>
+  <g font-family="Segoe UI,Arial,sans-serif" font-weight="700">
+    <text x="40" y="60" fill="#edf7fb" font-size="28">REAL-TIME CHALLENGE</text>
+    <text x="40" y="122" fill="#ffb14c" font-size="20">delay()</text>
+    <rect x="190" y="96" width="400" height="38" rx="10" fill="#99662c"/>
+    <text x="300" y="122" fill="#fff" font-size="18">BLOCKED</text>
+    <text x="40" y="196" fill="#63c4ff" font-size="20">millis()</text>
+    <path d="M190 183H590" stroke="#63c4ff" stroke-width="12" stroke-dasharray="55 10"/>
+    <text x="40" y="270" fill="#2fc76b" font-size="20">interrupt</text>
+    <path d="M190 258H335V224H400V258H590" fill="none" stroke="#2fc76b" stroke-width="10"/>
+    <text x="348" y="215" fill="#ffcc45" font-size="18">ISR</text>
+    <text x="40" y="328" fill="#9db9c8" font-size="18">Fold paper · Read sensors · React to events</text>
+  </g>
+</svg>

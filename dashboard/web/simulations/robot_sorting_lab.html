@@ -1,0 +1,204 @@
+﻿<!DOCTYPE html>
+<html lang="en" data-sync-dashboard-lights="true">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Embedded Programming - Robot Sorting Logic</title>
+    <script>
+    (() => {
+      try {
+        const storedLights = localStorage.getItem("embedded-dashboard-lights-on");
+        const legacyStoredLights = localStorage.getItem("embedded-lights-on");
+        const resolvedLights = storedLights ?? legacyStoredLights;
+        if (resolvedLights === "false") {
+          document.documentElement.classList.add("theme-dark");
+        }
+      } catch (error) {
+        // Ignore storage failures and keep the light theme.
+      }
+    })();
+  </script>
+  <script src="../shared/mouse_glow.js"></script>
+  <script src="../shared/page_header.js"></script>
+  <script src="../shared/sound_fx.js"></script>
+  <style>
+    :root{--bg:#09131c;--panel:rgba(18,31,43,.94);--panel-soft:rgba(23,40,55,.94);--line:#33556c;--text:#eef7fb;--subtle:#8fb2c9;--accent:#62d3ff;--accent-soft:rgba(98,211,255,.18);--green:#48d38a;--green-soft:rgba(72,211,138,.18);--orange:#ffb14a;--orange-soft:rgba(255,177,74,.18);--red:#ff6d64;--red-soft:rgba(255,109,100,.18);--shadow:0 18px 36px rgba(0,0,0,.34);--button-bg:#193143;--button-border:#4e7da0;--button-text:#f4fbff}
+    *{box-sizing:border-box}body{margin:0;min-height:100vh;font-family:"Segoe UI",Arial,sans-serif;color:var(--text);background:radial-gradient(circle at top,rgba(36,79,110,.55) 0%,transparent 36%),linear-gradient(180deg,#132739 0%,var(--bg) 58%,#050a10 100%)}
+    .app{padding:22px;display:grid;gap:18px}.header,.panel{background:var(--panel);border:1px solid var(--line);border-radius:30px;box-shadow:var(--shadow)}.header{padding:18px 20px;display:grid;grid-template-columns:auto minmax(0,1fr) auto;gap:16px;align-items:center}.back{text-decoration:none;color:var(--button-text);border:2px solid var(--button-border);border-radius:16px;padding:12px 16px;font-weight:800;background:var(--button-bg)}.brand-logo{width:132px;max-width:100%;height:auto;object-fit:contain}.title h1{margin:0;font-size:clamp(28px,3vw,48px)}.title p{margin:6px 0 0;color:var(--subtle);font-size:17px;line-height:1.45}
+    .layout{display:grid;grid-template-columns:320px minmax(0,1.2fr) 380px;gap:18px;align-items:start}.panel{padding:18px;display:grid;gap:16px}h2,h3,p{margin:0}.muted{color:var(--subtle);line-height:1.45}
+    .badge{justify-self:start;border-radius:999px;border:2px solid var(--accent);padding:10px 14px;font-weight:900;color:var(--accent);background:var(--accent-soft)}.badge.ok{border-color:var(--green);color:var(--green);background:var(--green-soft)}.badge.warn{border-color:var(--orange);color:var(--orange);background:var(--orange-soft)}.badge.error{border-color:var(--red);color:var(--red);background:var(--red-soft)}
+    .mission-box,.status-box,.builder-box,.stepper-box,.metrics-grid>div{background:var(--panel-soft);border:1px solid var(--line);border-radius:24px;padding:14px}.field{display:grid;gap:8px}.field label,.builder-heading{color:var(--subtle);font-size:14px;font-weight:800}
+    select{width:100%;border-radius:16px;border:2px solid var(--button-border);background:#0d1b26;color:var(--text);padding:12px 14px;font:inherit}.button-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}
+    button{border:2px solid var(--button-border);background:var(--button-bg);color:var(--button-text);border-radius:16px;padding:11px 14px;font:inherit;font-weight:900;cursor:pointer;transition:transform .15s ease,border-color .15s ease,background .15s ease}button:hover{transform:translateY(-1px);border-color:var(--accent)}button.secondary{background:rgba(255,255,255,.04)}button.good{border-color:var(--green);background:rgba(72,211,138,.12)}button.warn{border-color:var(--orange);background:rgba(255,177,74,.12)}
+    .metrics-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}.metrics-grid strong{display:block;color:var(--subtle);font-size:13px;margin-bottom:8px}.metrics-grid span{font-size:28px;font-weight:900}
+    .scene-topbar{display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap}.legend{display:flex;gap:14px;flex-wrap:wrap;color:var(--subtle);font-size:13px;font-weight:700}.legend i{width:12px;height:12px;border-radius:50%;display:inline-block;margin-right:6px;vertical-align:middle}
+    .robot-stage-wrap{background:linear-gradient(180deg,rgba(16,31,44,.96) 0%,rgba(10,20,30,.96) 100%);border:1px solid var(--line);border-radius:28px;padding:12px;overflow:hidden}.robot-stage{width:100%;display:block;border-radius:22px;overflow:hidden}
+    .stepper-box{display:grid;gap:12px}.step-trace{display:grid;grid-template-columns:repeat(8,minmax(0,1fr));gap:8px}.trace-step{min-height:74px;border-radius:18px;border:1px solid var(--line);background:rgba(255,255,255,.03);padding:10px 8px;color:var(--subtle);display:grid;gap:6px;align-content:start;text-align:center;font-size:11px;line-height:1.3}.trace-step strong{color:var(--text);font-size:12px}.trace-step.current{border-color:var(--accent);background:rgba(98,211,255,.12)}.trace-step.done{border-color:var(--green);background:rgba(72,211,138,.12)}.trace-step.skip{opacity:.55}
+    .builder-list{display:grid;gap:10px}.logic-card{border-radius:22px;border:1px solid var(--line);background:rgba(255,255,255,.04);padding:12px;display:grid;gap:10px}.logic-card.active{border-color:var(--accent);background:rgba(98,211,255,.12)}.logic-card.ok{border-color:var(--green);background:rgba(72,211,138,.12)}.logic-card.bad{border-color:var(--red);background:rgba(255,109,100,.12)}.logic-card-header{display:flex;justify-content:space-between;gap:12px;align-items:start}.logic-card strong{display:block;margin-bottom:4px;font-size:16px}.logic-card p{color:var(--subtle);font-size:13px;line-height:1.42}.logic-actions{display:flex;gap:8px}.logic-actions button{min-width:42px;padding:8px 0;font-size:18px;line-height:1;border-radius:12px}
+    .helper-note{border-radius:20px;border:1px dashed #4e7288;padding:14px;color:var(--subtle);line-height:1.45;text-align:center}.builder-box{display:grid;gap:12px}.target-pill,.item-pill{display:inline-flex;align-items:center;gap:8px;border-radius:999px;padding:8px 12px;border:1px solid var(--line);background:rgba(255,255,255,.04);color:var(--text);font-weight:800}
+    .shape-chip{width:16px;height:16px;display:inline-block;position:relative}.shape-chip.circle{border-radius:50%;background:#63c4ff}.shape-chip.square{border-radius:4px;background:#ff7d78}.shape-chip.triangle::before{content:"";position:absolute;left:0;top:0;width:0;height:0;border-left:8px solid transparent;border-right:8px solid transparent;border-bottom:16px solid #ffd45f}.shape-chip.hexagon::before{content:"";position:absolute;inset:0;background:#7de89f;clip-path:polygon(25% 0,75% 0,100% 50%,75% 100%,25% 100%,0 50%)}
+    @media (max-width:1220px){.layout{grid-template-columns:1fr}.step-trace{grid-template-columns:repeat(4,minmax(0,1fr))}}@media (max-width:720px){.app{padding:14px}.button-grid,.metrics-grid{grid-template-columns:1fr}.step-trace{grid-template-columns:repeat(2,minmax(0,1fr))}}
+  </style>
+</head>
+<body>
+  <div class="app">
+    <header class="header">
+      <a class="back" href="../index.html">Back to menu</a>
+      <div class="title">
+        <h1>Robot Sorting Logic</h1>
+        <p>Build the logic for a pick-and-place robot. If the detected shape matches the target, it may continue on the belt. If it does not match, the robot must grab it and drop it into the reject bucket.</p>
+      </div>
+      <img class="brand-logo" src="../../assets/branding/hanze_logo.png" alt="Hanze logo" />
+    </header>
+
+    <main class="layout">
+      <section class="panel">
+        <div><h2>Mission</h2><p class="muted">Choose the target shape, inspect the incoming part, and follow the controller logic. If the part matches, let it pass. If it does not match, reject it safely into the bucket.</p></div>
+        <div class="badge ok" id="missionBadge">Correct logic loaded</div>
+        <div class="mission-box">
+          <div class="field"><label for="targetShape">Target shape</label><select id="targetShape"><option value="circle">Circle</option><option value="square">Square</option><option value="triangle">Triangle</option><option value="hexagon">Hexagon</option></select></div>
+          <div class="field" style="margin-top:12px;"><label for="currentShape">Incoming belt item</label><select id="currentShape"><option value="circle">Circle</option><option value="square">Square</option><option value="triangle">Triangle</option><option value="hexagon">Hexagon</option></select></div>
+        </div>
+        <div class="button-grid">
+          <button class="secondary" id="randomItemBtn">Random item</button>
+          <button class="secondary" id="shuffleBtn">Shuffle logic</button>
+          <button class="warn" id="checkBtn">Check order</button>
+          <button class="good" id="runBtn">Run full cycle</button>
+          <button id="stepBtn">Next step</button>
+          <button class="secondary" id="resetBtn">Reset scene</button>
+        </div>
+        <div class="status-box"><h3>Current reasoning</h3><p class="muted" id="statusText">The robot is waiting at home. The expected order is already loaded so you can test the cycle, or shuffle the logic to turn it into a challenge.</p></div>
+        <div class="metrics-grid"><div><strong>Accepted on belt</strong><span id="acceptedCount">0</span></div><div><strong>Rejected to bucket</strong><span id="rejectedCount">0</span></div></div>
+      </section>
+
+      <section class="panel scene-panel">
+        <div class="scene-topbar">
+          <div><h2>Robot cell</h2><p class="muted">Watch one part at a time: scan, decide, then either let it pass on the belt or reject it with the robot arm.</p></div>
+          <div class="legend"><span><i style="background:#62d3ff;"></i>target</span><span><i style="background:#ffb14a;"></i>scanner</span><span><i style="background:#48d38a;"></i>accepted</span><span><i style="background:#ff6d64;"></i>rejected</span></div>
+        </div>
+        <div class="robot-stage-wrap">
+          <svg class="robot-stage" id="robotStage" viewBox="0 0 760 470" aria-label="Robotic sorting cell">
+            <defs>
+              <linearGradient id="floorGrad" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stop-color="#1a3143" /><stop offset="100%" stop-color="#0c161f" /></linearGradient>
+              <linearGradient id="beltGrad" x1="0" y1="0" x2="1" y2="1"><stop offset="0%" stop-color="#263845" /><stop offset="100%" stop-color="#111a22" /></linearGradient>
+              <linearGradient id="bucketGrad" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stop-color="#30506b" /><stop offset="100%" stop-color="#162635" /></linearGradient>
+              <linearGradient id="robotGrad" x1="0" y1="0" x2="1" y2="1"><stop offset="0%" stop-color="#ffbe57" /><stop offset="40%" stop-color="#ff8d2f" /><stop offset="100%" stop-color="#9b4700" /></linearGradient>
+              <linearGradient id="robotDarkGrad" x1="0" y1="0" x2="1" y2="1"><stop offset="0%" stop-color="#526878" /><stop offset="100%" stop-color="#213341" /></linearGradient>
+              <radialGradient id="scannerGrad" cx="50%" cy="50%" r="65%"><stop offset="0%" stop-color="rgba(255,218,114,0.9)" /><stop offset="100%" stop-color="rgba(255,177,74,0)" /></radialGradient>
+              <filter id="shadow" x="-40%" y="-40%" width="180%" height="180%"><feDropShadow dx="0" dy="10" stdDeviation="10" flood-color="#000000" flood-opacity="0.35" /></filter>
+            </defs>
+            <rect width="760" height="470" fill="url(#floorGrad)" />
+            <ellipse cx="380" cy="392" rx="300" ry="44" fill="rgba(0,0,0,0.28)" />
+            <g transform="translate(42 198)" filter="url(#shadow)"><ellipse cx="68" cy="172" rx="74" ry="22" fill="rgba(0,0,0,0.22)" /><ellipse cx="68" cy="98" rx="74" ry="22" fill="rgba(255,255,255,0.07)" /><path d="M0 98 C0 58 16 22 68 22 C120 22 136 58 136 98 L122 172 C118 200 18 200 14 172 Z" fill="url(#bucketGrad)" stroke="#5d89ab" stroke-width="4" /><ellipse cx="68" cy="98" rx="60" ry="16" fill="#0f1c27" /><text x="68" y="232" fill="#cfe4ee" font-size="18" font-weight="800" text-anchor="middle">Reject bucket</text><g id="bucketItems"></g></g>
+            <g transform="translate(568 164)" filter="url(#shadow)"><ellipse cx="0" cy="180" rx="78" ry="22" fill="rgba(0,0,0,0.28)" /><ellipse cx="0" cy="164" rx="66" ry="18" fill="#173040" /><path d="M-58 164 C-58 124 -38 90 0 90 C38 90 58 124 58 164 L46 204 C40 232 -40 232 -46 204 Z" fill="url(#robotDarkGrad)" stroke="#5d7a91" stroke-width="4" /><ellipse cx="0" cy="90" rx="44" ry="14" fill="#0f1b26" /><text x="0" y="260" fill="#cfe4ee" font-size="18" font-weight="800" text-anchor="middle">Robot base</text></g>
+            <g transform="translate(54 248)" filter="url(#shadow)"><rect x="0" y="0" width="452" height="92" rx="28" fill="url(#beltGrad)" stroke="#415d73" stroke-width="3" /><rect x="16" y="18" width="420" height="18" rx="9" fill="rgba(255,255,255,0.12)" /><rect x="16" y="54" width="420" height="12" rx="6" fill="rgba(255,255,255,0.08)" /><g id="beltStripeGroup"></g></g>
+            <g transform="translate(232 188)"><rect x="-22" y="0" width="44" height="118" rx="18" fill="#1c2d38" stroke="#4e7288" stroke-width="3" /><rect x="-54" y="10" width="108" height="16" rx="8" fill="#203544" stroke="#4e7288" stroke-width="2" /><path id="scannerBeam" d="M0 30 L-48 142 L48 142 Z" fill="url(#scannerGrad)" opacity="0.12"></path><circle cx="0" cy="28" r="10" fill="#ffbe57" /><text x="0" y="-10" fill="#cfe4ee" font-size="16" font-weight="800" text-anchor="middle">Shape scanner</text></g>
+            <g id="upcomingItems"></g><g id="currentItemGroup"></g>
+            <g id="robotArm"><g id="shoulderGroup"><rect x="-8" y="-18" width="122" height="36" rx="18" fill="url(#robotGrad)" stroke="#5b2500" stroke-width="3"></rect><circle cx="0" cy="0" r="26" fill="#ffd17d" stroke="#5b2500" stroke-width="4"></circle><circle cx="112" cy="0" r="18" fill="#ffc466" stroke="#5b2500" stroke-width="4"></circle><g id="elbowGroup"><rect x="0" y="-16" width="94" height="32" rx="16" fill="url(#robotGrad)" stroke="#5b2500" stroke-width="3"></rect><circle cx="0" cy="0" r="16" fill="#ffc466" stroke="#5b2500" stroke-width="4"></circle><circle cx="86" cy="0" r="14" fill="#ffc466" stroke="#5b2500" stroke-width="4"></circle><g id="wristGroup"><rect x="0" y="-12" width="54" height="24" rx="12" fill="url(#robotGrad)" stroke="#5b2500" stroke-width="3"></rect><circle cx="0" cy="0" r="12" fill="#ffc466" stroke="#5b2500" stroke-width="4"></circle><g id="gripperGroup"><circle cx="54" cy="0" r="10" fill="#d8e4ea" stroke="#314857" stroke-width="4"></circle><rect x="44" y="-10" width="18" height="20" rx="8" fill="#d8e4ea" stroke="#314857" stroke-width="3"></rect><rect id="gripperFingerTop" x="62" y="-28" width="12" height="24" rx="6" fill="#d8e4ea" stroke="#314857" stroke-width="3"></rect><rect id="gripperFingerBottom" x="62" y="4" width="12" height="24" rx="6" fill="#d8e4ea" stroke="#314857" stroke-width="3"></rect></g></g></g></g></g>
+            <text x="646" y="52" fill="#cfe4ee" font-size="20" font-weight="900" text-anchor="middle">Robot sorting cell</text><text x="596" y="86" fill="#88aabf" font-size="14" font-weight="700" text-anchor="middle">Goal: keep the target shape on the belt and reject the others.</text>
+          </svg>
+        </div>
+        <div class="stepper-box"><div class="scene-topbar"><h3>Execution steps</h3><div id="currentItemPill" class="item-pill"></div></div><div class="step-trace" id="stepTrace"></div></div>
+      </section>
+
+      <aside class="panel">
+        <div><h2>Program builder</h2><p class="muted">Move the blocks into the order you think the robot controller should execute. This is the algorithm the arm will follow.</p></div>
+          <div class="builder-box"><div class="builder-heading">Target mission</div><div id="targetMissionPill" class="target-pill"></div><div class="helper-note">Controller order: Scan -> Identify -> Compare -> Decide -> Pass if match. If it does not match: Pick -> Move to bucket -> Release -> Home.</div></div>
+        <div class="builder-list" id="builderList"></div>
+      </aside>
+    </main>
+  </div>
+
+  <script>
+    const SHAPES={circle:{label:"Circle",color:"#63c4ff",dark:"#1d84c9"},square:{label:"Square",color:"#ff7d78",dark:"#cc3f4d"},triangle:{label:"Triangle",color:"#ffd45f",dark:"#d69d18"},hexagon:{label:"Hexagon",color:"#7de89f",dark:"#26a65c"}};
+    const STEP_LIBRARY={scan:{title:"Scan the item",detail:"Wait until the part reaches the sensor window and read it.",short:"Scan",duration:.9},identify:{title:"Identify the shape",detail:"Convert the sensor reading into a shape name.",short:"Identify",duration:.7},compare:{title:"Compare with target",detail:"Check if the detected shape is the one the process wants to keep.",short:"Compare",duration:.8},decision:{title:"Decide pass or reject",detail:"Matching parts stay on the belt; different parts go to reject handling.",short:"Decide",duration:1.15},pass:{title:"Let target pass",detail:"Keep the arm clear and allow the correct part to continue on the conveyor.",short:"Pass",duration:1.05},pickup:{title:"Pick wrong item",detail:"Move to the pick pose and close the gripper around the part.",short:"Pick",duration:1.05},move_bin:{title:"Move to reject bucket",detail:"Carry the wrong item away from the conveyor.",short:"Move bin",duration:1.05},release:{title:"Release into bucket",detail:"Open the gripper above the bin so the part drops inside.",short:"Release",duration:.85},home:{title:"Return home",detail:"Go back to the standby pose and wait for the next part.",short:"Home",duration:.9}};
+    const EXPECTED_ORDER=["scan","identify","compare","decision","pass","pickup","move_bin","release","home"];
+    const ROBOT_BASE={x:550,y:206},ARM_LENGTHS={shoulder:118,elbow:92,wrist:54},POSES={home:{shoulder:-148,elbow:54,wrist:42,grip:18},inspect:{shoulder:-174,elbow:64,wrist:52,grip:18},pickup:{shoulder:-184,elbow:76,wrist:64,grip:8},bucket:{shoulder:-132,elbow:22,wrist:18,grip:8}};
+    const ui={targetShape:document.getElementById("targetShape"),currentShape:document.getElementById("currentShape"),randomItemBtn:document.getElementById("randomItemBtn"),shuffleBtn:document.getElementById("shuffleBtn"),checkBtn:document.getElementById("checkBtn"),runBtn:document.getElementById("runBtn"),stepBtn:document.getElementById("stepBtn"),resetBtn:document.getElementById("resetBtn"),missionBadge:document.getElementById("missionBadge"),statusText:document.getElementById("statusText"),acceptedCount:document.getElementById("acceptedCount"),rejectedCount:document.getElementById("rejectedCount"),stepTrace:document.getElementById("stepTrace"),builderList:document.getElementById("builderList"),targetMissionPill:document.getElementById("targetMissionPill"),currentItemPill:document.getElementById("currentItemPill"),beltStripeGroup:document.getElementById("beltStripeGroup"),scannerBeam:document.getElementById("scannerBeam"),upcomingItems:document.getElementById("upcomingItems"),currentItemGroup:document.getElementById("currentItemGroup"),bucketItems:document.getElementById("bucketItems"),shoulderGroup:document.getElementById("shoulderGroup"),elbowGroup:document.getElementById("elbowGroup"),wristGroup:document.getElementById("wristGroup"),gripperFingerTop:document.getElementById("gripperFingerTop"),gripperFingerBottom:document.getElementById("gripperFingerBottom")};
+    const state={targetShape:"circle",currentShape:"triangle",programOrder:[],currentProgramStepIndex:-1,mismatchIndex:null,acceptedCount:0,rejectedCount:0,bucketShapes:[],upcomingShapes:[],executionPlan:[],activePlanIndex:-1,executing:false,autoRun:false,waitForNextStep:false,currentStepId:null,currentPose:{...POSES.home},poseFrom:{...POSES.home},poseTo:{...POSES.home},stepElapsed:0,stepDuration:1,itemMode:"belt",decisionResult:null,itemX:248,itemY:294,itemRotation:0,scannerPulse:0,beltStripeOffset:0,phaseMessage:"Arrange the program and choose an incoming part."};
+
+    function shuffleArray(items){const copy=[...items];for(let i=copy.length-1;i>0;i-=1){const s=Math.floor(Math.random()*(i+1));[copy[i],copy[s]]=[copy[s],copy[i]]}return copy}
+    function randomShape(){const keys=Object.keys(SHAPES);return keys[Math.floor(Math.random()*keys.length)]}
+    function playUiSound(name){if(window.uiSound&&typeof window.uiSound.play==="function")window.uiSound.play(name)}
+    function clamp(v,min,max){return Math.min(max,Math.max(min,v))}
+    function lerp(a,b,t){return a+(b-a)*t}
+    function easeInOut(t){return t<.5?2*t*t:1-Math.pow(-2*t+2,2)/2}
+    function formatShapeLabel(shapeId){return SHAPES[shapeId].label}
+    function getExpectedPlanForCurrentItem(){return state.currentShape===state.targetShape?["scan","identify","compare","decision","pass","home"]:["scan","identify","compare","decision","pickup","move_bin","release","home"]}
+    function validateProgram(){for(let i=0;i<EXPECTED_ORDER.length;i+=1)if(state.programOrder[i]!==EXPECTED_ORDER[i])return i;return-1}
+    function updateMissionText(message,tone="warn"){ui.missionBadge.textContent=message;ui.missionBadge.className=`badge ${tone}`}
+    function updateHeaderPills(){ui.targetMissionPill.innerHTML=`<span class="shape-chip ${state.targetShape}"></span>Keep only ${formatShapeLabel(state.targetShape)} on the conveyor`;ui.currentItemPill.innerHTML=`<span class="shape-chip ${state.currentShape}"></span>Current item: ${formatShapeLabel(state.currentShape)}`}
+    function setIdleSceneMessage(){const match=state.currentShape===state.targetShape;state.phaseMessage=`${formatShapeLabel(state.currentShape)} detected on the belt. ${match?"This one should pass.":"This one should be rejected."}`}
+    function refreshSceneText(){ui.acceptedCount.textContent=String(state.acceptedCount);ui.rejectedCount.textContent=String(state.rejectedCount);ui.statusText.textContent=state.phaseMessage;updateHeaderPills()}
+
+    function renderBuilder(){ui.builderList.innerHTML="";state.programOrder.forEach((stepId,index)=>{const step=STEP_LIBRARY[stepId],card=document.createElement("div"),active=state.currentProgramStepIndex===index,bad=state.mismatchIndex===index,ok=state.mismatchIndex===-1&&!active;card.className=`logic-card${active?" active":""}${bad?" bad":""}${ok?" ok":""}`;card.innerHTML=`<div class="logic-card-header"><div><strong>${index+1}. ${step.title}</strong><p>${step.detail}</p></div><div class="logic-actions"><button type="button" data-move="up" data-index="${index}" aria-label="Move step up">â†‘</button><button type="button" data-move="down" data-index="${index}" aria-label="Move step down">â†“</button></div></div>`;ui.builderList.appendChild(card)});ui.builderList.querySelectorAll("button[data-move]").forEach(button=>button.addEventListener("click",()=>{if(state.executing)return;const index=Number(button.dataset.index),swapIndex=index+(button.dataset.move==="up"?-1:1);if(swapIndex<0||swapIndex>=state.programOrder.length)return;[state.programOrder[index],state.programOrder[swapIndex]]=[state.programOrder[swapIndex],state.programOrder[index]];state.mismatchIndex=null;state.currentProgramStepIndex=-1;updateMissionText("Program edited - validate again","warn");renderBuilder()}))}
+    function renderStepTrace(){const plan=getExpectedPlanForCurrentItem();ui.stepTrace.innerHTML="";EXPECTED_ORDER.forEach((stepId,index)=>{const step=STEP_LIBRARY[stepId],card=document.createElement("div");let cls="pending";if(!plan.includes(stepId))cls="skip";if(plan.includes(stepId)&&state.currentProgramStepIndex>plan.indexOf(stepId))cls="done";if(stepId===state.currentStepId)cls="current";card.className=`trace-step ${cls}`;card.innerHTML=`<strong>${index+1}. ${step.short}</strong><span>${step.detail}</span>`;ui.stepTrace.appendChild(card)})}
+    function buildShapeMarkup(shapeId,x,y,scale=1,rotation=0){const shape=SHAPES[shapeId],s=scale,shadow=`<ellipse cx="${x}" cy="${y+24*s}" rx="${24*s}" ry="${10*s}" fill="rgba(0,0,0,0.28)"></ellipse>`,gloss=`<ellipse cx="${x-6*s}" cy="${y-8*s}" rx="${8*s}" ry="${5*s}" fill="rgba(255,255,255,0.22)" transform="rotate(-20 ${x-6*s} ${y-8*s})"></ellipse>`;if(shapeId==="circle")return`${shadow}<g transform="rotate(${rotation} ${x} ${y})"><circle cx="${x}" cy="${y}" r="${18*s}" fill="${shape.color}" stroke="${shape.dark}" stroke-width="${4*s}"></circle>${gloss}</g>`;if(shapeId==="square")return`${shadow}<g transform="rotate(${rotation} ${x} ${y})"><rect x="${x-18*s}" y="${y-18*s}" width="${36*s}" height="${36*s}" rx="${6*s}" fill="${shape.color}" stroke="${shape.dark}" stroke-width="${4*s}"></rect>${gloss}</g>`;if(shapeId==="triangle")return`${shadow}<g transform="rotate(${rotation} ${x} ${y})"><polygon points="${x},${y-22*s} ${x+20*s},${y+18*s} ${x-20*s},${y+18*s}" fill="${shape.color}" stroke="${shape.dark}" stroke-width="${4*s}" stroke-linejoin="round"></polygon>${gloss}</g>`;return`${shadow}<g transform="rotate(${rotation} ${x} ${y})"><polygon points="${x-12*s},${y-20*s} ${x+12*s},${y-20*s} ${x+24*s},${y} ${x+12*s},${y+20*s} ${x-12*s},${y+20*s} ${x-24*s},${y}" fill="${shape.color}" stroke="${shape.dark}" stroke-width="${4*s}" stroke-linejoin="round"></polygon>${gloss}</g>`}
+    function renderUpcomingShapes(){ui.upcomingItems.innerHTML=""}
+    function renderBucketShapes(){ui.bucketItems.innerHTML=state.bucketShapes.map((shapeId,index)=>buildShapeMarkup(shapeId,44+(index%3)*24,118+Math.floor(index/3)*22,.42,index*7)).join("")}
+    function renderBeltStripes(){const stripes=[];for(let i=-1;i<15;i+=1){const x=28+((i*34+state.beltStripeOffset)%510);stripes.push(`<rect x="${x}" y="10" width="14" height="72" rx="7" fill="rgba(255,255,255,0.08)"></rect>`)}ui.beltStripeGroup.innerHTML=stripes.join("")}
+    function applyPose(pose){state.currentPose={...pose};ui.shoulderGroup.setAttribute("transform",`translate(${ROBOT_BASE.x} ${ROBOT_BASE.y}) rotate(${pose.shoulder})`);ui.elbowGroup.setAttribute("transform",`translate(${ARM_LENGTHS.shoulder} 0) rotate(${pose.elbow})`);ui.wristGroup.setAttribute("transform",`translate(${ARM_LENGTHS.elbow} 0) rotate(${pose.wrist})`);ui.gripperFingerTop.setAttribute("y",String(-12-pose.grip));ui.gripperFingerBottom.setAttribute("y",String(pose.grip))}
+    function getGripperTipPosition(){const s=state.currentPose.shoulder*Math.PI/180,e=(state.currentPose.shoulder+state.currentPose.elbow)*Math.PI/180,w=(state.currentPose.shoulder+state.currentPose.elbow+state.currentPose.wrist)*Math.PI/180,ex=ROBOT_BASE.x+Math.cos(s)*ARM_LENGTHS.shoulder,ey=ROBOT_BASE.y+Math.sin(s)*ARM_LENGTHS.shoulder,wx=ex+Math.cos(e)*ARM_LENGTHS.elbow,wy=ey+Math.sin(e)*ARM_LENGTHS.elbow,tx=wx+Math.cos(w)*(ARM_LENGTHS.wrist+12),ty=wy+Math.sin(w)*(ARM_LENGTHS.wrist+12);return{x:tx,y:ty,angle:w*180/Math.PI}}
+    function renderCurrentItem(){if(state.itemMode==="hidden"||state.itemMode==="bucket"){ui.currentItemGroup.innerHTML="";return}if(state.itemMode==="gripper"){const tip=getGripperTipPosition();ui.currentItemGroup.innerHTML=buildShapeMarkup(state.currentShape,tip.x-18,tip.y+8,.9,tip.angle);return}ui.currentItemGroup.innerHTML=buildShapeMarkup(state.currentShape,state.itemX,state.itemY,.95,state.itemRotation)}
+    function rebuildAll(){refreshSceneText();renderBuilder();renderStepTrace();renderUpcomingShapes();renderBucketShapes();renderBeltStripes();renderCurrentItem()}
+
+    function resetExecutionScene(){state.executionPlan=[];state.activePlanIndex=-1;state.executing=false;state.autoRun=false;state.waitForNextStep=false;state.currentStepId=null;state.currentProgramStepIndex=-1;state.decisionResult=null;state.itemMode="belt";state.itemX=248;state.itemY=294;state.itemRotation=0;state.stepElapsed=0;state.stepDuration=1;state.poseFrom={...POSES.home};state.poseTo={...POSES.home};state.scannerPulse=0;applyPose(POSES.home);ui.scannerBeam.setAttribute("opacity","0.12");setIdleSceneMessage();renderStepTrace();renderCurrentItem()}
+    function resetScene(){state.mismatchIndex=null;updateMissionText("Arrange the robot program","warn");resetExecutionScene();renderBuilder();rebuildAll()}
+    function checkProgram(playSound=true){state.mismatchIndex=validateProgram();if(state.mismatchIndex===-1){updateMissionText("Program order is correct","ok");if(playSound)playUiSound("success")}else{updateMissionText(`Step ${state.mismatchIndex+1} is misplaced`,"error");playUiSound("error")}renderBuilder();return state.mismatchIndex===-1}
+    function beginExecution(autoRun){if(state.executing||state.waitForNextStep)return;if(!checkProgram(false)){state.phaseMessage=`The controller logic is wrong at step ${state.mismatchIndex+1}. Fix the order before running the robot.`;refreshSceneText();renderBuilder();return}resetExecutionScene();state.executionPlan=getExpectedPlanForCurrentItem();state.autoRun=autoRun;playUiSound("tap");startStep(0)}
+    function startStep(planIndex){if(planIndex>=state.executionPlan.length){finishCycle();return}state.activePlanIndex=planIndex;state.currentStepId=state.executionPlan[planIndex];state.currentProgramStepIndex=EXPECTED_ORDER.indexOf(state.currentStepId);state.stepDuration=STEP_LIBRARY[state.currentStepId].duration;state.stepElapsed=0;state.executing=true;state.waitForNextStep=false;state.poseFrom={...state.currentPose};state.poseTo={...state.currentPose};
+      if(["scan","identify","compare","decision"].includes(state.currentStepId))state.poseTo={...POSES.inspect,grip:state.currentPose.grip};
+      if(state.currentStepId==="pass")state.poseTo={...POSES.home,grip:18};
+      if(state.currentStepId==="pickup")state.poseTo={...POSES.pickup};
+      if(["move_bin","release"].includes(state.currentStepId))state.poseTo={...POSES.bucket};
+      if(state.currentStepId==="home")state.poseTo={...POSES.home,grip:18};
+      if(state.currentStepId==="scan"){state.phaseMessage="Step 1: the scanner is reading the arriving object.";playUiSound("tap")}
+      else if(state.currentStepId==="identify")state.phaseMessage=`Step 2: the vision logic identifies the part as ${formatShapeLabel(state.currentShape)}.`;
+      else if(state.currentStepId==="compare")state.phaseMessage=`Step 3: compare ${formatShapeLabel(state.currentShape)} with target ${formatShapeLabel(state.targetShape)}.`;
+      else if(state.currentStepId==="decision"){const matches=state.currentShape===state.targetShape;state.decisionResult=matches?"pass":"reject";state.phaseMessage=matches?"Step 4: it matches the target, so the belt may keep it.":"Step 4: it does not match, so the robot must reject it."}
+      else if(state.currentStepId==="pass"){state.phaseMessage="Step 5: the target part is correct, so it continues on the conveyor.";playUiSound("success")}
+      else if(state.currentStepId==="pickup"){state.phaseMessage="Step 6: the robot moves down to grab the wrong item.";playUiSound("warning")}
+      else if(state.currentStepId==="move_bin")state.phaseMessage="Step 7: the robot carries the wrong item toward the reject bucket.";
+      else if(state.currentStepId==="release")state.phaseMessage="Step 8: the gripper opens so the part drops inside the bucket.";
+      else if(state.currentStepId==="home")state.phaseMessage="Step 9: the arm returns to the home pose for the next cycle.";
+      refreshSceneText();renderBuilder();renderStepTrace()
+    }
+    function finishCurrentStep(){state.executing=false;if(state.autoRun)window.setTimeout(()=>startStep(state.activePlanIndex+1),120);else state.waitForNextStep=true}
+    function finishCycle(){const accepted=state.currentShape===state.targetShape;if(accepted){state.acceptedCount+=1;state.phaseMessage=`${formatShapeLabel(state.currentShape)} was accepted and left on the belt.`;playUiSound("success")}else{state.rejectedCount+=1;state.bucketShapes.push(state.currentShape);if(state.bucketShapes.length>9)state.bucketShapes.shift();state.itemMode="bucket";state.phaseMessage=`${formatShapeLabel(state.currentShape)} was rejected and dropped into the bucket.`;playUiSound("drop")}state.upcomingShapes.shift();state.upcomingShapes.push(randomShape());state.currentShape=state.upcomingShapes[0];ui.currentShape.value=state.currentShape;renderBucketShapes();renderUpcomingShapes();state.currentProgramStepIndex=-1;state.currentStepId=null;state.waitForNextStep=false;state.autoRun=false;renderBuilder();renderStepTrace();setTimeout(()=>{resetExecutionScene();refreshSceneText();renderBuilder();renderUpcomingShapes()},520)}
+    function updateExecution(dt){state.beltStripeOffset=(state.beltStripeOffset+dt*58)%34;renderBeltStripes();state.scannerPulse=Math.max(0,state.scannerPulse-dt*1.8);if(!state.executing){ui.scannerBeam.setAttribute("opacity",String(.1+state.scannerPulse*.55));renderCurrentItem();return}
+      state.stepElapsed=Math.min(state.stepDuration,state.stepElapsed+dt);const t=easeInOut(clamp(state.stepElapsed/state.stepDuration,0,1)),pose={shoulder:lerp(state.poseFrom.shoulder,state.poseTo.shoulder,t),elbow:lerp(state.poseFrom.elbow,state.poseTo.elbow,t),wrist:lerp(state.poseFrom.wrist,state.poseTo.wrist,t),grip:lerp(state.poseFrom.grip,state.poseTo.grip,t)};applyPose(pose);
+      if(state.currentStepId==="scan")state.scannerPulse=1;
+      if(state.currentStepId==="pass"){state.itemMode="belt";state.itemX=lerp(248,666,t);state.itemRotation=lerp(0,14,t)}
+      else if(state.currentStepId==="pickup"){if(t<.45){state.itemMode="belt";state.itemX=248}else state.itemMode="gripper"}
+      else if(state.currentStepId==="move_bin")state.itemMode="gripper";
+      else if(state.currentStepId==="release"){if(t<.45)state.itemMode="gripper";else{state.itemMode="belt";state.itemX=lerp(176,150,t);state.itemY=lerp(176,238,t);state.itemRotation=lerp(-10,24,t)}}
+      else if(state.currentStepId==="home")state.itemMode=state.decisionResult==="pass"?"hidden":"bucket";
+      else if(!["decision","pass"].includes(state.currentStepId)){state.itemX=248;state.itemY=294;state.itemRotation=0}
+      ui.scannerBeam.setAttribute("opacity",String(.1+state.scannerPulse*.62));renderCurrentItem();
+      if(state.stepElapsed>=state.stepDuration){if(state.currentStepId==="release")playUiSound("drop");finishCurrentStep()}
+    }
+    function animationFrame(ts){if(!animationFrame.lastTs)animationFrame.lastTs=ts;const dt=Math.min(.05,(ts-animationFrame.lastTs)/1000);animationFrame.lastTs=ts;updateExecution(dt);requestAnimationFrame(animationFrame)}
+    function randomizeCurrentItem(){if(state.executing)return;state.currentShape=randomShape();state.upcomingShapes=[state.currentShape,randomShape(),randomShape()];ui.currentShape.value=state.currentShape;resetExecutionScene();rebuildAll()}
+
+    ui.targetShape.addEventListener("change",event=>{if(state.executing)return;state.targetShape=event.target.value;setIdleSceneMessage();state.mismatchIndex=null;refreshSceneText();updateHeaderPills();renderStepTrace();renderBuilder()});
+    ui.currentShape.addEventListener("change",event=>{if(state.executing)return;state.currentShape=event.target.value;state.upcomingShapes=[state.currentShape,randomShape(),randomShape()];resetExecutionScene();rebuildAll()});
+    ui.randomItemBtn.addEventListener("click",randomizeCurrentItem);
+    ui.shuffleBtn.addEventListener("click",()=>{if(state.executing)return;state.programOrder=shuffleArray(EXPECTED_ORDER);state.mismatchIndex=null;state.currentProgramStepIndex=-1;updateMissionText("Logic blocks shuffled","warn");playUiSound("tap");renderBuilder()});
+    ui.checkBtn.addEventListener("click",()=>{checkProgram(true)});
+    ui.runBtn.addEventListener("click",()=>beginExecution(true));
+    ui.stepBtn.addEventListener("click",()=>{if(state.executing)return;if(state.waitForNextStep){startStep(state.activePlanIndex+1);return}beginExecution(false)});
+    ui.resetBtn.addEventListener("click",()=>{resetScene();playUiSound("tap")});
+
+    state.programOrder=[...EXPECTED_ORDER];
+    state.targetShape=ui.targetShape.value;
+    state.currentShape=ui.currentShape.value;
+    state.upcomingShapes=[state.currentShape,randomShape(),randomShape()];
+    applyPose(POSES.home);
+    resetExecutionScene();
+    rebuildAll();
+    requestAnimationFrame(animationFrame);
+  </script>
+</body>
+</html>
+
+
