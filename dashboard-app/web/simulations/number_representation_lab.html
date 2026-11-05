@@ -1,0 +1,686 @@
+﻿<!DOCTYPE html>
+<html lang="en" data-sync-dashboard-lights="true">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Embedded Programming - Number Representation</title>
+    <script>
+    (() => {
+      try {
+        const storedLights = localStorage.getItem("embedded-dashboard-lights-on");
+        const legacyStoredLights = localStorage.getItem("embedded-lights-on");
+        const resolvedLights = storedLights ?? legacyStoredLights;
+        if (resolvedLights === "false") {
+          document.documentElement.classList.add("theme-dark");
+        }
+      } catch (error) {
+        // Ignore storage failures and keep the light theme.
+      }
+    })();
+  </script>
+  <script src="../shared/mouse_glow.js"></script>
+  <script src="../shared/page_header.js"></script>
+  <style>
+    :root {
+      --bg: #0f2230;
+      --panel: rgba(20, 36, 48, 0.94);
+      --card: rgba(30, 50, 65, 0.96);
+      --line: #37586d;
+      --text: #edf7fb;
+      --subtle: #9db9c8;
+      --accent: #63c4ff;
+      --accent-soft: rgba(99, 196, 255, 0.14);
+      --green: #2fc76b;
+      --green-soft: rgba(47, 199, 107, 0.14);
+      --yellow: #ffcc45;
+      --yellow-soft: rgba(255, 204, 69, 0.14);
+      --red: #ff6b65;
+      --red-soft: rgba(255, 107, 101, 0.14);
+      --purple: #b98cff;
+      --purple-soft: rgba(185, 140, 255, 0.14);
+      --white: #f6fbff;
+      --button-bg: #173245;
+      --code-bg: #0d1720;
+      --stage-bg: linear-gradient(180deg, #162c3b 0%, #11202a 100%);
+      --range-axis: rgba(255,255,255,0.55);
+      --range-grid: rgba(255,255,255,0.10);
+      --range-line: rgba(255,255,255,0.18);
+      --shadow: 0 14px 34px rgba(0, 0, 0, 0.28);
+    }
+    html:not(.theme-dark) {
+      --white: #244765;
+      --code-bg: #f4f8fd;
+      --stage-bg: linear-gradient(180deg, #f8fbff 0%, #eef5ff 100%);
+      --range-axis: rgba(92, 119, 148, 0.74);
+      --range-grid: rgba(111, 136, 163, 0.18);
+      --range-line: rgba(111, 136, 163, 0.24);
+    }
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      min-height: 100vh;
+      font-family: "Segoe UI", Arial, sans-serif;
+      color: var(--text);
+      background: radial-gradient(circle at top, #193549 0%, var(--bg) 58%, #081118 100%);
+    }
+    .app { padding: 22px; display: grid; gap: 18px; }
+    .header, .panel {
+      background: var(--panel);
+      border: 1px solid var(--line);
+      border-radius: 28px;
+      box-shadow: var(--shadow);
+    }
+    .header {
+      padding: 18px 20px;
+      display: grid;
+      grid-template-columns: auto minmax(0, 1fr) auto;
+      gap: 16px;
+      align-items: center;
+    }
+    .back {
+      color: var(--text);
+      text-decoration: none;
+      border: 2px solid var(--line);
+      border-radius: 16px;
+      padding: 12px 16px;
+      background: var(--button-bg);
+      font-weight: 800;
+    }
+    .brand-logo { width: 132px; max-width: 100%; height: auto; object-fit: contain; }
+    .title h1 { margin: 0; font-size: clamp(28px, 3vw, 46px); }
+    .title p { margin: 6px 0 0; color: var(--subtle); line-height: 1.45; }
+    .layout {
+      display: grid;
+      grid-template-columns: minmax(340px, 1fr) minmax(420px, 1.1fr) minmax(380px, 0.95fr);
+      gap: 18px;
+      align-items: start;
+    }
+    .panel { padding: 18px; display: grid; gap: 14px; }
+    .panel h2, .panel h3, .panel p { margin: 0; }
+    .topic-head { display: grid; gap: 8px; }
+    .topic-head p, .helper-text, .code-note { color: var(--subtle); line-height: 1.45; }
+    .status-pill {
+      justify-self: start;
+      border: 2px solid var(--accent);
+      border-radius: 999px;
+      padding: 10px 16px;
+      background: var(--accent-soft);
+      color: var(--accent);
+      font-weight: 800;
+    }
+    .controls-card, .visual-card, .explain-card, .code-card {
+      background: var(--card);
+      border: 1px solid var(--line);
+      border-radius: 22px;
+      padding: 14px;
+      display: grid;
+      gap: 12px;
+    }
+    .card-head {
+      display: flex;
+      justify-content: space-between;
+      gap: 12px;
+      align-items: center;
+      flex-wrap: wrap;
+    }
+    .controls-grid, .control-row { display: grid; gap: 8px; }
+    .value-line {
+      display: flex;
+      justify-content: space-between;
+      gap: 12px;
+      color: var(--subtle);
+      font-size: 14px;
+      font-weight: 700;
+    }
+    .field-label { color: var(--subtle); font-size: 14px; font-weight: 700; }
+    input[type="range"], input[type="number"], select {
+      width: 100%;
+      padding: 11px 12px;
+      border-radius: 14px;
+      border: 2px solid var(--line);
+      background: rgba(11, 24, 34, 0.84);
+      color: var(--text);
+      font: inherit;
+    }
+    input[type="range"] { padding: 0; accent-color: var(--accent); }
+    .control-inline { display: flex; gap: 10px; flex-wrap: wrap; }
+    button.action-btn, .copy-btn {
+      appearance: none;
+      border: 2px solid var(--line);
+      border-radius: 14px;
+      padding: 10px 14px;
+      background: var(--button-bg);
+      color: var(--text);
+      font-weight: 800;
+      cursor: pointer;
+    }
+    button.action-btn.active, .copy-btn:hover {
+      border-color: var(--accent);
+      background: var(--accent-soft);
+      color: var(--white);
+    }
+    .copy-btn.copied { border-color: var(--green); background: rgba(47, 199, 107, 0.14); }
+    .visual-stage {
+      min-height: 380px;
+      border-radius: 20px;
+      border: 1px solid var(--line);
+      background: var(--stage-bg);
+      padding: 18px;
+      display: grid;
+      place-items: center;
+      overflow: hidden;
+    }
+    .visual-wrap { width: 100%; max-width: 520px; display: grid; gap: 16px; }
+    .summary-grid {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 12px;
+    }
+    .summary-box {
+      border-radius: 18px;
+      border: 1px solid var(--line);
+      background: rgba(255, 255, 255, 0.04);
+      padding: 14px;
+      display: grid;
+      gap: 6px;
+      text-align: center;
+    }
+    .summary-box strong { color: var(--subtle); font-size: 13px; }
+    .summary-box span { color: var(--white); font-size: 26px; font-weight: 900; }
+    .summary-box.code span {
+      font-family: Consolas, "Courier New", monospace;
+      font-size: 20px;
+      word-break: break-all;
+    }
+    .bits-grid {
+      display: grid;
+      grid-template-columns: repeat(4, minmax(0, 1fr));
+      gap: 10px;
+    }
+    .bit-card {
+      border-radius: 16px;
+      border: 2px solid var(--line);
+      background: rgba(255, 255, 255, 0.03);
+      padding: 10px 8px;
+      display: grid;
+      gap: 8px;
+      justify-items: center;
+      text-align: center;
+      cursor: pointer;
+      transition: 0.16s ease;
+    }
+    .bit-card.active {
+      border-color: var(--accent);
+      background: var(--accent-soft);
+      box-shadow: 0 0 0 3px rgba(99, 196, 255, 0.10);
+    }
+    .bit-card.sign { border-color: rgba(255, 107, 101, 0.35); }
+    .bit-card.sign.active {
+      border-color: var(--red);
+      background: var(--red-soft);
+      box-shadow: 0 0 0 3px rgba(255, 107, 101, 0.10);
+    }
+    .bit-index { color: var(--subtle); font-size: 12px; font-weight: 700; }
+    .bit-value {
+      width: 48px;
+      height: 48px;
+      border-radius: 14px;
+      display: grid;
+      place-items: center;
+      font-size: 24px;
+      font-weight: 900;
+      background: rgba(7, 15, 21, 0.78);
+      border: 1px solid rgba(255, 255, 255, 0.08);
+    }
+    .bit-weight { color: var(--subtle); font-size: 12px; line-height: 1.25; }
+    .formula-box {
+      border-radius: 18px;
+      border: 2px dashed var(--line);
+      padding: 14px;
+      text-align: center;
+      color: var(--subtle);
+      line-height: 1.45;
+    }
+    .formula-box strong { color: var(--white); }
+    .explain-grid { display: grid; gap: 14px; }
+    .line-card, .helper-card {
+      border-radius: 18px;
+      border: 1px solid var(--line);
+      background: rgba(255, 255, 255, 0.04);
+      padding: 14px;
+      display: grid;
+      gap: 10px;
+    }
+    .line-card h3, .helper-card h3 { margin: 0; font-size: 18px; }
+    .line-canvas {
+      width: 100%;
+      height: 170px;
+      display: block;
+      border-radius: 18px;
+      background: rgba(7, 15, 21, 0.86);
+      border: 1px solid var(--line);
+    }
+    .helper-row {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 10px;
+    }
+    .mini-box {
+      border-radius: 16px;
+      border: 1px solid var(--line);
+      background: rgba(255, 255, 255, 0.03);
+      padding: 12px;
+      display: grid;
+      gap: 6px;
+    }
+    .mini-box strong { color: var(--subtle); font-size: 13px; }
+    .mini-box span {
+      color: var(--white);
+      font-size: 16px;
+      font-weight: 800;
+      font-family: Consolas, "Courier New", monospace;
+    }
+    pre.code-block {
+      margin: 0;
+      min-height: 520px;
+      padding: 16px;
+      border-radius: 18px;
+      border: 1px solid var(--line);
+      background: var(--code-bg);
+      color: #d8f2ff;
+      font-family: Consolas, "Courier New", monospace;
+      font-size: 13px;
+      line-height: 1.5;
+      white-space: pre-wrap;
+      user-select: text;
+      -webkit-user-select: text;
+      cursor: text;
+    }
+    .code-line { display: block; margin: 0 -6px; padding: 1px 6px; border-radius: 8px; transition: background 0.16s ease, box-shadow 0.16s ease; }
+    .code-line.active { background: rgba(99, 196, 255, 0.16); box-shadow: inset 3px 0 0 rgba(99, 196, 255, 0.9); color: var(--white); }
+    @media (max-width: 1380px) {
+      .layout { grid-template-columns: 1fr; }
+      pre.code-block { min-height: 360px; }
+    }
+    @media (max-width: 760px) {
+      .header { grid-template-columns: 1fr; }
+      .summary-grid, .helper-row, .bits-grid { grid-template-columns: 1fr 1fr; }
+    }
+  </style>
+</head>
+<body>
+  <div class="app">
+    <header class="header">
+      <a class="back" href="../index.html">Back to menu</a>
+      <div class="title">
+        <h1>Number Representation</h1>
+        <p>Explore how the same bit pattern can be read as binary, hexadecimal, unsigned decimal, and signed two's complement.</p>
+      </div>
+      <img class="brand-logo" src="../../assets/branding/hanze_logo.png" alt="Hanze logo" />
+    </header>
+
+    <section class="layout">
+      <section class="panel">
+        <div class="topic-head">
+          <h2>Bit Patterns and Values</h2>
+          <p>Change the raw pattern with the slider, numeric input, or by clicking individual bits. The sign bit is highlighted in red.</p>
+          <div class="status-pill" id="statusPill">8-bit pattern | unsigned = 173 | signed = -83</div>
+        </div>
+
+        <div class="controls-card">
+          <h3>Interactive controls</h3>
+          <div class="controls-grid">
+            <div class="control-row">
+              <div class="field-label">Bit width</div>
+              <select id="bitWidthSelect">
+                <option value="4">4 bits</option>
+                <option value="8" selected>8 bits</option>
+                <option value="12">12 bits</option>
+                <option value="16">16 bits</option>
+              </select>
+            </div>
+            <div class="control-row">
+              <div class="value-line"><span>Raw value (â† â†’)</span><span id="rawValueLabel">173</span></div>
+              <input id="valueSlider" type="range" min="0" max="255" step="1" value="173" />
+            </div>
+            <div class="control-row">
+              <div class="field-label">Raw value in decimal</div>
+              <input id="valueInput" type="number" min="0" max="255" step="1" value="173" />
+            </div>
+            <div class="control-inline">
+              <button class="action-btn" id="stepDownBtn" type="button">-1</button>
+              <button class="action-btn" id="stepUpBtn" type="button">+1</button>
+              <button class="action-btn" id="invertBitsBtn" type="button">Invert bits</button>
+            </div>
+          </div>
+        </div>
+
+        <div class="visual-card">
+          <h3>Register view</h3>
+          <div class="visual-stage">
+            <div class="visual-wrap">
+              <div class="summary-grid">
+                <div class="summary-box"><strong>Unsigned</strong><span id="unsignedValue">173</span></div>
+                <div class="summary-box"><strong>Signed</strong><span id="signedValue">-83</span></div>
+                <div class="summary-box code"><strong>Hex</strong><span id="hexValue">0xAD</span></div>
+                <div class="summary-box code"><strong>Binary</strong><span id="binaryValue">10101101</span></div>
+              </div>
+              <div class="bits-grid" id="bitsGrid"></div>
+              <div class="formula-box" id="formulaBox"></div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section class="panel">
+        <div class="explain-card">
+          <h2>Representation View</h2>
+          <p class="helper-text">The top axis shows where the raw pattern sits in the unsigned range. The bottom axis shows the same bits interpreted as a signed two's complement number.</p>
+          <div class="explain-grid">
+            <div class="line-card">
+              <h3>Unsigned vs Signed Range</h3>
+              <canvas class="line-canvas" id="rangeCanvas" width="760" height="180"></canvas>
+            </div>
+            <div class="helper-card">
+              <h3>Interpretation details</h3>
+              <div class="helper-row">
+                <div class="mini-box"><strong>Most significant bit</strong><span id="msbInfo">bit 7 = 1</span></div>
+                <div class="mini-box"><strong>Sign bit meaning</strong><span id="signInfo">negative</span></div>
+                <div class="mini-box"><strong>Two's complement rule</strong><span id="twosInfo">173 - 256 = -83</span></div>
+                <div class="mini-box"><strong>ASCII view</strong><span id="asciiInfo">'-'</span></div>
+              </div>
+              <p class="helper-text" id="helperText">In 8-bit signed form, the MSB carries a negative weight of -128. The remaining active bits add the positive weights.</p>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section class="panel">
+        <div class="code-card">
+          <div class="card-head">
+            <h2>Code</h2>
+            <button class="copy-btn" id="copyCodeBtn" type="button">Copy code</button>
+          </div>
+          <pre class="code-block" id="codeBlock"></pre>
+        </div>
+      </section>
+    </section>
+  </div>
+
+  <script>
+    const state = {
+      bits: 8,
+      rawValue: 173
+    };
+
+    const statusPill = document.getElementById("statusPill");
+    const bitWidthSelect = document.getElementById("bitWidthSelect");
+    const valueSlider = document.getElementById("valueSlider");
+    const valueInput = document.getElementById("valueInput");
+    const rawValueLabel = document.getElementById("rawValueLabel");
+    const stepDownBtn = document.getElementById("stepDownBtn");
+    const stepUpBtn = document.getElementById("stepUpBtn");
+    const invertBitsBtn = document.getElementById("invertBitsBtn");
+    const unsignedValue = document.getElementById("unsignedValue");
+    const signedValue = document.getElementById("signedValue");
+    const hexValue = document.getElementById("hexValue");
+    const binaryValue = document.getElementById("binaryValue");
+    const bitsGrid = document.getElementById("bitsGrid");
+    const formulaBox = document.getElementById("formulaBox");
+    const msbInfo = document.getElementById("msbInfo");
+    const signInfo = document.getElementById("signInfo");
+    const twosInfo = document.getElementById("twosInfo");
+    const asciiInfo = document.getElementById("asciiInfo");
+    const helperText = document.getElementById("helperText");
+    const rangeCanvas = document.getElementById("rangeCanvas");
+    const rangeCtx = rangeCanvas.getContext("2d");
+    const codeBlock = document.getElementById("codeBlock");
+    const copyCodeBtn = document.getElementById("copyCodeBtn");
+
+    function clamp(value, min, max) {
+      return Math.min(max, Math.max(min, value));
+    }
+
+    function escapeHtml(value) {
+      return String(value || "").replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/\"/g, "&quot;");
+    }
+
+    function renderHighlightedCode(text, activeLines = []) {
+      const normalized = String(text || "");
+      const activeSet = new Set(activeLines);
+      codeBlock.dataset.rawCode = normalized;
+      codeBlock.innerHTML = normalized.split("\n").map((line, index) => {
+        const safeLine = line.length ? escapeHtml(line) : "&nbsp;";
+        return `<span class="code-line ${activeSet.has(index + 1) ? "active" : ""}">${safeLine}</span>`;
+      }).join("");
+    }
+
+    function getMaxValue(bits = state.bits) {
+      return 2 ** bits - 1;
+    }
+
+    function getSignedMin(bits = state.bits) {
+      return -(2 ** (bits - 1));
+    }
+
+    function getSignedMax(bits = state.bits) {
+      return 2 ** (bits - 1) - 1;
+    }
+
+    function getBinaryString(bits = state.bits, rawValue = state.rawValue) {
+      return rawValue.toString(2).padStart(bits, "0");
+    }
+
+    function getHexString(bits = state.bits, rawValue = state.rawValue) {
+      const hexDigits = Math.ceil(bits / 4);
+      return `0x${rawValue.toString(16).toUpperCase().padStart(hexDigits, "0")}`;
+    }
+
+    function getSignedValue(bits = state.bits, rawValue = state.rawValue) {
+      const signThreshold = 2 ** (bits - 1);
+      return rawValue >= signThreshold ? rawValue - 2 ** bits : rawValue;
+    }
+
+    function getAsciiInfo(rawValue = state.rawValue, bits = state.bits) {
+      if (bits !== 8) return "8-bit only";
+      if (rawValue >= 32 && rawValue <= 126) return `'${String.fromCharCode(rawValue)}'`;
+      return "non-printable";
+    }
+
+    function getActiveTerms(bits = state.bits, rawValue = state.rawValue) {
+      const terms = [];
+      for (let bit = bits - 1; bit >= 0; bit--) {
+        if ((rawValue >> bit) & 1) terms.push(2 ** bit);
+      }
+      return terms;
+    }
+
+    function getSignedTerms(bits = state.bits, rawValue = state.rawValue) {
+      const terms = [];
+      for (let bit = bits - 1; bit >= 0; bit--) {
+        if (!((rawValue >> bit) & 1)) continue;
+        if (bit === bits - 1) terms.push(`-${2 ** bit}`);
+        else terms.push(`${2 ** bit}`);
+      }
+      return terms;
+    }
+
+    function setRawValue(nextValue) {
+      state.rawValue = clamp(Number(nextValue) || 0, 0, getMaxValue());
+      render();
+    }
+
+    function setBitWidth(nextBits) {
+      state.bits = Number(nextBits);
+      state.rawValue = clamp(state.rawValue, 0, getMaxValue());
+      render();
+    }
+
+    function toggleBit(bitIndex) {
+      state.rawValue ^= (1 << bitIndex);
+      state.rawValue = clamp(state.rawValue, 0, getMaxValue());
+      render();
+    }
+
+    function renderBits() {
+      const cards = [];
+      for (let bit = state.bits - 1; bit >= 0; bit--) {
+        const active = ((state.rawValue >> bit) & 1) === 1;
+        const isSign = bit === state.bits - 1;
+        const weightLabel = isSign ? `${active ? "-" : "-"}${2 ** bit}` : `${2 ** bit}`;
+        cards.push(`<button class="bit-card ${active ? "active" : ""} ${isSign ? "sign" : ""}" type="button" data-bit="${bit}"><div class="bit-index">bit ${bit}</div><div class="bit-value">${active ? 1 : 0}</div><div class="bit-weight">${isSign ? "sign" : "weight"}<br />${weightLabel}</div></button>`);
+      }
+      bitsGrid.style.gridTemplateColumns = state.bits <= 8 ? `repeat(${state.bits}, minmax(0, 1fr))` : "repeat(4, minmax(0, 1fr))";
+      bitsGrid.innerHTML = cards.join("");
+      bitsGrid.querySelectorAll("[data-bit]").forEach(button => {
+        button.addEventListener("click", () => toggleBit(Number(button.dataset.bit)));
+      });
+    }
+
+    function renderSummary() {
+      const signed = getSignedValue();
+      const activeTerms = getActiveTerms();
+      const signedTerms = getSignedTerms();
+      unsignedValue.textContent = state.rawValue;
+      signedValue.textContent = signed;
+      hexValue.textContent = getHexString();
+      binaryValue.textContent = getBinaryString();
+      rawValueLabel.textContent = state.rawValue;
+      statusPill.textContent = `${state.bits}-bit pattern | unsigned = ${state.rawValue} | signed = ${signed}`;
+      msbInfo.textContent = `bit ${state.bits - 1} = ${((state.rawValue >> (state.bits - 1)) & 1)}`;
+      signInfo.textContent = signed < 0 ? "negative" : "non-negative";
+      twosInfo.textContent = signed < 0 ? `${state.rawValue} - ${2 ** state.bits} = ${signed}` : `${state.rawValue} stays ${signed}`;
+      asciiInfo.textContent = getAsciiInfo();
+      helperText.textContent = `Unsigned sums only positive weights. Signed two's complement treats bit ${state.bits - 1} as a negative weight of -${2 ** (state.bits - 1)}.`;
+      formulaBox.innerHTML = `<strong>Unsigned:</strong> ${activeTerms.length ? activeTerms.join(" + ") : "0"} = ${state.rawValue}<br /><strong>Signed:</strong> ${signedTerms.length ? signedTerms.join(" + ") : "0"} = ${signed}`;
+    }
+
+    function drawLine(canvasY, minValue, maxValue, markerValue, color, label) {
+      const width = rangeCanvas.clientWidth || rangeCanvas.width;
+      const x0 = 56;
+      const x1 = width - 36;
+      const lineWidth = x1 - x0;
+      rangeCtx.strokeStyle = getComputedStyle(document.documentElement).getPropertyValue("--range-line").trim() || "rgba(255,255,255,0.18)";
+      rangeCtx.lineWidth = 2;
+      rangeCtx.beginPath();
+      rangeCtx.moveTo(x0, canvasY);
+      rangeCtx.lineTo(x1, canvasY);
+      rangeCtx.stroke();
+
+      rangeCtx.fillStyle = getComputedStyle(document.documentElement).getPropertyValue("--range-axis").trim() || "rgba(255,255,255,0.55)";
+      rangeCtx.font = "12px Segoe UI";
+      rangeCtx.textAlign = "left";
+      rangeCtx.fillText(label, x0, canvasY - 18);
+      rangeCtx.fillText(String(minValue), x0, canvasY + 22);
+      rangeCtx.textAlign = "right";
+      rangeCtx.fillText(String(maxValue), x1, canvasY + 22);
+
+      const ratio = (markerValue - minValue) / (maxValue - minValue || 1);
+      const markerX = x0 + clamp(ratio, 0, 1) * lineWidth;
+
+      rangeCtx.strokeStyle = getComputedStyle(document.documentElement).getPropertyValue("--range-grid").trim() || "rgba(255,255,255,0.10)";
+      for (let i = 0; i <= 4; i++) {
+        const tickX = x0 + (i / 4) * lineWidth;
+        rangeCtx.beginPath();
+        rangeCtx.moveTo(tickX, canvasY - 10);
+        rangeCtx.lineTo(tickX, canvasY + 10);
+        rangeCtx.stroke();
+      }
+
+      rangeCtx.fillStyle = color;
+      rangeCtx.beginPath();
+      rangeCtx.arc(markerX, canvasY, 8, 0, Math.PI * 2);
+      rangeCtx.fill();
+      rangeCtx.fillRect(markerX - 1, canvasY - 26, 2, 52);
+      rangeCtx.font = "700 12px Segoe UI";
+      rangeCtx.textAlign = "center";
+      rangeCtx.fillText(String(markerValue), markerX, canvasY - 34);
+    }
+
+    function renderRangeCanvas() {
+      const rect = rangeCanvas.getBoundingClientRect();
+      const width = rect.width || rangeCanvas.width;
+      const height = rect.height || rangeCanvas.height;
+      const ratio = window.devicePixelRatio || 1;
+      if (rangeCanvas.width !== Math.round(width * ratio) || rangeCanvas.height !== Math.round(height * ratio)) {
+        rangeCanvas.width = Math.round(width * ratio);
+        rangeCanvas.height = Math.round(height * ratio);
+      }
+      rangeCtx.setTransform(ratio, 0, 0, ratio, 0, 0);
+      rangeCtx.clearRect(0, 0, width, height);
+      drawLine(62, 0, getMaxValue(), state.rawValue, "#63c4ff", "Unsigned range");
+      drawLine(126, getSignedMin(), getSignedMax(), getSignedValue(), "#ffcc45", "Signed range");
+    }
+
+    function renderCode() {
+      const signedType = state.bits <= 8 ? "int8_t" : state.bits <= 16 ? "int16_t" : "int32_t";
+      const unsignedType = state.bits <= 8 ? "uint8_t" : state.bits <= 16 ? "uint16_t" : "uint32_t";
+      const codeText = `#include <Arduino.h>\n\n${unsignedType} rawValue = ${state.rawValue};\n${signedType} signedValue = (${signedType})rawValue;\n\nvoid setup() {\n  Serial.begin(115200);\n\n  Serial.print("Unsigned decimal: ");\n  Serial.println(rawValue);\n\n  Serial.print("Binary: ");\n  Serial.println(rawValue, BIN);\n\n  Serial.print("Hex: ");\n  Serial.println(rawValue, HEX);\n\n  Serial.print("Signed decimal: ");\n  Serial.println(signedValue);\n}\n\nvoid loop() {\n  for (int bit = ${state.bits - 1}; bit >= 0; bit--) {\n    Serial.print("bit ");\n    Serial.print(bit);\n    Serial.print(" = ");\n    Serial.println(bitRead(rawValue, bit));\n  }\n\n  delay(1000);\n}`;
+      renderHighlightedCode(codeText, [3, 4, 9, 10, 12, 13, 15, 16, 18, 19, 23, 24, 25, 26, 27]);
+    }
+
+    async function copyCode() {
+      const originalLabel = copyCodeBtn.textContent;
+      try {
+        if (navigator.clipboard && window.isSecureContext) {
+          await navigator.clipboard.writeText(codeBlock.dataset.rawCode || codeBlock.textContent);
+        } else {
+          const helper = document.createElement("textarea");
+          helper.value = codeBlock.dataset.rawCode || codeBlock.textContent;
+          helper.setAttribute("readonly", "");
+          helper.style.position = "absolute";
+          helper.style.left = "-9999px";
+          document.body.appendChild(helper);
+          helper.select();
+          document.execCommand("copy");
+          helper.remove();
+        }
+        copyCodeBtn.textContent = "Copied";
+        copyCodeBtn.classList.add("copied");
+      } catch (error) {
+        copyCodeBtn.textContent = "Copy failed";
+      }
+      window.setTimeout(() => {
+        copyCodeBtn.textContent = originalLabel;
+        copyCodeBtn.classList.remove("copied");
+      }, 1400);
+    }
+
+    function render() {
+      const maxValue = getMaxValue();
+      valueSlider.max = String(maxValue);
+      valueInput.max = String(maxValue);
+      valueSlider.value = String(state.rawValue);
+      valueInput.value = String(state.rawValue);
+      renderSummary();
+      renderBits();
+      renderRangeCanvas();
+      renderCode();
+    }
+
+    bitWidthSelect.addEventListener("change", event => setBitWidth(event.target.value));
+    valueSlider.addEventListener("input", event => setRawValue(event.target.value));
+    valueInput.addEventListener("input", event => setRawValue(event.target.value));
+    stepDownBtn.addEventListener("click", () => setRawValue(state.rawValue - 1));
+    stepUpBtn.addEventListener("click", () => setRawValue(state.rawValue + 1));
+    invertBitsBtn.addEventListener("click", () => setRawValue(getMaxValue() - state.rawValue));
+    copyCodeBtn.addEventListener("click", copyCode);
+    window.addEventListener("resize", renderRangeCanvas);
+    window.addEventListener("keydown", event => {
+      if (["INPUT", "TEXTAREA", "SELECT", "BUTTON"].includes(document.activeElement?.tagName)) return;
+      if (event.key === "ArrowLeft") {
+        event.preventDefault();
+        setRawValue(state.rawValue - 1);
+      } else if (event.key === "ArrowRight") {
+        event.preventDefault();
+        setRawValue(state.rawValue + 1);
+      }
+    });
+
+    render();
+  </script>
+  <script src="../shared/sound_fx.js"></script>
+</body>
+</html>
+
+

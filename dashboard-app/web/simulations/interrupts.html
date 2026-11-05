@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html lang="en" data-sync-dashboard-lights="true">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Embedded Programming - Interrupts</title>
+  <script>try { if ((localStorage.getItem('embedded-dashboard-lights-on') ?? localStorage.getItem('embedded-lights-on')) === 'false') document.documentElement.classList.add('theme-dark'); } catch(e) {}</script>
+  <script src="../shared/mouse_glow.js"></script>
+  <script src="../shared/page_header.js"></script>
+  <link rel="stylesheet" href="interrupts.css">
+  <link rel="stylesheet" href="../shared/arduino_code.css">
+</head>
+<body>
+<main class="app">
+  <header class="header"><a class="back" href="../index.html">Back to menu</a><div><h1>Interrupts</h1><p>Two buttons. One LED. Follow the code one instruction at a time.</p></div><img src="../../assets/branding/hanze_logo.png" alt="Hanze logo"></header>
+  <div class="controls" aria-label="Execution controls">
+    <button id="previous" type="button">Previous line</button><button id="next" type="button">Next line</button><button id="play" type="button">Play</button><button id="reset" type="button">Reset</button>
+    <label>Speed <select id="speed"><option value="1200">Slow</option><option value="700" selected>Normal</option><option value="250">Fast</option></select></label>
+  </div>
+  <div class="grid">
+    <section class="panel"><div class="heading"><h2>ESP32 code</h2><button id="copy" type="button">Copy code</button></div><p class="hint">The highlighted line is the instruction just executed.</p><div id="code" class="code" aria-label="ESP32 program"></div></section>
+    <section class="panel monitor">
+      <h2>Hardware</h2><div class="hardware"><div class="hardware-inputs"><div class="buttons"><button id="onButton" class="on-button" type="button">ON button · GPIO 34</button><button id="offButton" class="off-button" type="button">OFF button · GPIO 35</button></div><div class="led-box"><div id="led" class="led" role="img" aria-label="LED off"></div><strong id="ledLabel">LED OFF</strong><span>GPIO 23</span></div></div>
+      <table class="hardware-variables"><thead><tr><th>Variable</th><th>Value</th></tr></thead><tbody><tr><td>ledRequested</td><td id="requested">false</td></tr><tr><td>nextLed</td><td id="nextLed">false</td></tr><tr><td>LED output</td><td id="output">LOW</td></tr><tr><td>Completed loops</td><td id="loops">0</td></tr><tr><td>Pending button edges</td><td id="pending">None</td></tr></tbody></table></div>
+      <p class="hint">GPIO 34/35: use external pull-downs to GND. Released = LOW; pressed = HIGH (RISING edge). Connect each button between its GPIO and 3.3 V; use a resistor with the LED.</p>
+      <div class="flow"><span id="context">setup()</span><span>→</span><span id="returnPoint">No interrupted instruction</span></div>
+      <div id="explanation" class="explanation" role="status"></div>
+    </section>
+  </div>
+</main>
+<script src="../shared/arduino_code.js"></script>
+<script src="interrupts.js"></script>
+</body>
+</html>

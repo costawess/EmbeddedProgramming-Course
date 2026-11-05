@@ -1,0 +1,31 @@
+<svg width="220" height="220" viewBox="0 0 220 220" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="220" y2="220" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#2E241F"/>
+      <stop offset="1" stop-color="#161311"/>
+    </linearGradient>
+    <linearGradient id="ring" x1="0" y1="0" x2="1" y2="1">
+      <stop stop-color="#D1CBC6"/>
+      <stop offset="1" stop-color="#6C6762"/>
+    </linearGradient>
+  </defs>
+  <rect width="220" height="220" rx="26" fill="url(#bg)"/>
+  <rect x="14" y="14" width="192" height="192" rx="22" fill="#2A211D" stroke="#5D4E46"/>
+  <g transform="translate(34 34)">
+    <circle cx="76" cy="76" r="70" fill="url(#ring)"/>
+    <circle cx="76" cy="76" r="58" fill="#ECE8E2"/>
+    <path d="M76 76L112 46" stroke="#1F1C19" stroke-width="5" stroke-linecap="round"/>
+    <path d="M76 76L76 24" stroke="#77BF4D" stroke-width="38" stroke-linecap="butt"/>
+    <circle cx="76" cy="76" r="15" fill="#B8B3AD" stroke="#F5F2EE" stroke-width="2"/>
+    <g stroke="#1F1C19" stroke-width="2.5">
+      <path d="M76 16V28"/>
+      <path d="M119 33L111 42"/>
+      <path d="M136 76H124"/>
+      <path d="M119 119L111 110"/>
+      <path d="M76 136V124"/>
+      <path d="M33 119L42 110"/>
+      <path d="M16 76H28"/>
+      <path d="M33 33L42 42"/>
+    </g>
+  </g>
+</svg>

@@ -1,0 +1,100 @@
+/* Material's slate palette and restrained surfaces, matching the reference site. */
+[data-md-color-scheme="slate"] {
+  --md-default-bg-color: #1e2129;
+  --md-code-bg-color: #181b22;
+  --ep-border: #373b49;
+  --ep-surface: #252935;
+}
+
+[data-md-color-scheme="default"] {
+  --ep-border: #e1e4ed;
+  --ep-surface: #f6f7fb;
+}
+
+.md-typeset h1 { color: var(--md-default-fg-color); font-weight: 650; letter-spacing: -.025em; }
+.md-typeset h2 { font-weight: 600; }
+.md-typeset { line-height: 1.7; }
+.md-header__button.md-logo img { width: auto; height: 1.6rem; }
+.md-nav__link { border-radius: .2rem; }
+.md-nav__item--nested > .md-nav__link { font-weight: 600; }
+
+.md-tabs__item:last-child .md-tabs__link {
+  border: 1px solid #ffffff52;
+  border-radius: .25rem;
+  padding: .3rem .8rem;
+  margin-top: .42rem;
+  opacity: 1;
+}
+
+.md-tabs__item:last-child .md-tabs__link:hover,
+.md-tabs__item--active:last-child .md-tabs__link {
+  background: #ffffff18;
+  border-color: #ffffffa6;
+}
+
+.ep-eyebrow {
+  color: var(--md-typeset-a-color);
+  font-size: .65rem;
+  font-weight: 700;
+  letter-spacing: .14em;
+  text-transform: uppercase;
+}
+
+.ep-intro {
+  max-width: 40rem;
+  font-size: 1rem;
+  color: var(--md-default-fg-color--light);
+}
+
+.ep-actions { display: flex; flex-wrap: wrap; gap: .6rem; margin: 1.3rem 0 2rem; }
+.md-typeset .md-button { border-radius: .3rem; }
+.md-typeset .md-button:not(.md-button--primary) { color: var(--md-typeset-a-color); }
+
+.md-typeset .grid.cards > ul > li {
+  border-color: var(--ep-border);
+  border-radius: .5rem;
+  padding: 1.1rem;
+  transition: border-color 160ms ease, background-color 160ms ease;
+}
+
+.md-typeset .grid.cards > ul > li:hover {
+  background: var(--ep-surface);
+  border-color: var(--md-accent-fg-color);
+  box-shadow: none;
+}
+
+.md-typeset .grid.cards hr { border-color: var(--ep-border); }
+.md-typeset .admonition, .md-typeset details { border-radius: .4rem; }
+.ep-hardware { border: 1px solid var(--ep-border); border-radius: .5rem; max-width: 30rem; }
+
+/* Isolate the dashboard's application CSS while preserving course navigation. */
+.md-content:has(.ep-dashboard) { min-width: 0; }
+.ep-dashboard iframe {
+  display: block;
+  width: 100%;
+  min-height: 42rem;
+  border: 1px solid var(--ep-border);
+  border-radius: .5rem;
+  background: var(--md-default-bg-color);
+}
+
+.ep-dashboard-toolbar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: .5rem;
+  margin: 0 0 1rem;
+}
+
+.ep-dashboard-toolbar p { margin: 0; }
+.ep-dashboard-toolbar a { white-space: nowrap; }
+
+@media (max-width: 600px) {
+  .ep-intro { font-size: .9rem; }
+  .ep-actions .md-button { width: 100%; text-align: center; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .md-typeset .grid.cards > ul > li { transition: none; }
+}

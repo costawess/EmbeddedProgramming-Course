@@ -1,0 +1,650 @@
+﻿<!DOCTYPE html>
+<html lang="en" data-sync-dashboard-lights="true">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Embedded Programming - Button Debouncing</title>
+    <script>
+    (() => {
+      try {
+        const storedLights = localStorage.getItem("embedded-dashboard-lights-on");
+        const legacyStoredLights = localStorage.getItem("embedded-lights-on");
+        const resolvedLights = storedLights ?? legacyStoredLights;
+        if (resolvedLights === "false") {
+          document.documentElement.classList.add("theme-dark");
+        }
+      } catch (error) {
+        // Ignore storage failures and keep the light theme.
+      }
+    })();
+  </script>
+  <script src="../shared/mouse_glow.js"></script>
+  <script src="../shared/page_header.js"></script>
+  <style>
+    :root {
+      --bg: #0f2230;
+      --panel: rgba(20, 36, 48, 0.94);
+      --card: rgba(30, 50, 65, 0.96);
+      --line: #37586d;
+      --text: #edf7fb;
+      --subtle: #9db9c8;
+      --accent: #63c4ff;
+      --accent-soft: rgba(99, 196, 255, 0.14);
+      --green: #2fc76b;
+      --yellow: #ffcc45;
+      --orange: #ffb14c;
+      --purple: #c57cff;
+      --white: #f6fbff;
+      --button-bg: #173245;
+      --code-bg: #0d1720;
+      --stage-bg: linear-gradient(180deg, #162c3b 0%, #11202a 100%);
+      --plot-axis: rgba(255,255,255,0.68);
+      --plot-grid: rgba(255,255,255,0.10);
+      --plot-tick: rgba(255,255,255,0.55);
+      --plot-hover: rgba(255,255,255,0.44);
+      --shadow: 0 14px 34px rgba(0, 0, 0, 0.28);
+    }
+    html:not(.theme-dark) {
+      --white: #244765;
+      --code-bg: #f4f8fd;
+      --stage-bg: linear-gradient(180deg, #f8fbff 0%, #eef5ff 100%);
+      --plot-axis: rgba(92, 119, 148, 0.78);
+      --plot-grid: rgba(111, 136, 163, 0.18);
+      --plot-tick: rgba(92, 119, 148, 0.74);
+      --plot-hover: rgba(111, 136, 163, 0.44);
+    }
+    * { box-sizing: border-box; }
+    body { margin: 0; min-height: 100vh; font-family: "Segoe UI", Arial, sans-serif; color: var(--text); background: radial-gradient(circle at top, #193549 0%, var(--bg) 58%, #081118 100%); }
+    .app { padding: 22px; display: grid; gap: 18px; }
+    .header, .panel { background: var(--panel); border: 1px solid var(--line); border-radius: 28px; box-shadow: var(--shadow); }
+    .header { padding: 18px 20px; display: grid; grid-template-columns: auto minmax(0, 1fr) auto; gap: 16px; align-items: center; }
+    .back { color: var(--text); text-decoration: none; border: 2px solid var(--line); border-radius: 16px; padding: 12px 16px; background: var(--button-bg); font-weight: 800; }
+    .brand-logo { width: 132px; max-width: 100%; height: auto; object-fit: contain; }
+    .title h1 { margin: 0; font-size: clamp(28px, 3vw, 46px); }
+    .title p { margin: 6px 0 0; color: var(--subtle); line-height: 1.45; }
+    .layout { display: grid; grid-template-columns: minmax(330px, 0.96fr) minmax(350px, 1fr) minmax(390px, 1.04fr); gap: 18px; align-items: start; }
+    .panel { padding: 18px; display: grid; gap: 14px; }
+    .panel h2, .panel h3, .panel p { margin: 0; }
+    .topic-head { display: grid; gap: 8px; }
+    .topic-head p { color: var(--subtle); }
+    .status-pill { justify-self: start; border: 2px solid var(--accent); border-radius: 999px; padding: 10px 16px; background: var(--accent-soft); color: var(--accent); font-weight: 800; }
+    .controls-card, .visual-card, .timeline-card, .code-card { background: var(--card); border: 1px solid var(--line); border-radius: 22px; padding: 14px; display: grid; gap: 12px; }
+    .card-head { display: flex; justify-content: space-between; gap: 12px; align-items: center; flex-wrap: wrap; }
+    .controls-grid, .control-row { display: grid; gap: 8px; }
+    .field-label, .value-line, .helper-note { color: var(--subtle); font-size: 14px; font-weight: 700; }
+    .value-line { display: flex; justify-content: space-between; gap: 12px; }
+    input[type="range"] { width: 100%; accent-color: var(--accent); }
+    button.action-btn, .copy-btn { appearance: none; border: 2px solid var(--line); border-radius: 14px; padding: 10px 14px; background: var(--button-bg); color: var(--text); font-weight: 800; cursor: pointer; }
+    button.action-btn.active, .copy-btn:hover { border-color: var(--accent); background: var(--accent-soft); color: var(--white); }
+    .copy-btn.copied { border-color: var(--green); background: rgba(47, 199, 107, 0.14); }
+    .helper-note { line-height: 1.45; font-weight: 600; }
+    .visual-stage { min-height: 420px; border-radius: 20px; border: 1px solid var(--line); background: var(--stage-bg); padding: 18px; display: grid; place-items: center; overflow: hidden; }
+    .visual-wrap { width: 100%; max-width: 520px; display: grid; gap: 18px; }
+    .logic-row { width: 100%; display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 10px; }
+    .logic-box { border-radius: 16px; border: 1px solid var(--line); background: rgba(255, 255, 255, 0.04); padding: 12px 10px; display: grid; gap: 6px; text-align: center; }
+    .logic-box strong { color: var(--subtle); font-size: 12px; letter-spacing: 0.03em; text-transform: uppercase; }
+    .logic-box span { color: var(--white); font-size: 20px; font-weight: 900; }
+    .debounce-rig { border-radius: 20px; border: 1px solid var(--line); background: rgba(9, 20, 28, 0.38); padding: 18px; display: grid; gap: 18px; }
+    .rig-top { display: grid; grid-template-columns: minmax(0, 1fr) 160px; gap: 16px; align-items: center; }
+    .button-zone { display: grid; gap: 14px; justify-items: center; }
+    .button-caption { color: var(--subtle); font-size: 13px; font-weight: 800; text-align: center; }
+    .button-plate { width: 150px; height: 150px; border-radius: 34px; border: 1px solid var(--line); background: linear-gradient(180deg, rgba(255,255,255,0.06), rgba(255,255,255,0.02)); display: grid; place-items: center; box-shadow: inset 0 18px 32px rgba(255,255,255,0.03); }
+    .button-cap { width: 94px; height: 94px; border-radius: 50%; border: 6px solid rgba(255,255,255,0.14); background: radial-gradient(circle at 30% 30%, #7e8fa0 0%, #455665 48%, #263340 100%); box-shadow: inset 0 8px 16px rgba(255,255,255,0.1), 0 10px 20px rgba(0,0,0,0.28); transition: transform 0.08s ease, box-shadow 0.08s ease, background 0.12s ease; }
+    .button-cap.pressed { transform: translateY(5px) scale(0.97); box-shadow: inset 0 5px 12px rgba(255,255,255,0.08), 0 6px 10px rgba(0,0,0,0.24); background: radial-gradient(circle at 30% 30%, #9dacb9 0%, #5c6a75 42%, #303c48 100%); }
+    .led-column { display: grid; gap: 10px; justify-items: center; }
+    .led-label { color: var(--subtle); font-size: 13px; font-weight: 800; text-align: center; }
+    .led-lamp { width: 86px; height: 86px; border-radius: 50%; border: 6px solid #0b1820; background: radial-gradient(circle at 34% 30%, rgba(255,255,255,0.12) 0%, rgba(255,255,255,0.02) 28%, #111b23 68%, #081017 100%); box-shadow: inset 0 10px 16px rgba(255,255,255,0.04); transition: background 0.15s ease, box-shadow 0.15s ease, transform 0.15s ease; }
+    .led-lamp.on { background: radial-gradient(circle at 34% 30%, #fef1a7 0%, #ffe55f 28%, #ffcf26 62%, #d9a814 100%); box-shadow: 0 0 22px rgba(255, 214, 66, 0.46), inset 0 10px 14px rgba(255,255,255,0.24); transform: scale(1.02); }
+    .rig-bottom { display: grid; gap: 12px; }
+    .debounce-meter { border-radius: 16px; border: 1px solid var(--line); background: rgba(255,255,255,0.03); padding: 12px; display: grid; gap: 8px; }
+    .meter-head { display: flex; justify-content: space-between; gap: 12px; align-items: center; color: var(--subtle); font-size: 13px; font-weight: 800; }
+    .meter-track { height: 14px; border-radius: 999px; background: rgba(255,255,255,0.08); overflow: hidden; }
+    .meter-fill { height: 100%; width: 0%; border-radius: inherit; background: linear-gradient(90deg, var(--orange) 0%, var(--yellow) 100%); transition: width 0.08s linear; }
+    .explain-box { border-radius: 16px; border: 1px dashed var(--line); padding: 12px; color: var(--subtle); font-size: 14px; line-height: 1.45; text-align: center; }
+    .timeline-canvas { width: 100%; height: 540px; display: block; border-radius: 18px; background: rgba(7, 15, 21, 0.86); border: 1px solid var(--line); }
+    .timeline-note, .code-note { color: var(--subtle); font-size: 14px; line-height: 1.45; }
+    pre.code-block { margin: 0; min-height: 540px; padding: 16px; border-radius: 18px; border: 1px solid var(--line); background: var(--code-bg); color: #d8f2ff; font-family: Consolas, "Courier New", monospace; font-size: 13px; line-height: 1.5; white-space: pre-wrap; user-select: text; -webkit-user-select: text; cursor: text; }
+    .code-line { display: block; margin: 0 -6px; padding: 1px 6px; border-radius: 8px; transition: background 0.16s ease, box-shadow 0.16s ease; }
+    .code-line.active { background: rgba(99, 196, 255, 0.16); box-shadow: inset 3px 0 0 rgba(99, 196, 255, 0.9); color: var(--white); }
+    @media (max-width: 1320px) { .layout { grid-template-columns: 1fr; } .timeline-canvas, pre.code-block { min-height: 380px; } }
+    @media (max-width: 760px) {
+      .header { grid-template-columns: 1fr; }
+      .logic-row, .rig-top { grid-template-columns: 1fr; }
+      .visual-stage { min-height: 380px; }
+      .timeline-canvas, pre.code-block { min-height: 340px; }
+    }
+  </style>
+</head>
+<body>
+  <div class="app">
+    <header class="header">
+      <a class="back" href="../index.html">Back to menu</a>
+      <div class="title">
+        <h1>Button Debouncing</h1>
+        <p>See how a mechanical button bounces, how software filters the raw signal, and how the debounce delay changes when the next valid press is accepted.</p>
+      </div>
+      <img class="brand-logo" src="../../assets/branding/hanze_logo.png" alt="Hanze logo" />
+    </header>
+
+    <section class="layout">
+      <section class="panel">
+        <div class="topic-head">
+          <h2>Mechanical Button Bounce</h2>
+          <p>Press the button and watch the raw contact chatter before the filtered logic becomes stable.</p>
+          <div class="status-pill" id="statusPill">Debounced output = RELEASED</div>
+        </div>
+        <div class="controls-card">
+          <h3>Interactive controls</h3>
+          <div class="controls-grid">
+            <div class="control-row">
+              <div class="value-line">
+                <span class="field-label">Debounce interval</span>
+                <strong id="debounceValue">30 ms</strong>
+              </div>
+              <input id="debounceSlider" type="range" min="5" max="120" step="5" value="30" />
+            </div>
+            <div class="control-row">
+              <div class="field-label">Button</div>
+              <button class="action-btn" id="pressButtonBtn" type="button">Press and hold (Space)</button>
+            </div>
+            <div class="helper-note">A larger debounce interval rejects more ricochet, but it also delays when the software accepts the next press.</div>
+          </div>
+        </div>
+        <div class="visual-card">
+          <h3>System view</h3>
+          <div class="visual-stage">
+            <div class="visual-wrap">
+              <div class="logic-row">
+                <div class="logic-box"><strong>Button</strong><span id="buttonState">OPEN</span></div>
+                <div class="logic-box"><strong>Raw contact</strong><span id="rawState">0</span></div>
+                <div class="logic-box"><strong>Debounced</strong><span id="debouncedState">0</span></div>
+                <div class="logic-box"><strong>LED</strong><span id="ledState">OFF</span></div>
+              </div>
+              <div class="debounce-rig">
+                <div class="rig-top">
+                  <div class="button-zone">
+                    <div class="button-caption">Mechanical push button</div>
+                    <div class="button-plate">
+                      <div class="button-cap" id="buttonCap"></div>
+                    </div>
+                  </div>
+                  <div class="led-column">
+                    <div class="led-label">LED driven by debounced state</div>
+                    <div class="led-lamp" id="ledLamp"></div>
+                  </div>
+                </div>
+                <div class="rig-bottom">
+                  <div class="debounce-meter">
+                    <div class="meter-head">
+                      <span>Debounce timer window</span>
+                      <strong id="meterLabel">Stable enough to accept next state</strong>
+                    </div>
+                    <div class="meter-track">
+                      <div class="meter-fill" id="meterFill"></div>
+                    </div>
+                  </div>
+                  <div class="explain-box" id="explainBox">The software is waiting for the raw input to stay stable for 30 ms before changing the debounced state.</div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section class="panel">
+        <div class="timeline-card">
+          <div class="card-head">
+            <h2>Timeline</h2>
+            <button class="action-btn" id="toggleTimelineBtn" type="button">Pause timeline</button>
+          </div>
+          <p class="timeline-note">Compare the intended press, the bouncing raw contact, the debounce window, the filtered state, and the LED over the last 12 seconds.</p>
+          <canvas class="timeline-canvas" id="timelineCanvas" width="760" height="540"></canvas>
+        </div>
+      </section>
+
+      <section class="panel">
+        <div class="code-card">
+          <div class="card-head">
+            <h2>Code</h2>
+            <button class="copy-btn" id="copyCodeBtn" type="button">Copy code</button>
+          </div>
+          <pre class="code-block" id="codeBlock"></pre>
+        </div>
+      </section>
+    </section>
+  </div>
+
+  <script>
+    const state = {
+      time: 0,
+      userPressed: false,
+      rawPressed: false,
+      debouncedPressed: false,
+      lastReading: false,
+      lastDebounceTime: 0,
+      debounceDelayMs: 30,
+      debounceProgress: 1,
+      debounceBusy: false,
+      ledOn: false,
+      bounceActive: false,
+      bounceTarget: false,
+      bounceEndTime: 0,
+      bounceNextToggle: 0,
+      rawChangedFrame: false,
+      debouncedChangedFrame: false,
+      codePhase: "idle"
+    };
+
+    const historySeconds = 12;
+    const samples = [];
+    let sampleAccum = 0;
+    let lastTs = 0;
+    let copyResetTimer = 0;
+    let timelinePaused = false;
+    let timelineFrozenTime = 0;
+    let hoverRatio = null;
+
+    const debounceSlider = document.getElementById("debounceSlider");
+    const debounceValue = document.getElementById("debounceValue");
+    const pressButtonBtn = document.getElementById("pressButtonBtn");
+    const buttonState = document.getElementById("buttonState");
+    const rawState = document.getElementById("rawState");
+    const debouncedState = document.getElementById("debouncedState");
+    const ledState = document.getElementById("ledState");
+    const buttonCap = document.getElementById("buttonCap");
+    const ledLamp = document.getElementById("ledLamp");
+    const meterFill = document.getElementById("meterFill");
+    const meterLabel = document.getElementById("meterLabel");
+    const explainBox = document.getElementById("explainBox");
+    const statusPill = document.getElementById("statusPill");
+    const timelineCanvas = document.getElementById("timelineCanvas");
+    const timelineCtx = timelineCanvas.getContext("2d");
+    const toggleTimelineBtn = document.getElementById("toggleTimelineBtn");
+    const codeBlock = document.getElementById("codeBlock");
+    const copyCodeBtn = document.getElementById("copyCodeBtn");
+
+    const timelineSignals = [
+      { key: "intent", label: "Press", color: "#63c4ff" },
+      { key: "raw", label: "Raw", color: "#ffb14c" },
+      { key: "busy", label: "Window", color: "#c57cff" },
+      { key: "debounced", label: "Debounced", color: "#2fc76b" },
+      { key: "led", label: "LED", color: "#ffcc45" }
+    ];
+
+    function randomBetween(min, max) {
+      return min + Math.random() * (max - min);
+    }
+
+    function startBounce(targetPressed) {
+      state.bounceActive = true;
+      state.bounceTarget = targetPressed;
+      state.bounceEndTime = state.time + randomBetween(0.012, 0.026);
+      state.bounceNextToggle = state.time + randomBetween(0.0015, 0.004);
+    }
+
+    function setUserPressed(pressed) {
+      if (state.userPressed === pressed) return;
+      state.userPressed = pressed;
+      startBounce(pressed);
+    }
+
+    function updateRawContact() {
+      const previousRaw = state.rawPressed;
+      if (!state.bounceActive) {
+        state.rawPressed = state.userPressed;
+      } else if (state.time >= state.bounceEndTime) {
+        state.rawPressed = state.bounceTarget;
+        state.bounceActive = false;
+      } else if (state.time >= state.bounceNextToggle) {
+        state.rawPressed = !state.rawPressed;
+        state.bounceNextToggle = state.time + randomBetween(0.0015, 0.0045);
+      }
+      state.rawChangedFrame = state.rawPressed !== previousRaw;
+    }
+
+    function updateDebounce() {
+      const reading = state.rawPressed;
+      state.debouncedChangedFrame = false;
+      if (reading !== state.lastReading) {
+        state.lastDebounceTime = state.time;
+      }
+
+      const elapsedMs = (state.time - state.lastDebounceTime) * 1000;
+      state.debounceBusy = elapsedMs < state.debounceDelayMs;
+      state.debounceProgress = Math.min(1, Math.max(0, elapsedMs / state.debounceDelayMs));
+
+      if (elapsedMs > state.debounceDelayMs && reading !== state.debouncedPressed) {
+        state.debouncedPressed = reading;
+        state.debouncedChangedFrame = true;
+      }
+
+      state.ledOn = state.debouncedPressed;
+      state.lastReading = reading;
+
+      if (state.rawChangedFrame) state.codePhase = "edge";
+      else if (state.debounceBusy) state.codePhase = "wait";
+      else if (state.debouncedChangedFrame) state.codePhase = "commit";
+      else if (state.ledOn) state.codePhase = "latchedOn";
+      else state.codePhase = "idle";
+    }
+
+    function renderVisuals() {
+      debounceValue.textContent = `${state.debounceDelayMs} ms`;
+      buttonState.textContent = state.userPressed ? "PRESSED" : "OPEN";
+      rawState.textContent = state.rawPressed ? "1" : "0";
+      debouncedState.textContent = state.debouncedPressed ? "1" : "0";
+      ledState.textContent = state.ledOn ? "ON" : "OFF";
+      buttonCap.classList.toggle("pressed", state.userPressed);
+      ledLamp.classList.toggle("on", state.ledOn);
+      meterFill.style.width = `${Math.round(state.debounceProgress * 100)}%`;
+      meterLabel.textContent = state.debounceBusy ? `Waiting ${state.debounceDelayMs} ms of stability` : "Stable enough to accept next state";
+      explainBox.textContent = state.debounceBusy
+        ? `The raw contact is still inside the debounce window. The software ignores the ricochet until the input stays stable for ${state.debounceDelayMs} ms.`
+        : `The debounce timer has expired, so the filtered output now matches the stable raw signal.`;
+      statusPill.textContent = `Debounced output = ${state.debouncedPressed ? "PRESSED" : "RELEASED"}`;
+    }
+
+    function getCodeLines() {
+      return [
+        "const int buttonPin = 2;",
+        "const int ledPin = 21;",
+        "bool lastReading = false;",
+        "bool debouncedPressed = false;",
+        "unsigned long lastDebounceTime = 0;",
+        `const unsigned long debounceDelay = ${state.debounceDelayMs};`,
+        "",
+        "void setup() {",
+        "  pinMode(buttonPin, INPUT_PULLUP);",
+        "  pinMode(ledPin, OUTPUT);",
+        "}",
+        "",
+        "void loop() {",
+        "  bool reading = digitalRead(buttonPin) == LOW;",
+        "",
+        "  if (reading != lastReading) {",
+        "    lastDebounceTime = millis();",
+        "  }",
+        "",
+        "  if ((millis() - lastDebounceTime) > debounceDelay) {",
+        "    if (reading != debouncedPressed) {",
+        "      debouncedPressed = reading;",
+        "    }",
+        "  }",
+        "",
+        "  digitalWrite(ledPin, debouncedPressed ? HIGH : LOW);",
+        "  lastReading = reading;",
+        "}"
+      ];
+    }
+
+    function getActiveCodeLines() {
+      if (state.codePhase === "edge") return [14, 16, 17, 27];
+      if (state.codePhase === "wait") return [14, 20, 27];
+      if (state.codePhase === "commit") return [14, 20, 21, 22, 26, 27];
+      if (state.codePhase === "latchedOn") return [14, 20, 26, 27];
+      return [14, 26, 27];
+    }
+
+    function renderCode() {
+      const lines = getCodeLines();
+      const active = new Set(getActiveCodeLines());
+      codeBlock.dataset.rawCode = lines.join("\n");
+      codeBlock.innerHTML = lines
+        .map((line, index) => `<span class="code-line${active.has(index + 1) ? " active" : ""}">${line || " "}</span>`)
+        .join("");
+    }
+
+    function getTimelineReferenceTime() {
+      return timelinePaused ? timelineFrozenTime : state.time;
+    }
+
+    function themeColor(name, fallback) {
+      const value = getComputedStyle(document.documentElement).getPropertyValue(name).trim();
+      return value || fallback;
+    }
+
+    function captureSample() {
+      if (timelinePaused) return;
+      samples.push({
+        t: state.time,
+        intent: state.userPressed ? 1 : 0,
+        raw: state.rawPressed ? 1 : 0,
+        busy: state.debounceBusy ? 1 : 0,
+        debounced: state.debouncedPressed ? 1 : 0,
+        led: state.ledOn ? 1 : 0
+      });
+      while (samples.length && getTimelineReferenceTime() - samples[0].t > historySeconds) samples.shift();
+    }
+
+    function drawBinarySignal(signal, x, y, width, height, timeRef) {
+      timelineCtx.fillStyle = themeColor("--plot-axis", "rgba(255,255,255,0.68)");
+      timelineCtx.font = "bold 14px Segoe UI";
+      timelineCtx.fillText("1", x - 26, y + 6);
+      timelineCtx.fillText("0", x - 26, y + height - 2);
+      timelineCtx.save();
+      timelineCtx.translate(x - 42, y + height / 2);
+      timelineCtx.rotate(-Math.PI / 2);
+      timelineCtx.textAlign = "center";
+      timelineCtx.fillStyle = signal.color;
+      timelineCtx.font = "bold 15px Segoe UI";
+      timelineCtx.fillText(signal.label, 0, 0);
+      timelineCtx.restore();
+
+      timelineCtx.strokeStyle = themeColor("--plot-grid", "rgba(255,255,255,0.10)");
+      timelineCtx.lineWidth = 1;
+      for (let i = 0; i <= 4; i++) {
+        const gy = y + (height / 4) * i;
+        timelineCtx.beginPath();
+        timelineCtx.moveTo(x, gy);
+        timelineCtx.lineTo(x + width, gy);
+        timelineCtx.stroke();
+      }
+      for (let i = 0; i <= 4; i++) {
+        const gx = x + (width / 4) * i;
+        timelineCtx.beginPath();
+        timelineCtx.moveTo(gx, y);
+        timelineCtx.lineTo(gx, y + height);
+        timelineCtx.stroke();
+      }
+
+      const recent = samples.filter(sample => sample.t >= timeRef - historySeconds);
+      timelineCtx.lineJoin = "round";
+      timelineCtx.lineCap = "round";
+      timelineCtx.strokeStyle = signal.color;
+      timelineCtx.lineWidth = 3;
+      timelineCtx.beginPath();
+      let hasPath = false;
+      recent.forEach((sample, index) => {
+        const px = x + ((sample.t - (timeRef - historySeconds)) / historySeconds) * width;
+        const py = y + height - sample[signal.key] * height;
+        if (!hasPath) {
+          timelineCtx.moveTo(px, py);
+          hasPath = true;
+        } else {
+          timelineCtx.lineTo(px, recent[index - 1][signal.key] ? y : y + height);
+          timelineCtx.lineTo(px, py);
+        }
+      });
+      if (hasPath) timelineCtx.stroke();
+
+      const currentValue = recent.length ? recent[recent.length - 1][signal.key] : 0;
+      timelineCtx.fillStyle = signal.color;
+      timelineCtx.font = "bold 15px Segoe UI";
+      timelineCtx.textAlign = "right";
+      timelineCtx.fillText(currentValue.toFixed(1), x + width + 2, y + 14);
+      timelineCtx.textAlign = "center";
+      timelineCtx.fillStyle = themeColor("--plot-tick", "rgba(255,255,255,0.55)");
+      ["-12s", "-9s", "-6s", "-3s", "-0s"].forEach((label, index) => {
+        timelineCtx.fillText(label, x + (width / 4) * index, y + height + 18);
+      });
+    }
+
+    function drawTimeline() {
+      const ctx = timelineCtx;
+      const w = timelineCanvas.width;
+      const h = timelineCanvas.height;
+      ctx.clearRect(0, 0, w, h);
+      const padding = { top: 20, right: 28, bottom: 30, left: 76 };
+      const gap = 14;
+      const plotHeight = (h - padding.top - padding.bottom - gap * (timelineSignals.length - 1)) / timelineSignals.length;
+      const plotWidth = w - padding.left - padding.right;
+      const timeRef = getTimelineReferenceTime();
+
+      timelineSignals.forEach((signal, index) => {
+        const y = padding.top + index * (plotHeight + gap);
+        drawBinarySignal(signal, padding.left, y, plotWidth, plotHeight, timeRef);
+      });
+
+      if (hoverRatio !== null) {
+        const hoverX = padding.left + hoverRatio * plotWidth;
+        ctx.save();
+        ctx.setLineDash([7, 6]);
+        ctx.strokeStyle = themeColor("--plot-hover", "rgba(255,255,255,0.44)");
+        ctx.lineWidth = 1.4;
+        ctx.beginPath();
+        ctx.moveTo(hoverX, padding.top);
+        ctx.lineTo(hoverX, h - padding.bottom);
+        ctx.stroke();
+        ctx.restore();
+      }
+    }
+
+    function renderAll() {
+      renderVisuals();
+      renderCode();
+      drawTimeline();
+    }
+
+    function bindMomentaryButton(button, onChange) {
+      const setPressed = pressed => {
+        button.classList.toggle("active", Boolean(pressed));
+        onChange(Boolean(pressed));
+      };
+      button.addEventListener("pointerdown", event => {
+        event.preventDefault();
+        setPressed(true);
+      });
+      button.addEventListener("pointerup", () => setPressed(false));
+      button.addEventListener("pointerleave", () => setPressed(false));
+      button.addEventListener("pointercancel", () => setPressed(false));
+      button.addEventListener("keydown", event => {
+        if (event.code === "Space" || event.code === "Enter") {
+          event.preventDefault();
+          setPressed(true);
+        }
+      });
+      button.addEventListener("keyup", event => {
+        if (event.code === "Space" || event.code === "Enter") {
+          event.preventDefault();
+          setPressed(false);
+        }
+      });
+      button.addEventListener("blur", () => setPressed(false));
+      return setPressed;
+    }
+
+    function isTypingTarget(target) {
+      if (!target) return false;
+      const tagName = target.tagName;
+      return target.isContentEditable || tagName === "INPUT" || tagName === "TEXTAREA" || tagName === "SELECT";
+    }
+
+    async function copyTextToClipboard(text) {
+      if (navigator.clipboard && window.isSecureContext) {
+        await navigator.clipboard.writeText(text);
+        return true;
+      }
+      const helper = document.createElement("textarea");
+      helper.value = text;
+      helper.setAttribute("readonly", "");
+      helper.style.position = "absolute";
+      helper.style.left = "-9999px";
+      document.body.appendChild(helper);
+      helper.select();
+      const copied = document.execCommand("copy");
+      helper.remove();
+      return copied;
+    }
+
+    debounceSlider.addEventListener("input", event => {
+      state.debounceDelayMs = Number(event.target.value);
+      renderAll();
+    });
+
+    const setMomentaryPress = bindMomentaryButton(pressButtonBtn, pressed => {
+      setUserPressed(pressed);
+    });
+
+    window.addEventListener("keydown", event => {
+      if (event.code !== "Space" || event.repeat || isTypingTarget(event.target)) return;
+      event.preventDefault();
+      setMomentaryPress(true);
+    });
+
+    window.addEventListener("keyup", event => {
+      if (event.code !== "Space" || isTypingTarget(event.target)) return;
+      event.preventDefault();
+      setMomentaryPress(false);
+    });
+
+    timelineCanvas.addEventListener("mousemove", event => {
+      const rect = timelineCanvas.getBoundingClientRect();
+      hoverRatio = Math.max(0, Math.min(1, (event.clientX - rect.left) / rect.width));
+      drawTimeline();
+    });
+    timelineCanvas.addEventListener("mouseleave", () => {
+      hoverRatio = null;
+      drawTimeline();
+    });
+
+    toggleTimelineBtn.addEventListener("click", () => {
+      timelinePaused = !timelinePaused;
+      timelineFrozenTime = state.time;
+      toggleTimelineBtn.textContent = timelinePaused ? "Resume timeline" : "Pause timeline";
+      drawTimeline();
+    });
+
+    copyCodeBtn.addEventListener("click", async () => {
+      const originalLabel = copyCodeBtn.textContent;
+      try {
+        await copyTextToClipboard(codeBlock.dataset.rawCode || codeBlock.textContent);
+        copyCodeBtn.textContent = "Copied";
+        copyCodeBtn.classList.add("copied");
+      } catch (error) {
+        copyCodeBtn.textContent = "Copy failed";
+      }
+      clearTimeout(copyResetTimer);
+      copyResetTimer = window.setTimeout(() => {
+        copyCodeBtn.textContent = originalLabel;
+        copyCodeBtn.classList.remove("copied");
+      }, 1400);
+    });
+
+    function frame(ts) {
+      if (!lastTs) lastTs = ts;
+      const dt = Math.min((ts - lastTs) / 1000, 0.04);
+      lastTs = ts;
+
+      state.time += dt;
+      updateRawContact();
+      updateDebounce();
+
+      sampleAccum += dt;
+      if (sampleAccum >= 0.012) {
+        sampleAccum = 0;
+        captureSample();
+      }
+
+      renderAll();
+      requestAnimationFrame(frame);
+    }
+
+    captureSample();
+    renderAll();
+    requestAnimationFrame(frame);
+  </script>
+  <script src="../shared/sound_fx.js"></script>
+</body>
+</html>
+
+

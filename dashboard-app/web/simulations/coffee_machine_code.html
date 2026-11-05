@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="en" data-sync-dashboard-lights="true">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Coffee Machine — ESP32 code</title>
+  <script>try { if ((localStorage.getItem('embedded-dashboard-lights-on') ?? localStorage.getItem('embedded-lights-on')) !== 'true') document.documentElement.classList.add('theme-dark'); } catch(e) { document.documentElement.classList.add('theme-dark'); }</script>
+  <link rel="stylesheet" href="interrupts.css">
+  <link rel="stylesheet" href="../shared/arduino_code.css">
+  <style>
+    .app{max-width:1100px;padding-bottom:24px}.header{flex-wrap:wrap}.code-actions{display:flex;gap:12px;align-items:center;flex-wrap:wrap;margin:20px 0}.code{max-height:none;line-height:1.8}.code-line{padding-top:2px;padding-bottom:2px}.code-actions a{text-decoration:none}#copyStatus{color:var(--subtle)}
+  </style>
+</head>
+<body>
+  <main class="app">
+    <header class="header"><div><h1>Coffee Machine</h1><p>ESP32 · Arduino framework</p></div><a class="back" href="coffee_machine.html">Back to simulation</a></header>
+    <div class="code-actions"><button id="copy" type="button">Copy code</button><a id="download" class="back" download="coffee_machine.ino">Download .ino</a><span id="copyStatus" role="status"></span></div>
+    <section class="panel"><div id="code" class="code" aria-label="Coffee Machine Arduino code"></div></section>
+  </main>
+  <script src="../shared/sound_fx.js"></script>
+  <script src="../shared/arduino_code.js"></script>
+  <script src="coffee_machine_step_code.js"></script>
+  <script>
+    // Format this fixed sketch without changing its statements or simulator line numbers.
+    let depth = 0;
+    const source = window.COFFEE_STEP_CODE.split(/\r?\n/).map(raw => {
+      let line = raw.trim();
+      if (!line) return '';
+      line = line.replace(/\bif\s*\(/g, 'if (').replace(/\)\s*\{/g, ') {')
+        .replace(/state\s*==\s*(\d)/g, 'state == $1').replace(/counter\s*<\s*6/g, 'counter < 6')
+        .replace('Step by Step*/', 'Step by Step */').replace('RED_PIN   =', 'RED_PIN =');
+      const closesFirst = line.startsWith('}') ? 1 : 0;
+      const formatted = '  '.repeat(Math.max(0, depth - closesFirst)) + line;
+      depth += (line.match(/\{/g) || []).length - (line.match(/\}/g) || []).length;
+      return formatted;
+    }).join('\n') + '\n';
+    const code = document.getElementById('code');
+    source.trimEnd().split('\n').forEach((line, index) => {
+      const row = document.createElement('div'); row.className = 'code-line';
+      const number = document.createElement('span'); number.className = 'number'; number.textContent = index + 1;
+      row.append(number, renderArduinoCodeLine(line)); code.append(row);
+    });
+    document.getElementById('download').href = URL.createObjectURL(new Blob([source], {type:'text/plain;charset=utf-8'}));
+    document.getElementById('copy').onclick = async () => {
+      const status = document.getElementById('copyStatus');
+      try { await navigator.clipboard.writeText(source); status.textContent = 'Copied!'; }
+      catch { const area = document.createElement('textarea'); area.value = source; document.body.append(area); area.select(); const copied = document.execCommand('copy'); area.remove(); status.textContent = copied ? 'Copied!' : 'Use Download .ino to save the code.'; }
+    };
+  </script>
+</body>
+</html>

@@ -1,0 +1,12 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="96" height="96" viewBox="0 0 96 96" fill="none">
+  <rect width="96" height="96" rx="18" fill="#122532"/>
+  <rect x="7" y="7" width="82" height="82" rx="14" stroke="#355367" stroke-width="2"/>
+  <rect x="16" y="58" width="64" height="16" rx="8" fill="#0d1820" stroke="#355367"/>
+  <text x="48" y="69" text-anchor="middle" fill="#F5FBFF" font-size="11" font-family="Segoe UI, Arial" font-weight="700">ADC</text>
+  <g fill="#ff9f43" stroke="#ff9f43" stroke-width="3" stroke-linecap="round" stroke-linejoin="round">
+    <path d='M24 40a24 24 0 1 1 48 0' fill='none'/>
+    <path d='M48 40l12-12'/>
+    <circle cx='48' cy='40' r='3'/>
+  </g>
+</svg>
+

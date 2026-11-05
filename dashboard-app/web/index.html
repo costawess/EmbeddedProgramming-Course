@@ -1,0 +1,1932 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Embedded Programming</title>
+  <script src="./shared/sound_fx.js"></script>
+  <script src="./dashboard_flags.js"></script>
+  <script src="../js/site_contact.js"></script>
+  <script>
+    // Default to the dark theme and only restore light mode when the user turned lights on.
+    (() => {
+      try {
+        const storedLights = localStorage.getItem("embedded-dashboard-lights-on");
+        const legacyStoredLights = localStorage.getItem("embedded-lights-on");
+        const resolvedLights = storedLights ?? legacyStoredLights;
+        if (resolvedLights !== "true") {
+          document.documentElement.classList.add("theme-dark");
+        }
+      } catch (error) {
+        // Ignore storage failures and keep the dark theme.
+      }
+    })();
+  </script>
+  <script src="./shared/mouse_glow.js"></script>
+  <style>
+    /* Base light theme tokens shared by the menu and simulation screen. */
+    :root {
+      /* Page/background and generic panels. */
+      --bg: #eef5ff;
+      --panel: rgba(255, 255, 255, 0.8);
+      --panel-line: #d8e6f6;
+      --title: #113d6b;
+      --text: #2a4d6f;
+      --subtle: #6b86a2;
+
+      /* Semantic accent colors reused by badges, plots, and pipes. */
+      --red: #ef3f46;
+      --red-dark: #c92f37;
+      --blue: #1f6feb;
+      --blue-light: #77b6ff;
+      --cyan: #20b7ff;
+      --green: #309c40;
+      --purple: #8d5fd4;
+      --pink: #e36ac8;
+      --yellow: #f2bf16;
+      --brown: #8a5c3c;
+      --white: #ffffff;
+
+      /* UI-only surfaces for buttons, pills, and wrapped canvases. */
+      --toggle-bg: rgba(255, 255, 255, 0.96);
+      --toggle-border: #cfe0f5;
+      --toggle-thumb: #1f6feb;
+      --toggle-text: #113d6b;
+      --card-soft: rgba(255, 255, 255, 0.92);
+      --button-bg: rgba(255, 255, 255, 0.96);
+      --button-green-bg: #e8f8ec;
+      --button-red-bg: #fff1f3;
+      --launch-bg: linear-gradient(180deg, #f8fbff 0%, #e6f1ff 100%);
+      --pill-bg: rgba(248, 251, 255, 0.94);
+      --canvas-wrap-bg: rgba(244, 249, 255, 0.9);
+      --menu-card-bg: rgba(255, 255, 255, 0.92);
+      --menu-card-border: #d9e7f7;
+      --menu-card-title: #113d6b;
+      --menu-card-text: #617d99;
+      --menu-button-text: #145fce;
+
+      /* Canvas-specific materials used to shade the schematic parts. */
+      --canvas-panel-bg: rgba(249, 252, 255, 0.84);
+      --canvas-surface: #f7faff;
+      --canvas-surface-alt: #eef4fb;
+      --canvas-metal: #e8edf4;
+      --canvas-deep-blue: #1356bb;
+      --gray: #bfd0df;
+      --dark-gray: #74859b;
+      --black: #12181f;
+    }
+
+    /* Dark theme overrides. We only switch variables, so the rest of the CSS keeps working. */
+    html.theme-dark {
+      /* Global dark surfaces and text. */
+      --bg: #102633;
+      --panel: rgba(18, 32, 42, 0.94);
+      --panel-line: #2d5061;
+      --title: #e8f6ff;
+      --text: #c8e0eb;
+      --subtle: #8fb0c0;
+      --white: #f8fbfd;
+
+      /* Dark-mode control surfaces. */
+      --toggle-bg: rgba(18, 32, 42, 0.96);
+      --toggle-border: #3d6679;
+      --toggle-thumb: #4db8ff;
+      --toggle-text: #e8f6ff;
+      --card-soft: rgba(26, 44, 56, 0.9);
+      --button-bg: rgba(22, 38, 49, 0.96);
+      --button-green-bg: rgba(48, 156, 64, 0.16);
+      --button-red-bg: rgba(239, 63, 70, 0.16);
+      --launch-bg: rgba(22, 45, 71, 0.96);
+      --pill-bg: rgba(22, 38, 49, 0.96);
+      --canvas-wrap-bg: rgba(24, 42, 54, 0.9);
+      --menu-card-bg: #1f3441;
+      --menu-card-border: #486375;
+      --menu-card-title: #f3fbff;
+      --menu-card-text: #c4dcea;
+      --menu-button-text: #8fc3ff;
+
+      /* Darker material values used by the process schematic canvas. */
+      --canvas-panel-bg: rgba(28, 49, 62, 0.88);
+      --canvas-surface: #29404d;
+      --canvas-surface-alt: #253a47;
+      --canvas-metal: #314754;
+      --canvas-deep-blue: #214a83;
+      --gray: #8aa0ae;
+      --dark-gray: #a7bac6;
+      --black: #e6f2f8;
+    }
+
+    /* Global resets and page background. */
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      margin: 0;
+      min-height: 100vh;
+      font-family: "Segoe UI", Arial, sans-serif;
+      background:
+        radial-gradient(circle at top left, rgba(95, 159, 255, 0.18) 0%, transparent 32%),
+        radial-gradient(circle at top right, rgba(32, 183, 255, 0.16) 0%, transparent 24%),
+        linear-gradient(180deg, #f9fcff 0%, var(--bg) 58%, #e8f1ff 100%);
+      color: var(--text);
+    }
+
+    html.theme-dark body {
+      background: linear-gradient(180deg, #153241 0%, var(--bg) 100%);
+    }
+
+    /* Generic app containers and utility helpers. */
+    .app {
+      padding: 22px;
+      display: grid;
+      gap: 18px;
+    }
+
+    .hidden {
+      display: none !important;
+    }
+
+    /* Menu screen layout. */
+    .menu-screen {
+      min-height: calc(100vh - 44px);
+      display: grid;
+      align-content: start;
+      gap: 22px;
+      position: relative;
+    }
+
+    .menu-hero {
+      background: linear-gradient(180deg, rgba(255, 255, 255, 0.86) 0%, rgba(244, 249, 255, 0.82) 100%);
+      border: 1px solid var(--panel-line);
+      border-radius: 30px;
+      padding: 28px;
+      box-shadow: 0 24px 56px rgba(38, 84, 138, 0.1);
+      backdrop-filter: blur(16px);
+    }
+
+    .brand-lockup {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 18px;
+    }
+
+    .brand-logo {
+      width: 138px;
+      max-width: 100%;
+      height: auto;
+      object-fit: contain;
+    }
+
+    .menu-hero h1 {
+      margin: 0;
+      color: var(--title);
+      font-size: clamp(36px, 3vw, 60px);
+    }
+
+    .hero-title {
+      display: flex;
+      align-items: flex-end;
+      gap: 12px;
+      flex-wrap: wrap;
+    }
+
+    .hero-version {
+      color: var(--subtle);
+      font-size: 15px;
+      font-weight: 700;
+      line-height: 1.2;
+      padding-bottom: 8px;
+      letter-spacing: 0.04em;
+    }
+
+    .menu-hero p {
+      margin: 10px 0 0;
+      max-width: none;
+      color: var(--subtle);
+      font-size: 18px;
+      line-height: 1.5;
+    }
+
+    .menu-search {
+      margin-top: 18px;
+      display: grid;
+      gap: 10px;
+    }
+
+    .menu-search input {
+      width: 100%;
+      padding: 14px 16px;
+      border-radius: 18px;
+      border: 1px solid var(--toggle-border);
+      background: var(--button-bg);
+      color: var(--title);
+      font: inherit;
+      font-size: 16px;
+      box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.92), 0 10px 24px rgba(40, 89, 142, 0.06);
+    }
+
+    .menu-search input::placeholder {
+      color: var(--subtle);
+    }
+
+    html.theme-dark .menu-hero {
+      background: linear-gradient(180deg, rgba(24, 40, 52, 0.96) 0%, rgba(18, 32, 42, 0.96) 100%);
+      border-color: #355669;
+      box-shadow: 0 18px 40px rgba(0, 0, 0, 0.24);
+      backdrop-filter: none;
+    }
+
+    html.theme-dark .menu-search input {
+      border-color: #3d6679;
+      background: rgba(15, 29, 39, 0.92);
+      color: #e8f6ff;
+      box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.03);
+    }
+
+    html.theme-dark .menu-search input::placeholder {
+      color: #8fb0c0;
+    }
+
+    .menu-search-note {
+      color: var(--subtle);
+      font-size: 14px;
+      line-height: 1.4;
+    }
+
+    .menu-empty {
+      display: none;
+      background: var(--panel);
+      border: 2px dashed var(--panel-line);
+      border-radius: 24px;
+      padding: 18px 20px;
+      color: var(--subtle);
+      font-size: 16px;
+      line-height: 1.45;
+    }
+
+    .menu-empty.visible {
+      display: block;
+    }
+
+    .menu-footer {
+      background: var(--panel);
+      border: 2px solid var(--panel-line);
+      border-radius: 24px;
+      padding: 16px 20px;
+      display: grid;
+      gap: 6px;
+      color: var(--subtle);
+      font-size: 14px;
+      line-height: 1.5;
+    }
+
+    .menu-footer strong,
+    .menu-footer a {
+      color: var(--title);
+      text-decoration: none;
+    }
+
+    .menu-columns {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 20px;
+    }
+
+    .menu-column {
+      background: linear-gradient(180deg, rgba(255, 255, 255, 0.82) 0%, rgba(245, 249, 255, 0.78) 100%);
+      border: 1px solid var(--panel-line);
+      border-radius: 28px;
+      padding: 20px;
+      box-shadow: 0 22px 48px rgba(38, 84, 138, 0.08);
+      backdrop-filter: blur(14px);
+      display: grid;
+      gap: 14px;
+      align-content: start;
+      min-height: 360px;
+    }
+
+    html.theme-dark .menu-column {
+      background: linear-gradient(180deg, rgba(22, 38, 49, 0.96) 0%, rgba(18, 32, 42, 0.96) 100%);
+      border-color: #355669;
+      box-shadow: 0 18px 40px rgba(0, 0, 0, 0.22);
+      backdrop-filter: none;
+    }
+
+    .menu-column h2 {
+      margin: 0;
+      color: var(--title);
+      font-size: 30px;
+    }
+
+    .menu-card {
+      background: var(--menu-card-bg);
+      border: 1px solid var(--menu-card-border);
+      border-radius: 22px;
+      padding: 18px;
+      display: grid;
+      grid-template-columns: auto minmax(0, 1fr) auto;
+      align-items: center;
+      gap: 18px;
+      box-shadow: 0 14px 34px rgba(31, 91, 157, 0.08);
+      transition: transform 0.18s ease, box-shadow 0.18s ease, border-color 0.18s ease;
+    }
+
+    .menu-card:hover {
+      transform: translateY(-2px);
+      border-color: #c1d8f8;
+      box-shadow: 0 20px 42px rgba(31, 91, 157, 0.12);
+    }
+
+    html.theme-dark .menu-card {
+      box-shadow: 0 10px 26px rgba(0, 0, 0, 0.16);
+    }
+
+    html.theme-dark .menu-card:hover {
+      border-color: #5a7f96;
+      box-shadow: 0 18px 34px rgba(0, 0, 0, 0.22);
+    }
+
+    .menu-card-image {
+      width: 96px;
+      height: 96px;
+      object-fit: contain;
+      display: block;
+      border-radius: 18px;
+      border: 1px solid var(--menu-card-border);
+      background: linear-gradient(180deg, #f9fbff 0%, #edf4ff 100%);
+      padding: 6px;
+    }
+
+    html.theme-dark .menu-card-image {
+      background: rgba(12, 24, 32, 0.45);
+    }
+
+    .menu-card-copy {
+      display: grid;
+      gap: 10px;
+      min-width: 0;
+    }
+
+    .menu-card h3 {
+      margin: 0;
+      color: var(--menu-card-title);
+      font-size: 22px;
+    }
+
+    .menu-card p {
+      margin: 0;
+      color: var(--menu-card-text);
+      line-height: 1.45;
+    }
+
+    .menu-tags {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+    }
+
+    .menu-tag {
+      display: inline-flex;
+      align-items: center;
+      padding: 6px 10px;
+      border-radius: 999px;
+      border: 1px solid var(--menu-card-border);
+      background: rgba(31, 111, 235, 0.08);
+      color: #4f7094;
+      font-size: 12px;
+      font-weight: 700;
+      line-height: 1;
+      white-space: nowrap;
+    }
+
+    html.theme-dark .menu-tag {
+      background: rgba(255, 255, 255, 0.06);
+      color: var(--subtle);
+    }
+
+    .launch-button {
+      display: inline-block;
+      padding: 14px 20px;
+      border-radius: 16px;
+      border: 2px solid var(--blue);
+      background: var(--launch-bg);
+      color: var(--menu-button-text);
+      font-size: 16px;
+      font-weight: 800;
+      text-decoration: none;
+      white-space: nowrap;
+      box-shadow: 0 12px 24px rgba(31, 91, 157, 0.12);
+      transition: transform 0.18s ease, box-shadow 0.18s ease, border-color 0.18s ease;
+    }
+
+    .launch-button:hover {
+      transform: translateY(-1px);
+      box-shadow: 0 16px 28px rgba(31, 91, 157, 0.16);
+    }
+
+    html.theme-dark .launch-button {
+      box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.04);
+    }
+
+    html.theme-dark .launch-button:hover {
+      box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.06), 0 10px 22px rgba(0, 0, 0, 0.18);
+    }
+
+    .menu-card.disabled-feature {
+      background: rgba(241, 246, 252, 0.88);
+      border-color: #d4dfec;
+      box-shadow: inset 0 0 0 1px rgba(31, 111, 235, 0.04);
+    }
+
+    html.theme-dark .menu-card.disabled-feature {
+      background: rgba(31, 52, 65, 0.7);
+      border-color: rgba(72, 99, 117, 0.74);
+      box-shadow: inset 0 0 0 1px rgba(143, 195, 255, 0.05);
+    }
+
+    .menu-card.disabled-feature .menu-card-image {
+      filter: saturate(0.72) brightness(0.9);
+      opacity: 0.82;
+    }
+
+    .menu-card.disabled-feature .menu-card-copy,
+    .menu-card.disabled-feature .menu-tags {
+      opacity: 0.82;
+    }
+
+    .launch-button.is-disabled-feature {
+      border-color: #c6d6ea;
+      background: rgba(238, 245, 255, 0.96);
+      color: #89a0ba;
+      box-shadow: none;
+      cursor: default;
+      pointer-events: none;
+      text-transform: uppercase;
+      letter-spacing: 0.04em;
+      opacity: 0.72;
+    }
+
+    html.theme-dark .launch-button.is-disabled-feature {
+      border-color: rgba(77, 184, 255, 0.42);
+      background: rgba(24, 51, 78, 0.18);
+      color: rgba(143, 195, 255, 0.68);
+      box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.03);
+    }
+
+    @media (max-width: 760px) {
+      .app, .menu-screen, .menu-hero, .menu-columns, .menu-column {
+        min-width: 0;
+      }
+
+      .brand-lockup {
+        flex-wrap: wrap;
+      }
+
+      .menu-hero {
+        padding: 20px;
+      }
+
+      .menu-hero h1 {
+        font-size: clamp(24px, 6vw, 32px);
+      }
+
+      .menu-card {
+        grid-template-columns: 1fr;
+        justify-items: start;
+      }
+    }
+
+    /* Simulation screen header and status pills. */
+    .header {
+      display: grid;
+      grid-template-columns: auto minmax(0, 1fr) auto auto auto;
+      gap: 14px;
+      align-items: center;
+    }
+
+    .back-button {
+      border-color: var(--blue);
+      color: var(--blue);
+      background: rgba(232, 243, 255, 0.95);
+      min-width: 110px;
+    }
+
+    .title-group h1 {
+      margin: 0;
+      font-size: clamp(28px, 2.3vw, 48px);
+      color: var(--title);
+    }
+
+    .title-group p {
+      margin: 4px 0 0;
+      color: var(--subtle);
+      font-size: 15px;
+    }
+
+    .pill {
+      background: rgba(255, 255, 255, 0.92);
+      border-radius: 18px;
+      border: 3px solid var(--blue);
+      padding: 12px 18px;
+      font-weight: 700;
+      font-size: 18px;
+      min-width: 210px;
+      text-align: center;
+    }
+
+    .pill.tap {
+      border-color: var(--red-dark);
+      color: var(--red-dark);
+      font-size: 22px;
+      min-width: 260px;
+    }
+
+    .main {
+      display: grid;
+      grid-template-columns: minmax(560px, 1.1fr) minmax(380px, 0.9fr);
+      gap: 20px;
+      align-items: start;
+    }
+
+    /* Generic panel/card styles used in the simulation screen. */
+    .panel {
+      background: var(--panel);
+      border: 1px solid var(--panel-line);
+      border-radius: 28px;
+      padding: 16px;
+      box-shadow: 0 22px 48px rgba(38, 84, 138, 0.08);
+      backdrop-filter: blur(14px);
+    }
+
+    html.theme-dark .panel {
+      box-shadow: 0 10px 26px rgba(0, 0, 0, 0.18);
+      backdrop-filter: none;
+    }
+
+    .panel h2 {
+      margin: 0 0 12px;
+      color: var(--title);
+      font-size: 28px;
+    }
+
+    .canvas-wrap {
+      background: var(--canvas-wrap-bg);
+      border: 1px solid var(--panel-line);
+      border-radius: 22px;
+      overflow: hidden;
+    }
+
+    canvas {
+      width: 100%;
+      height: auto;
+      display: block;
+    }
+
+    #plantCanvas {
+      aspect-ratio: 900 / 560;
+    }
+
+    #plotCanvas {
+      aspect-ratio: 602 / 780;
+    }
+
+    .controls {
+      margin-top: 14px;
+      display: grid;
+      gap: 16px;
+    }
+
+    .controls h3 {
+      margin: 0;
+      color: var(--title);
+      font-size: 24px;
+    }
+
+    .control-grid {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 14px 16px;
+    }
+
+    .control {
+      display: grid;
+      gap: 8px;
+      align-content: start;
+    }
+
+    .control.full {
+      grid-column: 1 / -1;
+    }
+
+    .control label {
+      display: flex;
+      justify-content: space-between;
+      gap: 12px;
+      font-weight: 600;
+      color: var(--title);
+    }
+
+    .toggle-row {
+      display: flex;
+      gap: 12px;
+    }
+
+    button {
+      appearance: none;
+      border: 2px solid var(--panel-line);
+      border-radius: 14px;
+      padding: 12px 16px;
+      background: rgba(255, 255, 255, 0.95);
+      color: var(--text);
+      font-weight: 700;
+      cursor: pointer;
+      transition: 0.18s ease;
+    }
+
+    button.active-green {
+      border-color: var(--green);
+      color: var(--green);
+      background: #e5f7ea;
+    }
+
+    button.active-red {
+      border-color: var(--red-dark);
+      color: var(--red-dark);
+      background: #fdecee;
+    }
+
+    input[type="range"] {
+      width: 100%;
+      accent-color: var(--blue);
+    }
+
+    .hint {
+      margin: 0;
+      color: var(--subtle);
+      font-size: 14px;
+    }
+
+    .menu-card {
+      background: var(--card-soft);
+    }
+
+    .launch-button {
+      background: var(--launch-bg);
+      border-color: var(--blue-light);
+      box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.04);
+    }
+
+    .back-button {
+      background: var(--launch-bg);
+    }
+
+    .pill {
+      background: var(--pill-bg);
+    }
+
+    .canvas-wrap {
+      background: var(--canvas-wrap-bg);
+      box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.55);
+    }
+
+    html.theme-dark .canvas-wrap {
+      box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.03);
+    }
+
+    button {
+      background: var(--button-bg);
+    }
+
+    button.active-green {
+      background: var(--button-green-bg);
+    }
+
+    button.active-red {
+      background: var(--button-red-bg);
+    }
+
+    /* Responsive tweaks for smaller screens. */
+    @media (max-width: 1180px) {
+      .main {
+        grid-template-columns: 1fr;
+      }
+
+      .menu-columns {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    @media (max-width: 720px) {
+      .header {
+        grid-template-columns: 1fr;
+      }
+
+      .control-grid {
+        grid-template-columns: 1fr;
+      }
+    }
+    .menu-card-title-with-tag { display: flex; align-items: center; flex-wrap: wrap; gap: 10px; }
+    .construction-tag { display: inline-flex; align-items: center; padding: 5px 9px; border: 1px solid #c79532; border-radius: 999px; background: #fff2cc; color: #735016; font-size: 12px; font-weight: 700; white-space: nowrap; }
+    html.theme-dark .construction-tag { background: #493c23; color: #ffe0a1; border-color: #92733b; }
+  </style>
+</head>
+<body>
+  <!-- Start page / course hub. -->
+  <div class="app" id="menuScreen">
+    <section class="menu-screen">
+      <!-- Course/menu hero with the page title and branding. -->
+      <div class="menu-hero">
+        <div class="brand-lockup">
+          <div>
+            <div class="hero-title">
+              <h1>Embedded Programming Dashboard</h1>
+              <span class="hero-version">v1.0</span>
+            </div>
+          </div>
+          <img class="brand-logo" src="../assets/branding/hanze_logo.png" alt="Hanze logo" />
+        </div>
+        <div class="menu-search">
+          <input id="menuSearchInput" type="search" placeholder="Search simulations and experiments" aria-label="Search simulations and experiments" />
+          <div class="menu-search-note">Search by topic, title, or keywords like UART, ADC, timers, memory, ASCII, traffic, or maze.</div>
+        </div>
+      </div>
+
+      <div class="menu-columns">
+        <!-- Left column reserved for continuous/dynamic simulations. -->
+        <section class="menu-column">
+          <h2>Simulations</h2>
+          <article class="menu-card" data-feature-key="robotSortingLogicLab">
+            <img class="menu-card-image" src="./assets/cards/robot_sorting_lab.svg" alt="Robot Sorting Logic Lab card image" />
+            <div class="menu-card-copy">
+              <h3>Robot Sorting Logic</h3>
+              <p>Arrange the controller steps for a robotic arm that inspects shapes on a conveyor, lets the target part pass, and rejects the wrong ones into a bucket.</p>
+              <div class="menu-tags"><span class="menu-tag">logic order</span><span class="menu-tag">robot arm</span><span class="menu-tag">decision flow</span><span class="menu-tag">sorting</span></div>
+            </div>
+            <a class="launch-button" href="./simulations/robot_sorting_lab.html">Open simulation</a>
+          </article>
+          <article class="menu-card" data-feature-key="foundationsLab">
+            <img class="menu-card-image" src="./assets/cards/foundations_lab.svg" alt="Digital Input & Output card image" />
+            <div class="menu-card-copy">
+              <h3>Digital Input & Output</h3>
+              <p>Compare a blinking LED output example with a press-and-hold digital input that immediately drives the LED state.</p>
+              <div class="menu-tags"><span class="menu-tag">digital input</span><span class="menu-tag">digital output</span><span class="menu-tag">HIGH/LOW</span></div>
+            </div>
+            <a class="launch-button" href="./simulations/course_topics_lab.html?topic=foundations">Open simulation</a>
+          </article>
+          <article class="menu-card" data-feature-key="pullResistorsLab">
+            <img class="menu-card-image" src="./assets/cards/pull_resistors_lab.svg" alt="Pull-Up Pull-Down Lab card image" />
+            <div class="menu-card-copy">
+              <h3>Pull-Up / Pull-Down</h3>
+              <p>Compare pull-up and pull-down resistor wiring with a button, a GPIO input, and an LED that follows the logic level.</p>
+              <div class="menu-tags"><span class="menu-tag">pull-up</span><span class="menu-tag">pull-down</span><span class="menu-tag">GPIO</span><span class="menu-tag">resistor</span></div>
+            </div>
+            <a class="launch-button" href="./simulations/pull_resistors_lab.html">Open simulation</a>
+          </article>
+          <article class="menu-card" data-feature-key="buttonDebouncingLab">
+            <img class="menu-card-image" src="./assets/cards/debouncing_lab.svg" alt="Button Debouncing Lab card image" />
+            <div class="menu-card-copy">
+              <h3>Button Debouncing</h3>
+              <p>Watch a mechanical push button bounce, apply a configurable debounce delay, and see when the filtered press is finally accepted.</p>
+              <div class="menu-tags"><span class="menu-tag">debounce</span><span class="menu-tag">button bounce</span><span class="menu-tag">millis()</span><span class="menu-tag">digital input</span></div>
+            </div>
+            <a class="launch-button" href="./simulations/debouncing_lab.html">Open simulation</a>
+          </article>
+          <article class="menu-card" data-feature-key="variablesLab">
+            <img class="menu-card-image" src="./assets/cards/variables_lab.svg" alt="Variables Lab card image" />
+            <div class="menu-card-copy">
+              <h3>Variables</h3>
+              <p>Read a changing value, store it in variables, transform it, and map it to an output and a timeline.</p>
+              <div class="menu-tags"><span class="menu-tag">variables</span><span class="menu-tag">map()</span><span class="menu-tag">PWM</span><span class="menu-tag">sensor</span></div>
+            </div>
+            <a class="launch-button" href="./simulations/course_topics_lab.html?topic=variables">Open simulation</a>
+          </article>
+          <article class="menu-card" data-feature-key="variableTypesLab">
+            <img class="menu-card-image" src="./assets/cards/variable_types_lab.svg" alt="Variable Types Lab card image" />
+            <div class="menu-card-copy">
+              <h3>Variable Types</h3>
+              <p>Pick a variable type to see its size in ESP32 memory, its minimum and maximum values, and an example sketch that uses it.</p>
+              <div class="menu-tags"><span class="menu-tag">types</span><span class="menu-tag">signed/unsigned</span><span class="menu-tag">float</span><span class="menu-tag">size and range</span></div>
+            </div>
+            <a class="launch-button" href="./simulations/variable_types_lab.html">Open simulation</a>
+          </article>
+          <article class="menu-card" data-feature-key="memoryLayoutLab">
+            <img class="menu-card-image" src="./assets/cards/memory_layout_lab.svg" alt="Memory Layout Lab card image" />
+            <div class="menu-card-copy">
+              <h3>Memory Layout</h3>
+              <p>Allocate several variables together, compare the total bytes they consume, and see how declaration order fills RAM.</p>
+              <div class="menu-tags"><span class="menu-tag">RAM usage</span><span class="menu-tag">layout</span><span class="menu-tag">addresses</span><span class="menu-tag">sizeof</span></div>
+            </div>
+            <a class="launch-button" href="./simulations/memory_layout_lab.html">Open simulation</a>
+          </article>
+          <article class="menu-card" data-feature-key="asciiCharLab">
+            <img class="menu-card-image" src="./assets/cards/ascii_char_lab.svg" alt="ASCII Char Lab card image" />
+            <div class="menu-card-copy">
+              <h3>ASCII Char</h3>
+              <p>Explore how a `char` stores one ASCII symbol, compare decimal, hex, and binary, and inspect the single byte that appears in memory.</p>
+              <div class="menu-tags"><span class="menu-tag">char</span><span class="menu-tag">ASCII</span><span class="menu-tag">hex</span><span class="menu-tag">binary</span></div>
+            </div>
+            <a class="launch-button" href="./simulations/ascii_char_lab.html">Open simulation</a>
+          </article>
+          <article class="menu-card" data-feature-key="numberRepresentationLab">
+            <img class="menu-card-image" src="./assets/cards/number_representation_lab.svg" alt="Number Representation Lab card image" />
+            <div class="menu-card-copy">
+              <h3>Number Representation</h3>
+              <p>Explore decimal, binary, hexadecimal, bit weights, and signed two's complement using the same raw bit pattern.</p>
+              <div class="menu-tags"><span class="menu-tag">binary</span><span class="menu-tag">hexadecimal</span><span class="menu-tag">two's complement</span><span class="menu-tag">bit weights</span></div>
+            </div>
+            <a class="launch-button" href="./simulations/number_representation_lab.html">Open simulation</a>
+          </article>
+          <article class="menu-card" data-feature-key="conditionalsLab">
+            <img class="menu-card-image" src="./assets/cards/conditionals_lab.svg" alt="Conditionals Lab card image" />
+            <div class="menu-card-copy">
+              <h3>Conditionals</h3>
+              <p>Compare a basic condition, nested conditions, and threshold comparisons with LED outputs and time plots.</p>
+              <div class="menu-tags"><span class="menu-tag">if</span><span class="menu-tag">logic</span><span class="menu-tag">nested if</span><span class="menu-tag">comparison</span></div>
+            </div>
+            <a class="launch-button" href="./simulations/course_topics_lab.html?topic=conditionals">Open simulation</a>
+          </article>
+          <article class="menu-card" data-feature-key="loopsLab">
+            <img class="menu-card-image" src="./assets/cards/loops_lab.svg" alt="Loops Lab card image" />
+            <div class="menu-card-copy">
+              <h3>Loops</h3>
+              <p>Explore repeated LED sequences and see how a for-loop and a while-loop change the same system over time.</p>
+              <div class="menu-tags"><span class="menu-tag">for</span><span class="menu-tag">while</span><span class="menu-tag">do while</span><span class="menu-tag">iteration</span></div>
+            </div>
+            <a class="launch-button" href="./simulations/course_topics_lab.html?topic=loops">Open simulation</a>
+          </article>
+          <article class="menu-card" data-feature-key="adcLab">
+            <img class="menu-card-image" src="./assets/cards/adc_lab.svg" alt="ADC Lab card image" />
+            <div class="menu-card-copy">
+              <h3>ADC</h3>
+              <p>Move an analog signal through the ADC range and observe the raw reading, voltage, and mapped PWM response.</p>
+              <div class="menu-tags"><span class="menu-tag">ADC</span><span class="menu-tag">analogRead()</span><span class="menu-tag">voltage</span><span class="menu-tag">PWM</span></div>
+            </div>
+            <a class="launch-button" href="./simulations/course_topics_lab.html?topic=adc">Open simulation</a>
+          </article>
+          <article class="menu-card" data-feature-key="uartLab">
+            <img class="menu-card-image" src="./assets/cards/uart_lab.svg" alt="UART Lab card image" />
+            <div class="menu-card-copy">
+              <h3>UART</h3>
+              <p>Send serial frames across a simulated UART link and follow TX, RX, queueing, and acknowledgement in the timeline.</p>
+              <div class="menu-tags"><span class="menu-tag">UART</span><span class="menu-tag">Serial</span><span class="menu-tag">TX/RX</span><span class="menu-tag">frames</span></div>
+            </div>
+            <a class="launch-button" href="./simulations/course_topics_lab.html?topic=uart">Open simulation</a>
+          </article>
+          <article class="menu-card" data-feature-key="i2cLab">
+            <img class="menu-card-image" src="./assets/cards/i2c_lab.svg" alt="I2C Lab card image" />
+            <div class="menu-card-copy">
+              <h3>I2C</h3>
+              <p>Write a byte from an I2C master to a slave and watch SDA, SCL, and ACK activity on the bus.</p>
+              <div class="menu-tags"><span class="menu-tag">I2C</span><span class="menu-tag">SDA/SCL</span><span class="menu-tag">ACK</span><span class="menu-tag">Wire</span></div>
+            </div>
+            <a class="launch-button" href="./simulations/course_topics_lab.html?topic=i2c">Open simulation</a>
+          </article>
+          <article class="menu-card" data-feature-key="functionsLab">
+            <img class="menu-card-image" src="./assets/cards/functions_lab.svg" alt="Functions Lab card image" />
+            <div class="menu-card-copy">
+              <h3>Functions</h3>
+              <p>Reuse one function with different parameters and compare repeated output patterns with a live code example.</p>
+              <div class="menu-tags"><span class="menu-tag">functions</span><span class="menu-tag">parameters</span><span class="menu-tag">reuse</span><span class="menu-tag">call flow</span></div>
+            </div>
+            <a class="launch-button" href="./simulations/course_topics_lab.html?topic=functions">Open simulation</a>
+          </article>
+          <article class="menu-card" data-feature-key="interruptsLab">
+            <img class="menu-card-image" src="./assets/cards/interrupts_lab.svg" alt="Interrupts Lab card image" />
+            <div class="menu-card-copy">
+              <h3>Interrupts</h3>
+              <p>Step through ESP32 code with ON and OFF buttons. Watch interrupts pause the loop, change a variable, and return.</p>
+              <div class="menu-tags"><span class="menu-tag">interrupts</span><span class="menu-tag">step by step</span><span class="menu-tag">ISR</span><span class="menu-tag">GPIO</span></div>
+            </div>
+            <a class="launch-button" href="./simulations/interrupts.html">Open simulation</a>
+          </article>
+          <article class="menu-card" data-feature-key="coffeeMachineSteps">
+            <img class="menu-card-image" src="./assets/cards/coffee_machine.svg" alt="Coffee Machine card image" />
+            <div class="menu-card-copy">
+              <h3>Coffee Machine — Step by step</h3>
+              <p>Follow the ESP32 code line by line with button interrupts, a hardware timer, LEDs and an animated coffee machine.</p>
+              <div class="menu-tags"><span class="menu-tag">step by step</span><span class="menu-tag">interrupts</span><span class="menu-tag">timer</span><span class="menu-tag">state machine</span></div>
+            </div>
+            <a class="launch-button" href="./simulations/coffee_machine.html">Open simulation</a>
+          </article>
+          <article class="menu-card" data-feature-key="timersLab">
+            <img class="menu-card-image" src="./assets/cards/timers_lab.svg" alt="Timers Lab card image" />
+            <div class="menu-card-copy">
+              <h3>Timers</h3>
+              <p>Blink an LED in three ways: a blocking `delay()`, a non-blocking `millis()` check, and an ESP32 hardware timer ISR.</p>
+              <div class="menu-tags"><span class="menu-tag">delay()</span><span class="menu-tag">millis()</span><span class="menu-tag">hardware timer</span><span class="menu-tag">timing</span></div>
+            </div>
+            <a class="launch-button" href="./simulations/course_topics_lab.html?topic=timers">Open simulation</a>
+          </article>
+          <article class="menu-card" data-feature-key="stateMachinesLab">
+            <img class="menu-card-image" src="./assets/cards/state_machines_lab.svg" alt="State Machines Lab card image" />
+            <div class="menu-card-copy">
+              <h3>State Machines</h3>
+              <p>Run a traffic-light state machine, request transitions, and study the sequence directly on the timeline.</p>
+              <div class="menu-tags"><span class="menu-tag">state machine</span><span class="menu-tag">transitions</span><span class="menu-tag">traffic light</span><span class="menu-tag">events</span></div>
+            </div>
+            <a class="launch-button" href="./simulations/course_topics_lab.html?topic=state_machines">Open simulation</a>
+          </article>
+          <article class="menu-card" data-feature-key="hysteresisLab">
+            <img class="menu-card-image" src="./assets/cards/hysteresis_lab.svg" alt="Hysteresis Lab card image" />
+            <div class="menu-card-copy">
+              <h3>Hysteresis</h3>
+              <p>Show noisy threshold chatter first, then compare one-threshold switching against two-threshold hysteresis with a live state diagram.</p>
+              <div class="menu-tags"><span class="menu-tag">noise</span><span class="menu-tag">threshold</span><span class="menu-tag">hysteresis</span><span class="menu-tag">state diagram</span></div>
+            </div>
+            <a class="launch-button" href="./simulations/hysteresis_lab.html">Open simulation</a>
+          </article>
+          <article class="menu-card" data-feature-key="arduinoToFlowchart">
+            <img class="menu-card-image" src="./assets/cards/arduino_flowchart.svg" alt="Arduino Flowchart card image" />
+            <div class="menu-card-copy">
+              <h3>Arduino to Flowchart</h3>
+              <p>Paste Arduino C++ and generate a teaching-friendly flowchart that highlights setup, loop, decisions, loops, and I/O blocks.</p>
+              <div class="menu-tags"><span class="menu-tag">flowchart</span><span class="menu-tag">code structure</span><span class="menu-tag">setup/loop</span><span class="menu-tag">visualization</span></div>
+            </div>
+            <a class="launch-button" href="./simulations/arduino_flowchart_converter.html">Open simulation</a>
+          </article>
+        </section>
+
+        <!-- Right column links out to smaller experiments and UART demos. -->
+        <section class="menu-column">
+          <h2>Experiments</h2>
+
+          <article class="menu-card" data-feature-key="gasWaterHeater">
+            <img class="menu-card-image" src="./assets/cards/gas_water_heater.svg" alt="Gas Water Heater card image" />
+            <div class="menu-card-copy">
+              <h3>Gas Water Heater</h3>
+              <p>Interactive heater plant with tap control, temperature setpoint, inlet temperature, flow response, and signal timelines.</p>
+              <div class="menu-tags"><span class="menu-tag">control</span><span class="menu-tag">feedback</span><span class="menu-tag">signals</span><span class="menu-tag">plant model</span></div>
+            </div>
+            <button class="launch-button" id="openGasWaterBtn" type="button">Open experiment</button>
+          </article>
+          <article class="menu-card" data-feature-key="maze">
+            <img class="menu-card-image" src="./assets/cards/maze.svg" alt="Maze card image" />
+            <div class="menu-card-copy">
+              <h3>Maze</h3>
+              <p>Maze challenge with keyboard control, score tracking, and direct UART movement commands.</p>
+              <div class="menu-tags"><span class="menu-tag">movement</span><span class="menu-tag">UART commands</span><span class="menu-tag">logic</span><span class="menu-tag">game loop</span></div>
+            </div>
+            <a class="launch-button" href="./experiments/maze.html">Open experiment</a>
+          </article>
+          <article class="menu-card" data-feature-key="ticTacToe">
+            <img class="menu-card-image" src="./assets/cards/tic_tac_toe.svg" alt="Tic-Tac-Toe card image" />
+            <div class="menu-card-copy">
+              <h3>Tic-Tac-Toe</h3>
+              <p>Browser-based Tic-Tac-Toe with the original UART handshake, move exchange, and rematch flow used by the pygame version.</p>
+              <div class="menu-tags"><span class="menu-tag">UART protocol</span><span class="menu-tag">events</span><span class="menu-tag">logic</span></div>
+            </div>
+            <a class="launch-button" href="./experiments/tic_tac_toe.html">Open experiment</a>
+          </article>
+          <article class="menu-card" data-feature-key="kitchenTimer">
+            <img class="menu-card-image" src="./assets/cards/kitchen_timer.svg" alt="Kitchen Timer card image" />
+            <div class="menu-card-copy">
+              <h3>Kitchen Timer</h3>
+              <p>UART-driven kitchen timer with a circular dial, adjustable maximum scale in the GUI, and limit vibration when the ESP32 value reaches the end.</p>
+              <div class="menu-tags"><span class="menu-tag">timer</span><span class="menu-tag">UART</span><span class="menu-tag">UI feedback</span><span class="menu-tag">limits</span></div>
+            </div>
+            <a class="launch-button" href="./experiments/kitchen_timer.html">Open experiment</a>
+          </article>
+          <article class="menu-card" data-feature-key="trafficLights">
+            <img class="menu-card-image" src="./assets/cards/traffic_lights.svg" alt="Traffic Lights card image" />
+            <div class="menu-card-copy">
+              <h3>Traffic Lights</h3>
+              <p>UART-driven traffic light monitor with live state display, state-diagram circles, and millisecond timing history for each finished color.</p>
+              <div class="menu-tags"><span class="menu-tag">traffic states</span><span class="menu-tag">UART</span><span class="menu-tag">timing</span><span class="menu-tag">state diagram</span></div>
+            </div>
+            <a class="launch-button" href="./experiments/traffic_lights.html">Open experiment</a>
+          </article>
+          <article class="menu-card" data-feature-key="intersectionController">
+            <img class="menu-card-image" src="./assets/cards/intersection_controller.svg" alt="Intersection Controller card image" />
+            <div class="menu-card-copy">
+              <h3>Intersection Controller</h3>
+              <p>Street-crossing simulation with main and side traffic lights, walk lamp, walk button, and side-street sensor controlled through UART.</p>
+              <div class="menu-tags"><span class="menu-tag">state machine</span><span class="menu-tag">sensor</span><span class="menu-tag">pedestrian</span><span class="menu-tag">UART</span></div>
+            </div>
+            <a class="launch-button" href="./experiments/intersection_controller.html">Open experiment</a>
+          </article>
+          <article class="menu-card" data-feature-key="dualSevenSegment">
+            <img class="menu-card-image" src="./assets/cards/dual_seven_segment.svg" alt="Seven Segment Displays card image" />
+            <div class="menu-card-copy">
+              <h3>Seven Segment Displays</h3>
+              <p>UART-driven twin 7-segment display visualizer that renders the exact segment bits received for the left and right digits.</p>
+              <div class="menu-tags"><span class="menu-tag">7-segment</span><span class="menu-tag">bits</span><span class="menu-tag">display encoding</span><span class="menu-tag">UART</span></div>
+            </div>
+            <a class="launch-button" href="./experiments/dual_seven_segment.html">Open experiment</a>
+          </article>
+          <article class="menu-card" data-feature-key="coffeeMachine">
+            <img class="menu-card-image" src="./assets/cards/coffee_machine.svg" alt="Coffee Machine card image" />
+            <div class="menu-card-copy">
+              <h3>Coffee Machine</h3>
+              <p>HTML experiment with local fallback and UART connection to the ESP32, following the same drink-selection protocol as the pygame project.</p>
+              <div class="menu-tags"><span class="menu-tag">menu logic</span><span class="menu-tag">UART protocol</span><span class="menu-tag">state flow</span><span class="menu-tag">UI interaction</span></div>
+            </div>
+            <a class="launch-button" href="./experiments/coffee_machine.html">Open experiment</a>
+          </article>
+          <article class="menu-card" data-feature-key="heatingCoolingLab">
+            <img class="menu-card-image" src="./assets/cards/heating_cooling_lab.svg" alt="Heating &amp; Cooling card image" />
+            <div class="menu-card-copy">
+              <h3>Heating &amp; Cooling</h3>
+              <p>3-zone thermostat with four hysteresis thresholds. Feed temperature from UART or simulate it — watch HEATING, OFF, and COOLING states switch in real time.</p>
+              <div class="menu-tags"><span class="menu-tag">hysteresis</span><span class="menu-tag">thermostat</span><span class="menu-tag">UART</span><span class="menu-tag">state machine</span></div>
+            </div>
+            <a class="launch-button" href="./experiments/heating_cooling_lab.html">Open experiment</a>
+          </article>
+          <article class="menu-card" data-feature-key="realTimeChallenge">
+            <img class="menu-card-image" src="./assets/cards/real_time_challenge.svg" alt="Real-Time Challenge execution timeline" />
+            <div class="menu-card-copy">
+              <h3>Real-Time Challenge</h3>
+              <p>Experience how blocking code, non-blocking execution, polling, and interrupts affect a system while performing multiple tasks.</p>
+              <div class="menu-tags"><span class="menu-tag">delay()</span><span class="menu-tag">millis()</span><span class="menu-tag">interrupts</span><span class="menu-tag">classroom</span></div>
+            </div>
+            <a class="launch-button" href="./experiments/real_time_challenge.html">Open experiment</a>
+          </article>
+          <article class="menu-card" data-feature-key="dualElevator">
+            <img class="menu-card-image" src="./assets/cards/dual_elevator.svg" alt="Two elevators in a four-floor building" />
+            <div class="menu-card-copy">
+              <h3>Dual Elevator</h3>
+              <p>Control two elevators in a four-floor building with up/down calls, cabin destinations, animated doors, and queued requests.</p>
+              <div class="menu-tags"><span class="menu-tag">state machine</span><span class="menu-tag">control</span><span class="menu-tag">events</span></div>
+            </div>
+            <a class="launch-button" href="./experiments/dual_elevator.html">Open experiment</a>
+          </article>
+        </section>
+      </div>
+      <div class="menu-empty" id="menuEmptyState">No simulation or experiment matched this search. Try a broader word such as <code>memory</code>, <code>timer</code>, <code>UART</code>, or <code>traffic</code>.</div>
+      <footer class="menu-footer">
+        <div>Contact: <strong id="siteContactName">Your Name</strong> | <a id="siteContactEmailLink" href="mailto:your.email@example.com">your.email@example.com</a></div>
+        <div>Last edition: <span id="siteContactLastEdition">October 1, 2026</span></div>
+      </footer>
+    </section>
+  </div>
+
+  <!-- Gas water heater simulation screen. It starts hidden and is shown from the menu button. -->
+  <div class="app hidden" id="simulationScreen">
+    <header class="header">
+      <!-- Return to the course hub without leaving the page. -->
+      <button class="back-button" id="backToMenuBtn">Back</button>
+      <div class="title-group">
+        <h1>Gas water heater system</h1>
+        <p>Space toggles the tap, P pauses the simulation, and the sliders update the plant and the signal lines in real time.</p>
+      </div>
+      <img class="brand-logo" src="../assets/branding/hanze_logo.png" alt="Hanze logo" />
+      <!-- Header badges summarizing runtime state and tap state at a glance. -->
+      <div class="pill" id="runningPill">Running | 1.00x speed</div>
+      <div class="pill tap" id="tapPill">TAP CLOSED</div>
+    </header>
+
+    <main class="main">
+      <!-- Left side: physical plant / schematic plus the interactive controls. -->
+      <section class="panel">
+        <h2>Plant / schematic</h2>
+        <div class="canvas-wrap">
+          <canvas id="plantCanvas" width="900" height="560"></canvas>
+        </div>
+
+        <!-- Controls update the simulation model directly. -->
+        <div class="controls panel" style="padding: 16px; border-radius: 22px; margin-top: 14px;">
+          <h3>Interactive controls</h3>
+          <div class="control-grid">
+            <div class="control">
+              <label><span>Pause simulation</span><span id="pauseLabel">OFF</span></label>
+              <button id="pauseBtn">Toggle pause</button>
+            </div>
+            <div class="control">
+              <label><span>Tap command</span><span id="tapLabel">OFF</span></label>
+              <button id="tapBtn">Toggle tap</button>
+            </div>
+            <div class="control full">
+              <label><span>Simulation speed</span><span id="speedValue">1.00x</span></label>
+              <input id="speedSlider" type="range" min="0.25" max="4" step="0.25" value="1" />
+            </div>
+            <div class="control full">
+              <label><span>Tap opening</span><span id="openingValue">100 %</span></label>
+              <input id="openingSlider" type="range" min="0" max="100" step="1" value="100" />
+            </div>
+            <div class="control">
+              <label><span>Target temperature</span><span id="setpointValue">40.0 C</span></label>
+              <input id="setpointSlider" type="range" min="30" max="55" step="0.5" value="40" />
+            </div>
+            <div class="control">
+              <label><span>Inlet temperature</span><span id="inletValue">15.0 C</span></label>
+              <input id="inletSlider" type="range" min="10" max="25" step="0.5" value="15" />
+            </div>
+          </div>
+          <p class="hint">Tap opening directly changes the target flow, the falling water stream, and the heater response.</p>
+        </div>
+      </section>
+
+      <!-- Right side: scrolling signal history for the main inputs/outputs. -->
+      <section class="panel">
+        <h2>Signal lines</h2>
+        <div class="canvas-wrap">
+          <canvas id="plotCanvas" width="602" height="780"></canvas>
+        </div>
+      </section>
+    </main>
+  </div>
+
+  <script>
+    // Theme-driven color constants used by the canvas drawing routines.
+    let COLORS = {};
+
+    function syncCanvasColors() {
+      const styles = getComputedStyle(document.documentElement);
+      const read = name => styles.getPropertyValue(name).trim();
+      // Pull CSS custom properties into JS so canvas drawing stays consistent with the stylesheet.
+      COLORS = {
+        bg: read("--bg"),
+        panelLine: read("--panel-line"),
+        title: read("--title"),
+        text: read("--text"),
+        subtle: read("--subtle"),
+        red: read("--red"),
+        redDark: read("--red-dark"),
+        blue: read("--blue"),
+        blueLight: read("--blue-light"),
+        cyan: read("--cyan"),
+        green: read("--green"),
+        purple: read("--purple"),
+        pink: read("--pink"),
+        yellow: read("--yellow"),
+        brown: read("--brown"),
+        gray: read("--gray"),
+        darkGray: read("--dark-gray"),
+        white: read("--white"),
+        black: read("--black"),
+        canvasPanelBg: read("--canvas-panel-bg"),
+        canvasSurface: read("--canvas-surface"),
+        canvasSurfaceAlt: read("--canvas-surface-alt"),
+        canvasMetal: read("--canvas-metal"),
+        canvasDeepBlue: read("--canvas-deep-blue")
+      };
+    }
+
+    // Small numeric helpers for the physics and chart scaling.
+    const clamp = (value, low, high) => Math.max(low, Math.min(high, value));
+    const withAlpha = (color, alpha) => {
+      if (typeof color !== "string") return color;
+      if (color.startsWith("#")) {
+        let hex = color.slice(1);
+        if (hex.length === 3) hex = hex.split("").map(ch => ch + ch).join("");
+        const r = parseInt(hex.slice(0, 2), 16);
+        const g = parseInt(hex.slice(2, 4), 16);
+        const b = parseInt(hex.slice(4, 6), 16);
+        return `rgba(${r}, ${g}, ${b}, ${alpha})`;
+      }
+      if (color.startsWith("rgb(")) return color.replace("rgb(", "rgba(").replace(")", `, ${alpha})`);
+      return color;
+    };
+    const approach = (current, target, rate, dt) => current + (target - current) * clamp(rate * dt, 0, 1);
+
+    // Core simulation model. This holds the heater state and advances it over time.
+    class HeaterSimulation {
+      constructor() {
+        this.time = 0;
+        this.tapOpen = false;
+        this.tapOpening = 1;
+        this.inletTemp = 15;
+        this.outletTemp = 15;
+        this.setpoint = 40;
+        this.flow = 0;
+        this.gasValve = 0;
+        this.igniter = 0;
+        this.fan = 0;
+        this.igniterTimer = 0;
+        this.historySeconds = 12;
+        this.history = [];
+        this.record();
+      }
+
+      // Toggle the tap command between open and closed.
+      toggleTap() {
+        this.setTapOpen(!this.tapOpen);
+      }
+
+      // Opening the tap can trigger ignition if enough opening is available.
+      setTapOpen(isOpen) {
+        const wasClosed = !this.tapOpen && Boolean(isOpen);
+        this.tapOpen = Boolean(isOpen);
+        if (wasClosed && this.tapOpening > 0.02) this.igniterTimer = 0.8;
+      }
+
+      // The opening percentage controls the target flow rate.
+      setTapOpening(value) {
+        const previous = this.tapOpening;
+        this.tapOpening = clamp(value, 0, 1);
+        if (this.tapOpen && previous <= 0.02 && this.tapOpening > 0.02) this.igniterTimer = 0.8;
+      }
+
+      // User target temperature shown on the LCD/setpoint.
+      setSetpoint(value) {
+        this.setpoint = clamp(value, 30, 55);
+      }
+
+      // Inlet temperature acts as the cold-water source for the heating model.
+      setInletTemp(value) {
+        this.inletTemp = clamp(value, 10, 25);
+        this.outletTemp = Math.max(this.outletTemp, this.inletTemp);
+      }
+
+      // Advance the simplified heater dynamics by dt seconds.
+      update(dt) {
+        this.time += dt;
+        const effectiveOpening = this.tapOpen ? this.tapOpening : 0;
+        const flowTarget = 8 * effectiveOpening;
+        const flowRate = effectiveOpening > 0 ? 1.4 + effectiveOpening * 1.4 : 4.2;
+        this.flow = approach(this.flow, flowTarget, flowRate, dt);
+
+        if (this.tapOpen && this.flow > 0.45 && this.igniterTimer <= 0 && this.gasValve < 2) this.igniterTimer = 0.55;
+        this.igniterTimer = Math.max(0, this.igniterTimer - dt);
+        this.igniter = this.igniterTimer > 0 ? 1 : 0;
+
+        const burnerEnable = this.tapOpen && effectiveOpening > 0.02 && this.flow > 0.35;
+        this.fan = approach(this.fan, burnerEnable || this.gasValve > 2 ? 1 : 0, 6, dt);
+
+        let gasTarget = 0;
+        if (burnerEnable) {
+          const tempError = Math.max(0, this.setpoint - this.outletTemp);
+          gasTarget = 16 + tempError * 2.15 + this.flow * 3.2 + (this.igniter > 0 ? 8 : 0);
+          gasTarget = clamp(gasTarget, 0, 70);
+        }
+        this.gasValve = approach(this.gasValve, gasTarget, gasTarget > this.gasValve ? 1.8 : 3.2, dt);
+
+        const flowFactor = Math.min(this.flow / 6.5, 1);
+        const gasFactor = Math.min(this.gasValve / 60, 1);
+        const heatingFactor = flowFactor * gasFactor;
+        let outletTarget = this.inletTemp;
+        if (burnerEnable || this.gasValve > 1) outletTarget = this.inletTemp + (this.setpoint - this.inletTemp) * heatingFactor;
+
+        const tempRate = outletTarget >= this.outletTemp ? 1.3 + heatingFactor * 1.7 : 2.6;
+        this.outletTemp = approach(this.outletTemp, outletTarget, tempRate, dt);
+        this.outletTemp = Math.max(this.inletTemp, this.outletTemp);
+        this.record();
+      }
+
+      // Store a rolling history window so the signal plots can be drawn.
+      record() {
+        this.history.push({
+          time: this.time,
+          tap: this.tapOpen ? 1 : 0,
+          tapOpening: this.tapOpen ? this.tapOpening * 100 : 0,
+          flow: this.flow,
+          inlet: this.inletTemp,
+          setpoint: this.setpoint,
+          igniter: this.igniter,
+          gas: this.gasValve,
+          outlet: this.outletTemp
+        });
+        while (this.history.length && this.time - this.history[0].time > this.historySeconds) this.history.shift();
+      }
+    }
+
+    // Configuration for the right-hand-side signal plots.
+    const plotConfigs = [
+      // Inputs first, then actuator/output-style signals.
+      { title: "Tap open", unit: "0 / 1", key: "tap", color: COLORS.blue, vmin: 0, vmax: 1 },
+      { title: "Tap opening", unit: "%", key: "tapOpening", color: COLORS.cyan, vmin: 0, vmax: 100 },
+      { title: "Flow", unit: "L/min", key: "flow", color: COLORS.blueLight, vmin: 0, vmax: 8 },
+      { title: "Inlet temp", unit: "C", key: "inlet", color: COLORS.brown, vmin: 10, vmax: 25 },
+      { title: "Target temp", unit: "C", key: "setpoint", color: COLORS.red, vmin: 30, vmax: 55 },
+      { title: "Igniter", unit: "pulse", key: "igniter", color: COLORS.purple, vmin: 0, vmax: 1 },
+      { title: "Gas valve", unit: "%", key: "gas", color: COLORS.green, vmin: 0, vmax: 70 },
+      { title: "Outlet temp", unit: "C", key: "outlet", color: COLORS.pink, vmin: 10, vmax: 55 }
+    ];
+
+    // Cache DOM nodes once so the render/update code stays concise.
+    const menuScreen = document.getElementById("menuScreen");
+    const simulationScreen = document.getElementById("simulationScreen");
+    const openGasWaterBtn = document.getElementById("openGasWaterBtn");
+    const menuSearchInput = document.getElementById("menuSearchInput");
+    const menuColumns = Array.from(document.querySelectorAll(".menu-column"));
+    const menuCards = Array.from(document.querySelectorAll(".menu-card"));
+    const featureCards = Array.from(document.querySelectorAll(".menu-card[data-feature-key]"));
+    const menuEmptyState = document.getElementById("menuEmptyState");
+    const backToMenuBtn = document.getElementById("backToMenuBtn");
+    const plantCanvas = document.getElementById("plantCanvas");
+    const plotCanvas = document.getElementById("plotCanvas");
+    const plantCtx = plantCanvas.getContext("2d");
+    const plotCtx = plotCanvas.getContext("2d");
+    const runningPill = document.getElementById("runningPill");
+    const tapPill = document.getElementById("tapPill");
+    const featureFlags = window.DASHBOARD_FLAGS ?? {};
+    const siteContact = window.SITE_CONTACT ?? {};
+    const siteContactName = document.getElementById("siteContactName");
+    const siteContactEmailLink = document.getElementById("siteContactEmailLink");
+    const siteContactLastEdition = document.getElementById("siteContactLastEdition");
+
+    const controls = {
+      // Buttons / sliders.
+      pauseBtn: document.getElementById("pauseBtn"),
+      tapBtn: document.getElementById("tapBtn"),
+      speedSlider: document.getElementById("speedSlider"),
+      openingSlider: document.getElementById("openingSlider"),
+      setpointSlider: document.getElementById("setpointSlider"),
+      inletSlider: document.getElementById("inletSlider"),
+      // Small inline labels that mirror the current model values.
+      pauseLabel: document.getElementById("pauseLabel"),
+      tapLabel: document.getElementById("tapLabel"),
+      speedValue: document.getElementById("speedValue"),
+      openingValue: document.getElementById("openingValue"),
+      setpointValue: document.getElementById("setpointValue"),
+      inletValue: document.getElementById("inletValue")
+    };
+
+    // Top-level UI/application state.
+    const state = {
+      sim: new HeaterSimulation(),
+      paused: false,
+      speed: 1,
+      hoverX: null,
+      currentScreen: "menu"
+    };
+
+    function applySiteContact() {
+      const name = siteContact.name || "Your Name";
+      const email = siteContact.email || "your.email@example.com";
+      const lastEdition = siteContact.lastEdition || "April 13, 2026";
+      siteContactName.textContent = name;
+      siteContactEmailLink.textContent = email;
+      siteContactEmailLink.href = `mailto:${email}`;
+      siteContactLastEdition.textContent = lastEdition;
+    }
+
+    // Resize canvases to match CSS size while preserving crisp drawing on high-DPI displays.
+    function setCanvasScale(canvas, ctx) {
+      const ratio = window.devicePixelRatio || 1;
+      const { width, height } = canvas.getBoundingClientRect();
+      canvas.width = Math.round(width * ratio);
+      canvas.height = Math.round(height * ratio);
+      ctx.setTransform(ratio, 0, 0, ratio, 0, 0);
+    }
+
+    // Sync HTML controls and header labels with the current simulation state.
+    function syncUi() {
+      // Header badges.
+      runningPill.textContent = `${state.paused ? "Paused" : "Running"} | ${state.speed.toFixed(2)}x speed`;
+      tapPill.textContent = state.sim.tapOpen ? "TAP OPEN" : "TAP CLOSED";
+      tapPill.style.color = state.sim.tapOpen ? COLORS.green : COLORS.redDark;
+      tapPill.style.borderColor = state.sim.tapOpen ? COLORS.green : COLORS.redDark;
+
+      // Control labels and widget values.      controls.pauseLabel.textContent = state.paused ? "ON" : "OFF";
+      controls.tapLabel.textContent = state.sim.tapOpen ? "ON" : "OFF";
+      controls.speedValue.textContent = `${state.speed.toFixed(2)}x`;
+      controls.openingValue.textContent = `${Math.round(state.sim.tapOpening * 100)} %`;
+      controls.setpointValue.textContent = `${state.sim.setpoint.toFixed(1)} C`;
+      controls.inletValue.textContent = `${state.sim.inletTemp.toFixed(1)} C`;
+
+      controls.pauseBtn.className = state.paused ? "active-red" : "";
+      controls.tapBtn.className = state.sim.tapOpen ? "active-green" : "";
+      controls.speedSlider.value = state.speed;
+      controls.openingSlider.value = Math.round(state.sim.tapOpening * 100);
+      controls.setpointSlider.value = state.sim.setpoint;
+      controls.inletSlider.value = state.sim.inletTemp;
+    }
+
+    // Utility to draw rounded rectangles on canvas.
+    function roundRect(ctx, x, y, w, h, r) {
+      ctx.beginPath();
+      ctx.moveTo(x + r, y);
+      ctx.arcTo(x + w, y, x + w, y + h, r);
+      ctx.arcTo(x + w, y + h, x, y + h, r);
+      ctx.arcTo(x, y + h, x, y, r);
+      ctx.arcTo(x, y, x + w, y, r);
+      ctx.closePath();
+    }
+
+    // Draw a pipe polyline used by the plant schematic.
+    function drawPipe(ctx, color, points, width) {
+      ctx.strokeStyle = color;
+      ctx.lineWidth = width;
+      ctx.lineCap = "round";
+      ctx.lineJoin = "round";
+      ctx.beginPath();
+      ctx.moveTo(points[0][0], points[0][1]);
+      for (let i = 1; i < points.length; i++) ctx.lineTo(points[i][0], points[i][1]);
+      ctx.stroke();
+    }
+
+    // Draw a simple circular gauge used for local temperature indicators.
+    function drawGauge(ctx, center, radius, value, label, unit, accent) {
+      ctx.fillStyle = COLORS.white;
+      ctx.strokeStyle = COLORS.darkGray;
+      ctx.lineWidth = 3;
+      ctx.beginPath();
+      ctx.arc(center[0], center[1], radius, 0, Math.PI * 2);
+      ctx.fill();
+      ctx.stroke();
+
+      const norm = clamp((value - 10) / 35, 0, 1);
+      const angle = (-120 + norm * 240) * Math.PI / 180;
+      ctx.strokeStyle = accent;
+      ctx.lineWidth = 4;
+      ctx.beginPath();
+      ctx.moveTo(center[0], center[1]);
+      ctx.lineTo(center[0] + Math.cos(angle) * (radius - 10), center[1] + Math.sin(angle) * (radius - 10));
+      ctx.stroke();
+
+      ctx.fillStyle = COLORS.text;
+      ctx.font = "16px Segoe UI";
+      ctx.textAlign = "center";
+      ctx.fillText(label, center[0], center[1] - radius - 12);
+      ctx.fillText(`${value.toFixed(1)} ${unit}`, center[0], center[1] + radius + 20);
+    }
+
+    // Draw the left-hand process plant canvas.
+    function drawPlant() {
+      const canvasRect = plantCanvas.getBoundingClientRect();
+      const w = canvasRect.width;
+      const h = canvasRect.height;
+      plantCtx.clearRect(0, 0, w, h);
+
+      // Outer rounded drawing area.
+      plantCtx.fillStyle = COLORS.canvasPanelBg;
+      plantCtx.strokeStyle = COLORS.panelLine;
+      roundRect(plantCtx, 0.5, 0.5, w - 1, h - 1, 22);
+      plantCtx.fill();
+      plantCtx.stroke();
+
+      const sx = x => x / 900 * w;
+      const sy = y => y / 560 * h;
+
+      // Gas line entering the heater.
+      plantCtx.fillStyle = COLORS.text;
+      plantCtx.font = "16px Segoe UI";
+      plantCtx.fillText("Gas line", sx(12), sy(30));
+      drawPipe(plantCtx, COLORS.yellow, [[sx(42), sy(45)], [sx(42), sy(430)], [sx(105), sy(430)], [sx(105), sy(386)]], 8);
+
+      // Left heater body with flue and local outlet gauge.
+      plantCtx.fillStyle = COLORS.canvasSurface;
+      plantCtx.strokeStyle = COLORS.gray;
+      roundRect(plantCtx, sx(85), sy(78), sx(175), sy(270), 8);
+      plantCtx.fill();
+      plantCtx.stroke();
+      plantCtx.fillStyle = COLORS.gray;
+      roundRect(plantCtx, sx(125), sy(0), sx(40), sy(58), 18);
+      plantCtx.fill();
+      plantCtx.beginPath();
+      plantCtx.arc(sx(145), sy(32), sx(22), 0, Math.PI * 2);
+      plantCtx.strokeStyle = COLORS.darkGray;
+      plantCtx.lineWidth = 4;
+      plantCtx.stroke();
+      drawGauge(plantCtx, [sx(140), sy(313)], sx(17), state.sim.outletTemp, "Outlet", "C", COLORS.red);
+
+      // Central thermal body / tank block.
+      plantCtx.fillStyle = COLORS.canvasSurfaceAlt;
+      plantCtx.strokeStyle = COLORS.gray;
+      roundRect(plantCtx, sx(350), sy(130), sx(255), sy(340), 10);
+      plantCtx.fill();
+      plantCtx.stroke();
+      plantCtx.fillStyle = COLORS.text;
+      plantCtx.textAlign = "center";
+      plantCtx.font = "18px Segoe UI";
+      plantCtx.fillText("Thermal body", sx(475), sy(456));
+      plantCtx.fillText(`${state.sim.outletTemp.toFixed(1)} C`, sx(478), sy(240));
+      plantCtx.beginPath();
+      plantCtx.arc(sx(478), sy(200), sx(22), 0, Math.PI * 2);
+      plantCtx.fillStyle = COLORS.white;
+      plantCtx.fill();
+      plantCtx.strokeStyle = COLORS.darkGray;
+      plantCtx.lineWidth = 2;
+      plantCtx.stroke();
+      plantCtx.fillStyle = COLORS.red;
+      plantCtx.fillText("T", sx(478), sy(206));
+
+      // Main hot and cold water pipes across the drawing.
+      drawPipe(plantCtx, COLORS.red, [[sx(260), sy(304)], [sx(350), sy(304)], [sx(350), sy(298)], [sx(692), sy(298)]], 12);
+      drawPipe(plantCtx, COLORS.blue, [[sx(206), sy(304)], [sx(206), sy(425)], [sx(350), sy(425)]], 12);
+      drawPipe(plantCtx, COLORS.red, [[sx(605), sy(240)], [sx(720), sy(240)]], 9);
+      drawPipe(plantCtx, COLORS.red, [[sx(605), sy(304)], [sx(875), sy(304)]], 9);
+      drawPipe(plantCtx, COLORS.blue, [[sx(605), sy(402)], [sx(875), sy(402)]], 9);
+      drawPipe(plantCtx, COLORS.blue, [[sx(605), sy(446)], [sx(718), sy(446)]], 9);
+
+      // Expansion vessel and nearby outlet gauge.
+      plantCtx.fillStyle = COLORS.blue;
+      roundRect(plantCtx, sx(676), sy(184), sx(76), sy(122), 36);
+      plantCtx.fill();
+      plantCtx.fillStyle = COLORS.canvasDeepBlue;
+      plantCtx.fillRect(sx(676), sy(246), sx(76), sy(14));
+      plantCtx.fillStyle = COLORS.text;
+      plantCtx.fillText("Expansion tank", sx(715), sy(150));
+      drawGauge(plantCtx, [sx(804), sy(274)], sx(26), state.sim.outletTemp, "Temp", "C", COLORS.green);
+      drawPipe(plantCtx, COLORS.blue, [[sx(714), sy(304)], [sx(714), sy(402)]], 10);
+      drawPipe(plantCtx, COLORS.blue, [[sx(714), sy(304)], [sx(714), sy(240)]], 10);
+      drawPipe(plantCtx, COLORS.blue, [[sx(714), sy(274)], [sx(785), sy(274)]], 8);
+
+      // LCD/setpoint block shown at the upper right of the plant.
+      plantCtx.fillStyle = COLORS.canvasMetal;
+      plantCtx.strokeStyle = COLORS.darkGray;
+      plantCtx.lineWidth = 2;
+      roundRect(plantCtx, sx(640), sy(16), sx(190), sy(104), 10);
+      plantCtx.fill();
+      plantCtx.stroke();
+      roundRect(plantCtx, sx(656), sy(32), sx(158), sy(44), 4);
+      plantCtx.fillStyle = COLORS.white;
+      plantCtx.fill();
+      plantCtx.stroke();
+      plantCtx.fillStyle = COLORS.darkGray;
+      plantCtx.font = "700 22px Consolas";
+      plantCtx.fillText(`${state.sim.outletTemp.toFixed(1)} C`, sx(735), sy(59));
+      plantCtx.font = "16px Segoe UI";
+      plantCtx.fillStyle = COLORS.subtle;
+      plantCtx.fillText(`SP ${state.sim.setpoint.toFixed(0)} C`, sx(735), sy(88));
+
+      // Faucet block and handle that rotates according to tap opening.
+      const opening = state.sim.tapOpen ? state.sim.tapOpening : 0;
+      const handleColor = opening > 0.02 ? COLORS.green : COLORS.darkGray;
+      drawPipe(plantCtx, COLORS.red, [[sx(840), sy(304)], [sx(870), sy(304)]], 10);
+      drawPipe(plantCtx, COLORS.blue, [[sx(840), sy(425)], [sx(870), sy(425)]], 10);
+      plantCtx.strokeStyle = handleColor;
+      plantCtx.lineWidth = 3;
+      roundRect(plantCtx, sx(734), sy(300), sx(120), sy(138), 24);
+      plantCtx.stroke();
+      plantCtx.fillStyle = COLORS.text;
+      plantCtx.fillText("Tap", sx(794), sy(318));
+      const start = [sx(772), sy(366)];
+      const angle = (-10 - opening * 55) * Math.PI / 180;
+      const end = [start[0] + Math.cos(angle) * sx(40), start[1] + Math.sin(angle) * sy(40)];
+      plantCtx.strokeStyle = handleColor;
+      plantCtx.lineWidth = 8;
+      plantCtx.beginPath();
+      plantCtx.moveTo(...start);
+      plantCtx.lineTo(...end);
+      plantCtx.stroke();
+
+      // Animated falling water stream, with density proportional to opening.
+      if (state.sim.flow > 0.05) {
+        const drops = Math.max(2, Math.min(8, Math.floor(2 + state.sim.tapOpening * 6)));
+        const spacing = sx(40) / Math.max(drops - 1, 1);
+        plantCtx.fillStyle = COLORS.blueLight;
+        for (let i = 0; i < drops; i++) {
+          const x = sx(770) + i * spacing;
+          const phase = (state.sim.time * (2.4 + state.sim.tapOpening * 1.8) + i * 0.18) % 1;
+          const y = sy(452) + phase * sy(42);
+          plantCtx.beginPath();
+          plantCtx.moveTo(x, y);
+          plantCtx.lineTo(x - 5, y + 12);
+          plantCtx.lineTo(x, y + 24);
+          plantCtx.lineTo(x + 5, y + 12);
+          plantCtx.closePath();
+          plantCtx.fill();
+        }
+      }
+
+      // Text labels for the main virtual sensors.
+      plantCtx.fillStyle = COLORS.subtle;
+      plantCtx.font = "15px Segoe UI";
+      plantCtx.fillText("Outlet temperature sensor", sx(580), sy(220));
+      plantCtx.fillText("Flow sensor", sx(562), sy(378));
+      plantCtx.fillText("Inlet temperature sensor", sx(530), sy(476));
+      plantCtx.fillText("LCD / setpoint", sx(696), sy(132));
+    }
+
+    // Draw all timeline plots on the right-hand canvas.
+    function drawPlots() {
+      const rect = plotCanvas.getBoundingClientRect();
+      const w = rect.width;
+      const h = rect.height;
+      plotCtx.clearRect(0, 0, w, h);
+
+      // Shared rounded background for the whole signals area.
+      plotCtx.fillStyle = COLORS.canvasPanelBg;
+      plotCtx.strokeStyle = COLORS.panelLine;
+      roundRect(plotCtx, 0.5, 0.5, w - 1, h - 1, 22);
+      plotCtx.fill();
+      plotCtx.stroke();
+
+      const marginX = 18;
+      const topY = 20;
+      const gapY = 8;
+      const plotHeight = (h - 70 - gapY * (plotConfigs.length - 1)) / plotConfigs.length;
+      const plotWidth = w - 36;
+
+      // Stack all signals vertically using the configuration array above.
+      for (let i = 0; i < plotConfigs.length; i++) {
+        const cfg = plotConfigs[i];
+        const x = marginX;
+        const y = 18 + i * (plotHeight + gapY);
+        drawSinglePlot(cfg, x, y, plotWidth, plotHeight);
+      }
+    }
+
+    // Draw a single chart row including grid, axes, hover guide, and signal trace.
+    function drawSinglePlot(cfg, x, y, width, height) {
+      // Card background for one signal row.
+      plotCtx.fillStyle = withAlpha(COLORS.canvasSurfaceAlt, 0.96);
+      plotCtx.strokeStyle = withAlpha(cfg.color, 0.4);
+      roundRect(plotCtx, x, y, width, height, 14);
+      plotCtx.fill();
+      plotCtx.stroke();
+
+      plotCtx.fillStyle = withAlpha(cfg.color, 0.08);
+      roundRect(plotCtx, x + 2, y + 2, width - 4, height - 4, 12);
+      plotCtx.fill();
+
+      // Small color header so each row is identifiable at a glance.
+      roundRect(plotCtx, x + 12, y + 10, 132, 28, 14);
+      plotCtx.fillStyle = withAlpha(cfg.color, 0.16);
+      plotCtx.fill();
+      plotCtx.strokeStyle = withAlpha(cfg.color, 0.45);
+      plotCtx.lineWidth = 1;
+      plotCtx.stroke();
+
+      plotCtx.fillStyle = cfg.color;
+      plotCtx.font = "700 13px Segoe UI";
+      plotCtx.textAlign = "left";
+      plotCtx.textBaseline = "middle";
+      plotCtx.fillText(cfg.title, x + 26, y + 24);
+
+      plotCtx.beginPath();
+      plotCtx.arc(x + 20, y + 24, 5, 0, Math.PI * 2);
+      plotCtx.fill();
+
+      // Rotate the signal name so it fits the narrow left gutter more cleanly.
+      plotCtx.save();
+      plotCtx.translate(x + 18, y + height / 2);
+      plotCtx.rotate(-Math.PI / 2);
+      plotCtx.fillStyle = withAlpha(cfg.color, 0.85);
+      plotCtx.font = "700 13px Segoe UI";
+      plotCtx.textAlign = "center";
+      plotCtx.textBaseline = "middle";
+      plotCtx.fillText(cfg.title, 0, 0);
+      plotCtx.restore();
+
+      plotCtx.fillStyle = cfg.color;
+      plotCtx.font = "700 12px Segoe UI";
+      plotCtx.textAlign = "right";
+      plotCtx.textBaseline = "middle";
+      plotCtx.fillText(cfg.unit, x + width - 14, y + 24);
+
+      // Inner chart area where axes, grid and line are drawn.
+      const left = x + 74;
+      const right = x + width - 18;
+      const top = y + 20;
+      const bottom = y + height - 24;
+
+      // Horizontal and vertical grid lines to make time/value reading easier.
+      plotCtx.strokeStyle = withAlpha(COLORS.subtle, 0.35);
+      plotCtx.lineWidth = 0.8;
+      for (let i = 0; i < 5; i++) {
+        const gy = top + (bottom - top) * i / 4;
+        plotCtx.beginPath();
+        plotCtx.moveTo(left, gy);
+        plotCtx.lineTo(right, gy);
+        plotCtx.stroke();
+      }
+
+      for (let i = 0; i <= 12; i += 3) {
+        const gx = right - (i / 12) * (right - left);
+        plotCtx.beginPath();
+        plotCtx.moveTo(gx, top);
+        plotCtx.lineTo(gx, bottom);
+        plotCtx.stroke();
+        plotCtx.fillStyle = withAlpha(COLORS.subtle, 0.8);
+        plotCtx.fillText(`-${i}s`, gx - 12, bottom + 16);
+      }
+
+      // Left axis, bottom axis, and time stamps.
+      plotCtx.strokeStyle = withAlpha(cfg.color, 0.45);
+      plotCtx.lineWidth = 1;
+      plotCtx.beginPath();
+      plotCtx.moveTo(left, top);
+      plotCtx.lineTo(left, bottom);
+      plotCtx.lineTo(right, bottom);
+      plotCtx.stroke();
+
+      // Dashed vertical hover guide following the mouse.
+      if (state.hoverX !== null && state.hoverX >= left && state.hoverX <= right) {
+        plotCtx.strokeStyle = withAlpha(COLORS.white, 0.55);
+        plotCtx.setLineDash([7, 5]);
+        plotCtx.lineWidth = 1;
+        plotCtx.beginPath();
+        plotCtx.moveTo(state.hoverX, top);
+        plotCtx.lineTo(state.hoverX, bottom);
+        plotCtx.stroke();
+        plotCtx.setLineDash([]);
+      }
+
+      // Signal trace built from the rolling history buffer.
+      const points = [];
+      for (const sample of state.sim.history) {
+        const age = state.sim.time - sample.time;
+        if (age > 12) continue;
+        const px = right - (age / 12) * (right - left);
+        const ratio = (sample[cfg.key] - cfg.vmin) / (cfg.vmax - cfg.vmin || 1);
+        const py = bottom - clamp(ratio, 0, 1) * (bottom - top);
+        points.push([px, py]);
+      }
+
+      if (points.length > 1) {
+        plotCtx.strokeStyle = withAlpha(cfg.color, 0.22);
+        plotCtx.lineWidth = 3;
+        plotCtx.beginPath();
+        plotCtx.moveTo(points[0][0], points[0][1]);
+        for (let i = 1; i < points.length; i++) plotCtx.lineTo(points[i][0], points[i][1]);
+        plotCtx.stroke();
+
+        plotCtx.strokeStyle = cfg.color;
+        plotCtx.lineWidth = 1.8;
+        plotCtx.beginPath();
+        plotCtx.moveTo(points[0][0], points[0][1]);
+        for (let i = 1; i < points.length; i++) plotCtx.lineTo(points[i][0], points[i][1]);
+        plotCtx.stroke();
+      }
+
+      // Current numeric readout plus the min/max scale markers.
+      const last = state.sim.history[state.sim.history.length - 1];
+      plotCtx.fillStyle = withAlpha(COLORS.subtle, 0.9);
+      plotCtx.fillText(String(cfg.vmax), left - 38, top + 4);
+      plotCtx.fillText(String(cfg.vmin), left - 38, bottom - 2);
+      plotCtx.fillStyle = cfg.color;
+      plotCtx.fillText(last[cfg.key].toFixed(1), right - 38, top + 4);
+    }
+
+    // Canvases only need resizing while the simulation screen is visible.
+    function resizeCanvases() {
+      if (state.currentScreen !== "simulation") return;
+      setCanvasScale(plantCanvas, plantCtx);
+      setCanvasScale(plotCanvas, plotCtx);
+    }
+
+    // Show the main menu and stop plot hover feedback.
+    function showMenu() {
+      // Hide the simulation layout but keep state in memory.
+      state.currentScreen = "menu";
+      state.hoverX = null;
+      menuScreen.classList.remove("hidden");
+      simulationScreen.classList.add("hidden");
+    }
+
+    // Show the simulation screen and force an immediate redraw.
+    function showSimulation() {
+      if (!isFeatureEnabled("gasWaterHeater")) return;
+      // Re-show the simulation and recalculate canvas sizes before drawing.
+      state.currentScreen = "simulation";
+      menuScreen.classList.add("hidden");
+      simulationScreen.classList.remove("hidden");
+      resizeCanvases();
+      syncUi();
+      drawPlant();
+      drawPlots();
+    }
+
+    function filterMenuCards(query) {
+      const normalized = (query || "").trim().toLowerCase();
+      let anyVisible = false;
+
+      menuCards.forEach(card => {
+        const featureKey = card.dataset.featureKey;
+        if (featureKey && !isFeatureEnabled(featureKey)) {
+          card.classList.add("hidden");
+          return;
+        }
+        const haystack = card.textContent.toLowerCase();
+        const isVisible = !normalized || haystack.includes(normalized);
+        card.classList.toggle("hidden", !isVisible);
+        if (isVisible) anyVisible = true;
+      });
+
+      menuColumns.forEach(column => {
+        const hasVisibleCards = Array.from(column.querySelectorAll(".menu-card")).some(card => !card.classList.contains("hidden"));
+        column.classList.toggle("hidden", !hasVisibleCards);
+      });
+
+      menuEmptyState.classList.toggle("visible", !anyVisible);
+    }
+
+    function isFeatureEnabled(key) {
+      if (key === "gasWaterHeater") {
+        return featureFlags.gasWaterHeater ?? featureFlags.gasWaterHeaterEnabled ?? true;
+      }
+      return featureFlags[key] ?? true;
+    }
+
+    function applyFeatureFlags() {
+      featureCards.forEach(card => {
+        const featureKey = card.dataset.featureKey;
+        const isEnabled = isFeatureEnabled(featureKey);
+        card.classList.toggle("hidden", !isEnabled);
+        const underConstruction = window.DASHBOARD_CONSTRUCTION_FLAGS?.[featureKey] === true;
+        const title = card.querySelector("h3");
+        if (title) {
+          title.classList.toggle("menu-card-title-with-tag", underConstruction);
+          let badge = title.querySelector(".construction-tag");
+          if (underConstruction && !badge) {
+            badge = document.createElement("span");
+            badge.className = "construction-tag";
+            badge.textContent = "\uD83D\uDEA7 Under Construction";
+            title.appendChild(badge);
+          } else if (!underConstruction && badge) {
+            badge.remove();
+          }
+        }
+      });
+
+      if (!isFeatureEnabled("gasWaterHeater")) {
+        simulationScreen.classList.add("hidden");
+        state.currentScreen = "menu";
+      }
+    }
+
+    // UI controls for the simulation screen.
+    // Discrete state toggles.
+    controls.pauseBtn.addEventListener("click", () => {
+      state.paused = !state.paused;
+      syncUi();
+    });
+
+    controls.tapBtn.addEventListener("click", () => {
+      state.sim.toggleTap();
+      syncUi();
+    });
+
+    // Continuous-value sliders.
+    controls.speedSlider.addEventListener("input", e => {
+      state.speed = Number(e.target.value);
+      syncUi();
+    });
+
+    controls.openingSlider.addEventListener("input", e => {
+      state.sim.setTapOpening(Number(e.target.value) / 100);
+      syncUi();
+    });
+
+    controls.setpointSlider.addEventListener("input", e => {
+      state.sim.setSetpoint(Number(e.target.value));
+      syncUi();
+    });
+
+    controls.inletSlider.addEventListener("input", e => {
+      state.sim.setInletTemp(Number(e.target.value));
+      syncUi();
+    });
+
+    // Menu navigation.
+    openGasWaterBtn.addEventListener("click", showSimulation);
+    backToMenuBtn.addEventListener("click", showMenu);
+    menuSearchInput.addEventListener("input", e => {
+      filterMenuCards(e.target.value);
+    });
+    applyFeatureFlags();
+    filterMenuCards("");
+
+    // Mouse hover on the plot canvas drives the dashed vertical guide line.
+    plotCanvas.addEventListener("mousemove", e => {
+      const rect = plotCanvas.getBoundingClientRect();
+      state.hoverX = e.offsetX;
+      if (state.hoverX < 0 || state.hoverX > rect.width) state.hoverX = null;
+    });
+
+    plotCanvas.addEventListener("mouseleave", () => {
+      state.hoverX = null;
+    });
+
+    // Clicking the faucet drawing toggles the tap command directly from the plant.
+    plantCanvas.addEventListener("click", e => {
+      const rect = plantCanvas.getBoundingClientRect();
+      const x = e.offsetX / rect.width * 900;
+      const y = e.offsetY / rect.height * 560;
+      if (x >= 734 && x <= 854 && y >= 300 && y <= 438) {
+        state.sim.toggleTap();
+        syncUi();
+      }
+    });
+
+    // Keyboard shortcuts are only active while the simulation screen is open.
+    window.addEventListener("keydown", e => {
+      if (state.currentScreen !== "simulation") return;
+      if (e.code === "Space") {
+        e.preventDefault();
+        state.sim.toggleTap();
+        syncUi();
+      } else if (e.key.toLowerCase() === "p") {
+        state.paused = !state.paused;
+        syncUi();
+      }
+    });
+
+    window.addEventListener("resize", resizeCanvases);
+
+    // Main animation loop: update physics, redraw canvases, and schedule the next frame.
+    let lastTs = performance.now();
+    function frame(ts) {
+      const dt = Math.min(0.05, (ts - lastTs) / 1000);
+      lastTs = ts;
+      if (state.currentScreen === "simulation") {
+        if (!state.paused) state.sim.update(dt * state.speed);
+        drawPlant();
+        drawPlots();
+      }
+      requestAnimationFrame(frame);
+    }
+
+    // Initial application boot sequence.
+    applySiteContact();
+    syncCanvasColors();
+    showMenu();
+    syncUi();
+    requestAnimationFrame(frame);
+  </script>
+</body>
+</html>

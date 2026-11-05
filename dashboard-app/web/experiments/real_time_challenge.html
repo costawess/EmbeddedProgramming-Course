@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="en" data-sync-dashboard-lights="true">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Embedded Programming - Real-Time Challenge</title>
+  <script src="../shared/mouse_glow.js"></script>
+  <script src="../shared/page_header.js"></script>
+  <script src="../shared/sound_fx.js"></script>
+  <link rel="stylesheet" href="real_time_challenge.css" />
+  <script defer src="real_time_challenge.js"></script>
+</head>
+<body>
+<main class="app">
+  <header class="header">
+    <a class="back" href="../index.html">Back to menu</a>
+    <div class="title"><h1>Real-Time Challenge</h1><p>Blocking, Polling &amp; Interrupts</p></div>
+  </header>
+  <section class="panel" aria-label="Round controls">
+    <div class="control-row">
+      <div class="mode-buttons" role="group" aria-label="Execution mode">
+        <button data-mode="delay" aria-pressed="true">1 · delay()</button>
+        <button data-mode="millis" aria-pressed="false">2 · millis()</button>
+        <button data-mode="interrupt" aria-pressed="false">3 · Interrupt</button>
+      </div>
+      <label>Round duration <select id="duration"><option value="30">30 s</option><option value="45">45 s</option><option value="60">60 s</option></select></label>
+      <div class="clock">ROUND TIME <strong id="clock">00:30</strong></div>
+    </div>
+    <p id="modeDescription"></p>
+    <div class="control-row"><button id="start" class="primary">Start round</button><button id="reset">Reset round</button><button id="comparisonButton">View comparison</button><label><input id="showSum" type="checkbox" /> Show accumulated sum</label><button id="sound" data-sound-toggle="true" aria-pressed="true">Sound ON</button></div>
+    <div id="instructions"><h2>Your tasks</h2><ol><li>Fold paper whenever the CPU is available.</li><li>Observe each sensor value and mentally add it to your total.</li><li>React to emergencies; in millis() mode, press Poll input regularly.</li><li>Count your completed papers. Enter your sensor total at the end.</li></ol><p>Run each mode individually, or use Next mode after each round. Prepare your paper, then start.</p></div>
+    <p id="notice" role="status"></p>
+  </section>
+  <section class="stage" aria-label="Live experiment">
+    <article class="panel task" id="taskCard"><h2>Main task · loop()</h2><div id="taskState" class="headline">READY?</div><p id="cpuState" role="status">CPU idle</p><div id="blocking" hidden><strong id="blockingLabel"></strong><progress id="blockProgress" max="1" value="1" aria-label="Blocking time remaining"></progress></div><div class="paper-counter"><span>Papers completed</span><div><button id="paperMinus" aria-label="Remove one completed paper">−</button><strong id="papers">0</strong><button id="paperPlus" aria-label="Add one completed paper">+</button></div></div></article>
+    <article class="panel sensor" id="sensorCard"><h2>Periodic sensor</h2><p id="sensorCountdown">Every 3 seconds</p><div id="sensorValue" class="sensor-value" aria-live="polite">—</div><strong id="sum">Your calculated sum: ?</strong><p id="readings">0 readings</p></article>
+    <article class="panel event" id="eventCard"><h2>Asynchronous event</h2><div id="eventState" class="headline" role="status">NORMAL</div><p id="eventDetail">Waiting to start.</p><button id="poll">Poll input · CHECK BUTTON</button><p id="latency"></p></article>
+  </section>
+  <section class="panel"><h2>Execution timeline</h2><div id="timeline" class="timeline" aria-label="Recent execution steps"></div><p id="isrNote">The student represents the CPU. Browser animation does not block the browser itself.</p></section>
+  <section id="results" class="panel" hidden tabindex="-1"><h2>Round complete</h2><form id="answerForm"><label for="answer">What is your accumulated sensor value?</label><div class="control-row"><input id="answer" type="number" min="0" step="1" required placeholder="Your total" /><button class="primary">Check</button></div></form><p id="answerFeedback" role="status"></p><div id="summary" class="metrics"></div><details><summary>Emergency timestamps</summary><div class="table-wrap"><table><thead><tr><th>Event</th><th>Occurred</th><th>Detected / handled</th><th>Latency</th></tr></thead><tbody id="eventLog"></tbody></table></div></details><div class="control-row"><button id="retry">Try again</button><button id="next" class="primary">Next mode</button></div></section>
+  <section id="comparison" class="panel" hidden tabindex="-1"><h2>Compare your rounds</h2><p>Latest completed round per mode, kept for this visit. Random readings and events differ between rounds; compare tendencies, not identical workloads.</p><div id="comparisonTable" class="table-wrap"></div><div class="concepts"><article><h3>delay() · Blocking</h3><code>TASK → WAIT → TASK → WAIT</code><p>Other code in the main execution flow cannot run until the delay finishes. Hardware interrupts can still occur during delay(); this first round uses no interrupt handler.</p></article><article><h3>millis() · Non-blocking + Polling</h3><code>TASK → CHECK TIME → CHECK INPUT</code><p>The main loop keeps executing, but polling only detects an input when you check it. Here, an event stays pending until checked; a short unlatched pulse could be missed in real hardware.</p></article><article><h3>Interrupt · Event-driven</h3><code>MAIN → ISR → RETURN → MAIN</code><p>An external event redirects execution to a short ISR, which sets a flag. The main loop then processes that flag.</p></article></div><p><strong>millis() and interrupts solve different problems and can be used together.</strong> Round 3 still uses millis() for the periodic sensor and an interrupt for the emergency input. Interrupt timing here is a browser simulation, not microcontroller latency.</p></section>
+  <details class="panel" id="teacher"><summary>Teacher Controls</summary><div class="control-row"><button id="force">Force emergency</button><label><input id="random" type="checkbox" checked /> Random emergencies</label></div><fieldset id="timingSettings"><legend>Timing (configure before starting)</legend><label>Sensor interval (s) <input id="sensorInterval" type="number" min="1" max="10" step="0.5" value="3" /></label><label>Emergency minimum (s) <input id="emergencyMin" type="number" min="5" max="30" step="0.5" value="5" /></label><label>Emergency maximum (s) <input id="emergencyMax" type="number" min="5" max="30" step="0.5" value="10" /></label></fieldset><p>Duration and accumulated-sum visibility are above. A manual event can happen immediately; random events start after at least 5 seconds. Events generated during polling stay hidden until checked.</p><button id="resetAll">Reset experiment &amp; comparison</button></details>
+  <details class="panel"><summary>Conceptual Arduino / ESP32 code</summary><p>Active-high input in these examples; configure an appropriate pull-down. These are teaching fragments. Real applications must also consider atomic flag access and repeated events.</p><pre id="code"></pre></details>
+</main>
+</body>
+</html>

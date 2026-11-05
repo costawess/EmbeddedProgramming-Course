@@ -1,0 +1,767 @@
+<!DOCTYPE html>
+<html lang="en" data-sync-dashboard-lights="true">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Embedded Programming - Kitchen Timer</title>
+    <script>
+    (() => {
+      try {
+        const storedLights = localStorage.getItem("embedded-dashboard-lights-on");
+        const legacyStoredLights = localStorage.getItem("embedded-lights-on");
+        const resolvedLights = storedLights ?? legacyStoredLights;
+        if (resolvedLights === "false") {
+          document.documentElement.classList.add("theme-dark");
+        }
+      } catch (error) {
+        // Ignore storage failures and keep the light theme.
+      }
+    })();
+  </script>
+  <script src="../shared/mouse_glow.js"></script>
+  <script src="../shared/page_header.js"></script>
+  <style>
+    :root {
+      --bg: #161311;
+      --panel: rgba(33, 28, 25, 0.94);
+      --line: #5d4e46;
+      --text: #f6f1eb;
+      --subtle: #d1c0b3;
+      --accent: #8ed765;
+      --accent-dark: #5aa337;
+      --warm: #f1bb6b;
+      --danger: #ff7b6e;
+      --control-bg: #2b231f;
+      --control-border: #77655a;
+      --card-bg: rgba(53, 43, 38, 0.92);
+      --dial-face: #ece8e2;
+      --dial-ring: #9f9993;
+      --dial-ring-dark: #6c6762;
+      --dial-text: #1c1916;
+      --dial-minor: #403a35;
+      --dial-major: #1f1c19;
+      --dial-green: #77bf4d;
+      --log-bg: rgba(41, 33, 29, 0.96);
+      --log-item-bg: rgba(63, 50, 44, 0.94);
+      --log-item-border: #7a6558;
+      --shadow: 0 16px 34px rgba(0, 0, 0, 0.28);
+    }
+
+    * { box-sizing: border-box; }
+
+    body {
+      margin: 0;
+      min-height: 100vh;
+      font-family: "Segoe UI", Arial, sans-serif;
+      color: var(--text);
+      background: radial-gradient(circle at top, #372a24 0%, var(--bg) 58%, #0f0c0b 100%);
+    }
+
+    .app {
+      padding: 22px;
+      display: grid;
+      gap: 18px;
+    }
+
+    .header, .timer-panel, .side-panel {
+      background: var(--panel);
+      border: 1px solid var(--line);
+      border-radius: 28px;
+      box-shadow: var(--shadow);
+    }
+
+    .header {
+      padding: 18px 20px;
+      display: grid;
+      grid-template-columns: auto minmax(0, 1fr) auto;
+      gap: 16px;
+      align-items: center;
+    }
+
+    .back {
+      text-decoration: none;
+      color: var(--text);
+      border: 2px solid var(--control-border);
+      border-radius: 16px;
+      padding: 12px 16px;
+      font-weight: 800;
+      background: var(--control-bg);
+    }
+
+    .brand-logo {
+      width: 132px;
+      max-width: 100%;
+      height: auto;
+      object-fit: contain;
+    }
+
+    .title h1 { margin: 0; font-size: clamp(28px, 3vw, 46px); }
+    .title p { margin: 6px 0 0; color: var(--subtle); }
+
+    .layout {
+      display: grid;
+      grid-template-columns: minmax(620px, 1fr) minmax(340px, 0.78fr);
+      gap: 20px;
+      align-items: start;
+    }
+
+    .timer-panel, .side-panel {
+      padding: 18px;
+    }
+
+    .timer-panel {
+      display: grid;
+      gap: 16px;
+    }
+
+    .panel-head {
+      display: flex;
+      justify-content: space-between;
+      gap: 14px;
+      align-items: start;
+      flex-wrap: wrap;
+    }
+
+    .panel-head h2,
+    .side-panel h2,
+    .serial-card h3 {
+      margin: 0;
+      color: var(--text);
+    }
+
+    .status-pill {
+      border-radius: 18px;
+      padding: 12px 16px;
+      border: 2px solid var(--accent);
+      color: var(--accent);
+      background: rgba(142, 215, 101, 0.08);
+      min-width: 260px;
+      text-align: center;
+      font-weight: 800;
+    }
+
+    .timer-body {
+      display: grid;
+      gap: 16px;
+      align-items: start;
+      justify-items: center;
+    }
+
+    .dial-shell {
+      width: min(72vw, 720px);
+      aspect-ratio: 1;
+      border-radius: 50%;
+      padding: 14px;
+      background: radial-gradient(circle at 34% 28%, #c5bfba 0%, #8a8580 38%, #5f5b57 70%, #a8a29d 100%);
+      box-shadow:
+        inset 0 0 0 3px rgba(255, 255, 255, 0.22),
+        inset 0 0 0 10px rgba(34, 30, 27, 0.35),
+        0 20px 34px rgba(0, 0, 0, 0.3);
+    }
+
+    .dial-shell.vibrating {
+      animation: timer-shake 0.12s linear infinite;
+      box-shadow:
+        inset 0 0 0 3px rgba(255, 255, 255, 0.22),
+        inset 0 0 0 10px rgba(34, 30, 27, 0.35),
+        0 0 0 10px rgba(255, 123, 110, 0.1),
+        0 0 28px rgba(255, 123, 110, 0.35),
+        0 20px 34px rgba(0, 0, 0, 0.3);
+    }
+
+    @keyframes timer-shake {
+      0% { transform: translate(0, 0) rotate(0deg); }
+      25% { transform: translate(-3px, 2px) rotate(-0.6deg); }
+      50% { transform: translate(3px, -2px) rotate(0.6deg); }
+      75% { transform: translate(-2px, -2px) rotate(-0.35deg); }
+      100% { transform: translate(2px, 2px) rotate(0.35deg); }
+    }
+
+    #dialCanvas {
+      width: 100%;
+      height: 100%;
+      display: block;
+      border-radius: 50%;
+      background: transparent;
+    }
+
+    .control-card, .serial-card, .stat-card, .log-item {
+      background: var(--card-bg);
+      border: 1px solid var(--line);
+      border-radius: 22px;
+      padding: 14px;
+    }
+
+    .control-card {
+      width: min(720px, 100%);
+      display: grid;
+      gap: 12px;
+    }
+
+    .control-card label,
+    .field {
+      display: grid;
+      gap: 6px;
+      color: var(--subtle);
+      font-size: 14px;
+      font-weight: 700;
+    }
+
+    input[type="range"],
+    select {
+      width: 100%;
+      accent-color: var(--accent);
+      font: inherit;
+    }
+
+    select {
+      padding: 11px 12px;
+      border-radius: 14px;
+      border: 2px solid var(--control-border);
+      background: var(--control-bg);
+      color: var(--text);
+    }
+
+    .uart-test-input {
+      width: 100%;
+      padding: 11px 12px;
+      border-radius: 14px;
+      border: 2px solid var(--control-border);
+      background: var(--control-bg);
+      color: var(--text);
+      font: inherit;
+    }
+
+    .range-label {
+      display: flex;
+      justify-content: space-between;
+      gap: 12px;
+      font-weight: 700;
+      color: var(--text);
+    }
+
+    .shortcut-hint {
+      display: block;
+      margin-top: 6px;
+      font-size: 12px;
+      color: var(--subtle);
+      opacity: 0.92;
+    }
+
+    button {
+      appearance: none;
+      border: 2px solid var(--control-border);
+      border-radius: 14px;
+      padding: 10px 14px;
+      background: var(--control-bg);
+      color: var(--text);
+      font-weight: 800;
+      cursor: pointer;
+    }
+
+    button:disabled {
+      opacity: 0.55;
+      cursor: not-allowed;
+    }
+
+    .serial-controls, .toolbar {
+      display: grid;
+      grid-template-columns: minmax(0, 1fr) auto;
+      gap: 10px;
+      align-items: end;
+    }
+
+    .toolbar {
+      grid-template-columns: minmax(0, 1fr) auto;
+    }
+
+    .serial-state {
+      color: var(--text);
+      font-weight: 800;
+      margin-top: 8px;
+    }
+
+    .serial-hint, .muted {
+      color: var(--subtle);
+      font-size: 14px;
+      line-height: 1.45;
+    }
+
+    .stats {
+      margin-top: 14px;
+      display: grid;
+      gap: 12px;
+    }
+
+    .stat-card strong {
+      display: block;
+      margin-top: 4px;
+      font-size: 28px;
+      color: var(--text);
+    }
+
+    .alarm-card strong.limit {
+      color: var(--danger);
+    }
+
+    .log-list {
+      margin-top: 14px;
+      min-height: 320px;
+      display: grid;
+      gap: 10px;
+      align-content: start;
+    }
+
+    .log-item {
+      font-family: Consolas, monospace;
+      font-size: 14px;
+      background: var(--log-item-bg);
+      border-color: var(--log-item-border);
+      color: var(--text);
+      word-break: break-word;
+    }
+
+    @media (max-width: 1080px) {
+      .layout {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    @media (max-width: 720px) {
+      .header {
+        grid-template-columns: 1fr;
+      }
+
+      .panel-head {
+        grid-template-columns: 1fr;
+      }
+
+      .status-pill {
+        min-width: 100%;
+      }
+
+      .serial-controls {
+        grid-template-columns: 1fr;
+      }
+    }
+    .history-heading { display: flex; align-items: center; justify-content: space-between; gap: 12px; flex-wrap: wrap; }
+    .history-heading h2 { margin: 0; }
+    .uart-test-row { display: grid; grid-template-columns: minmax(0, 1fr); }
+    #serialToggleBtn { white-space: nowrap; }
+  </style>
+</head>
+<body>
+  <div class="app">
+    <header class="header">
+      <a class="back" href="../index.html">Back to menu</a>
+      <div class="title">
+        <h1>Kitchen Timer</h1>
+        <p>The GUI sets the maximum scale, while the timer value in seconds is received from the ESP32 over UART.</p>
+      </div>
+      <img class="brand-logo" src="../../assets/branding/hanze_logo.png" alt="Hanze logo" />
+    </header>
+
+    <section class="layout">
+      <section class="timer-panel">
+        <div class="panel-head">
+          <h2>Kitchen timer</h2>
+          <div class="status-pill" id="statusPill">Waiting for UART value</div>
+        </div>
+
+        <div class="timer-body">
+          <div class="dial-shell" id="dialShell">
+            <canvas id="dialCanvas" width="720" height="720"></canvas>
+          </div>
+
+          <div class="control-card">
+            <label>
+              <div class="range-label">
+                <span>Maximum timer range</span>
+                <span id="maxValueLabel">60 s</span>
+              </div>
+              <input id="maxSlider" type="range" min="10" max="300" step="5" value="60" />
+            </label>
+            <p class="muted">The ruler rescales immediately from `0` to the selected maximum. UART values above the maximum clamp to the end of the dial and trigger the alert.</p>
+          </div>
+        </div>
+      </section>
+
+      <aside class="side-panel">
+        <div class="serial-card">
+          <h3>UART</h3>
+          <div class="serial-controls">
+            <label class="field">
+              <span>Baud rate</span>
+              <select id="baudSelect">
+                <option value="115200" selected>115200</option>
+                <option value="9600">9600</option>
+              </select>
+            </label>
+            <button id="serialToggleBtn" type="button">Connect (Key C)</button>
+          </div>
+          <div class="serial-state" id="serialStatus">Not connected</div>
+          <div class="serial-hint" id="serialHint">Accepted UART lines: plain integers like `42` or prefixed values like `TIME:42`.</div>
+        </div>
+
+        <h2 style="margin-top:18px;">Timer state</h2>
+        <div class="stats">
+          <div class="stat-card">UART value<strong id="currentValue">0 s</strong></div>
+          <div class="stat-card">Scale usage<strong id="percentValue">0 %</strong></div>
+          <div class="stat-card alarm-card">Alarm<strong id="alarmValue">Idle</strong></div>
+        </div>
+
+        <div class="toolbar uart-test-row" style="margin-top:18px;">
+          <input class="uart-test-input" id="uartTestInput" type="text" placeholder="Type a UART line, for example TIME:42, then press Enter" />
+        </div>
+
+        <div class="history-heading" style="margin-top:18px;">
+          <h2>History</h2>
+          <button id="clearHistoryBtn" type="button">Clear history<small class="shortcut-hint">(Key H)</small></button>
+        </div>
+        <div class="log-list" id="logList"></div>
+      </aside>
+    </section>
+  </div>
+
+  <script src="../shared/sound_fx.js"></script>
+  <script src="../shared/web_serial_bridge.js"></script>
+  <script>
+    // Cache the UI elements used by the timer, UART panel, and log area.
+    const dialCanvas = document.getElementById("dialCanvas");
+    const dialCtx = dialCanvas.getContext("2d");
+    const dialShell = document.getElementById("dialShell");
+    const statusPill = document.getElementById("statusPill");
+    const maxSlider = document.getElementById("maxSlider");
+    const maxValueLabel = document.getElementById("maxValueLabel");
+    const currentValue = document.getElementById("currentValue");
+    const percentValue = document.getElementById("percentValue");
+    const alarmValue = document.getElementById("alarmValue");
+    const baudSelect = document.getElementById("baudSelect");
+    const serialToggleBtn = document.getElementById("serialToggleBtn");
+    const serialStatus = document.getElementById("serialStatus");
+    const serialHint = document.getElementById("serialHint");
+    const uartTestInput = document.getElementById("uartTestInput");
+    const clearHistoryBtn = document.getElementById("clearHistoryBtn");
+    const logList = document.getElementById("logList");
+
+    const state = {
+      maxSeconds: 60,
+      currentSeconds: 0,
+      serialConnected: false,
+      alarmActive: false,
+      logs: ["(SYSTEM): Kitchen timer HTML experiment ready."],
+      lastVibrateTs: 0
+    };
+
+    // Resolve CSS custom properties to plain color strings that canvas can draw with.
+    function cssVar(name) {
+      return getComputedStyle(document.documentElement).getPropertyValue(name).trim();
+    }
+
+    const serialBridge = new WebSerialLineBridge({
+      onLine: handleSerialLine,
+      onStatus: handleSerialStatus,
+      onError: error => {
+        addLog(`(SYSTEM): UART error - ${error.message || error}`);
+        setStatus("Serial error", "danger");
+      }
+    });
+
+    function addLog(message) {
+      state.logs.push(message);
+      if (state.logs.length > 20) state.logs.shift();
+      renderLogs();
+    }
+
+    function clearHistory() {
+      state.logs = ["(SYSTEM): History cleared."];
+      renderLogs();
+    }
+
+    function renderLogs() {
+      logList.innerHTML = "";
+      for (const message of [...state.logs].reverse()) {
+        const item = document.createElement("div");
+        item.className = "log-item";
+        item.textContent = message;
+        logList.appendChild(item);
+      }
+    }
+
+    function setStatus(text, mode = "normal") {
+      statusPill.textContent = text;
+      if (mode === "danger") {
+        statusPill.style.borderColor = "var(--danger)";
+        statusPill.style.color = "var(--danger)";
+        statusPill.style.background = "rgba(255, 123, 110, 0.12)";
+      } else if (mode === "accent") {
+        statusPill.style.borderColor = "var(--warm)";
+        statusPill.style.color = "var(--warm)";
+        statusPill.style.background = "rgba(241, 187, 107, 0.12)";
+      } else {
+        statusPill.style.borderColor = "var(--accent)";
+        statusPill.style.color = "var(--accent)";
+        statusPill.style.background = "rgba(142, 215, 101, 0.08)";
+      }
+    }
+
+    function updateSerialUi() {
+      if (!serialBridge.supported) {
+        serialToggleBtn.disabled = true;
+        serialStatus.textContent = "Web Serial unavailable";
+        serialHint.textContent = "Open this page in Chrome or Edge on localhost or https.";
+        return;
+      }
+
+      serialToggleBtn.disabled = false;
+      serialToggleBtn.textContent = `${state.serialConnected ? "Disconnect" : "Connect"} (Key C)`;
+      serialStatus.textContent = state.serialConnected ? `Connected at ${baudSelect.value} baud` : "Not connected";
+      serialHint.textContent = state.serialConnected
+        ? "The timer now follows incoming UART values in seconds."
+        : "Accepted UART lines: plain integers like 42 or prefixed values like TIME:42.";
+    }
+
+    function updateStats() {
+      const clamped = Math.min(state.currentSeconds, state.maxSeconds);
+      const ratio = state.maxSeconds > 0 ? clamped / state.maxSeconds : 0;
+      currentValue.textContent = `${Math.round(state.currentSeconds)} s`;
+      percentValue.textContent = `${Math.round(ratio * 100)} %`;
+      alarmValue.textContent = state.alarmActive ? "Limit reached" : "Idle";
+      alarmValue.className = state.alarmActive ? "limit" : "";
+      maxValueLabel.textContent = `${Math.round(state.maxSeconds)} s`;
+    }
+
+    function updateAlarmState() {
+      const shouldAlarm = state.currentSeconds >= state.maxSeconds && state.maxSeconds > 0;
+      if (shouldAlarm === state.alarmActive) return;
+
+      state.alarmActive = shouldAlarm;
+      dialShell.classList.toggle("vibrating", shouldAlarm);
+
+      if (shouldAlarm) {
+        addLog(`(SYSTEM): Limit reached at ${Math.round(state.currentSeconds)} s.`);
+        setStatus("Limit reached", "danger");
+        if (window.uiSound && typeof window.uiSound.play === "function") {
+          window.uiSound.play("warning");
+          window.setTimeout(() => window.uiSound.play("error"), 140);
+        }
+        if (navigator.vibrate) {
+          navigator.vibrate([140, 70, 140, 70, 220]);
+          state.lastVibrateTs = performance.now();
+        }
+      } else {
+        setStatus(state.serialConnected ? "Receiving UART timer values" : "Waiting for UART value", "normal");
+        if (navigator.vibrate) {
+          navigator.vibrate(0);
+        }
+      }
+    }
+
+    function setCurrentSeconds(value, source = "UART") {
+      state.currentSeconds = Math.max(0, Number(value) || 0);
+      addLog(`(${source}): ${Math.round(state.currentSeconds)} s`);
+      updateStats();
+      updateAlarmState();
+      drawDial();
+    }
+
+    function handleSerialLine(line) {
+      const normalized = line.trim().toUpperCase();
+      const numeric = /^-?\d+(\.\d+)?$/.test(line.trim()) ? Number(line.trim()) : null;
+      const prefixed = normalized.match(/^(TIME|SECONDS|VALUE)\s*:\s*(-?\d+(\.\d+)?)$/);
+
+      if (numeric !== null) {
+        setCurrentSeconds(numeric, "UART");
+        return;
+      }
+
+      if (prefixed) {
+        setCurrentSeconds(Number(prefixed[2]), "UART");
+        return;
+      }
+
+      addLog(`(UART): Ignored line '${line}'`);
+    }
+
+    function handleSerialStatus(status) {
+      state.serialConnected = status === "connected";
+      updateSerialUi();
+      setStatus(state.serialConnected ? "Receiving UART timer values" : "Waiting for UART value", "normal");
+      addLog(state.serialConnected
+        ? `(SYSTEM): UART connected at ${baudSelect.value} baud.`
+        : "(SYSTEM): UART disconnected.");
+    }
+
+    async function toggleSerialConnection() {
+      serialToggleBtn.disabled = true;
+      try {
+        if (state.serialConnected) {
+          await serialBridge.disconnect();
+        } else {
+          await serialBridge.connect(Number(baudSelect.value));
+        }
+      } catch (error) {
+        addLog(`(SYSTEM): ${error.message || error}`);
+        setStatus("Connection failed", "danger");
+        updateSerialUi();
+      }
+    }
+
+    function resizeDialCanvas() {
+      const ratio = window.devicePixelRatio || 1;
+      const rect = dialCanvas.getBoundingClientRect();
+      dialCanvas.width = Math.round(rect.width * ratio);
+      dialCanvas.height = Math.round(rect.height * ratio);
+      dialCtx.setTransform(ratio, 0, 0, ratio, 0, 0);
+      drawDial();
+    }
+
+    function drawDial() {
+      const rect = dialCanvas.getBoundingClientRect();
+      const w = rect.width;
+      const h = rect.height;
+      const cx = w / 2;
+      const cy = h / 2;
+      const radius = Math.min(w, h) / 2 - 18;
+      const progress = state.maxSeconds > 0 ? Math.min(state.currentSeconds / state.maxSeconds, 1) : 0;
+      const startAngle = -Math.PI / 2;
+      const endAngle = startAngle + progress * Math.PI * 2;
+      const dialFace = cssVar("--dial-face");
+      const dialRingDark = cssVar("--dial-ring-dark");
+      const dialGreen = cssVar("--dial-green");
+      const dialMajor = cssVar("--dial-major");
+      const dialMinor = cssVar("--dial-minor");
+      const dialText = cssVar("--dial-text");
+      const danger = cssVar("--danger");
+
+      dialCtx.clearRect(0, 0, w, h);
+
+      dialCtx.fillStyle = "rgba(255,255,255,0.08)";
+      dialCtx.beginPath();
+      dialCtx.arc(cx, cy, radius + 2, 0, Math.PI * 2);
+      dialCtx.fill();
+
+      dialCtx.fillStyle = dialFace;
+      dialCtx.beginPath();
+      dialCtx.arc(cx, cy, radius - 8, 0, Math.PI * 2);
+      dialCtx.fill();
+
+      dialCtx.strokeStyle = dialRingDark;
+      dialCtx.lineWidth = 3;
+      dialCtx.beginPath();
+      dialCtx.arc(cx, cy, radius - 8, 0, Math.PI * 2);
+      dialCtx.stroke();
+
+      dialCtx.strokeStyle = dialGreen;
+      dialCtx.lineWidth = radius * 0.38;
+      dialCtx.lineCap = "butt";
+      dialCtx.beginPath();
+      dialCtx.arc(cx, cy, radius * 0.63, startAngle, endAngle);
+      dialCtx.stroke();
+
+      const minorTicks = 60;
+      for (let i = 0; i < minorTicks; i++) {
+        const angle = startAngle + (i / minorTicks) * Math.PI * 2;
+        const isMajor = i % 5 === 0;
+        const outer = radius * 0.88;
+        const inner = isMajor ? radius * 0.56 : radius * 0.67;
+        dialCtx.strokeStyle = isMajor ? dialMajor : dialMinor;
+        dialCtx.lineWidth = isMajor ? 4 : 2;
+        dialCtx.beginPath();
+        dialCtx.moveTo(cx + Math.cos(angle) * inner, cy + Math.sin(angle) * inner);
+        dialCtx.lineTo(cx + Math.cos(angle) * outer, cy + Math.sin(angle) * outer);
+        dialCtx.stroke();
+      }
+
+      dialCtx.fillStyle = dialText;
+      dialCtx.font = `700 ${Math.max(18, radius * 0.12)}px "Segoe UI", Arial, sans-serif`;
+      dialCtx.textAlign = "center";
+      dialCtx.textBaseline = "middle";
+      for (let i = 0; i < 12; i++) {
+        const ratio = i / 12;
+        const label = Math.round(state.maxSeconds * ratio);
+        const angle = startAngle + ratio * Math.PI * 2;
+        const labelRadius = radius * 0.8;
+        const lx = cx + Math.cos(angle) * labelRadius;
+        const ly = cy + Math.sin(angle) * labelRadius;
+        dialCtx.fillText(String(label), lx, ly);
+      }
+
+      const needleAngle = endAngle;
+      dialCtx.strokeStyle = state.alarmActive ? danger : dialMajor;
+      dialCtx.lineWidth = 6;
+      dialCtx.lineCap = "round";
+      dialCtx.beginPath();
+      dialCtx.moveTo(cx, cy);
+      dialCtx.lineTo(cx + Math.cos(needleAngle) * radius * 0.57, cy + Math.sin(needleAngle) * radius * 0.57);
+      dialCtx.stroke();
+
+      dialCtx.fillStyle = "#b8b3ad";
+      dialCtx.beginPath();
+      dialCtx.arc(cx, cy, radius * 0.2, 0, Math.PI * 2);
+      dialCtx.fill();
+      dialCtx.strokeStyle = "#f5f2ee";
+      dialCtx.lineWidth = 3;
+      dialCtx.stroke();
+
+      dialCtx.fillStyle = dialText;
+      dialCtx.font = `700 ${Math.max(16, radius * 0.08)}px "Segoe UI", Arial, sans-serif`;
+      dialCtx.fillText(`${Math.round(state.currentSeconds)} s`, cx, cy + radius * 0.42);
+      dialCtx.font = `${Math.max(12, radius * 0.045)}px "Segoe UI", Arial, sans-serif`;
+      dialCtx.fillText(`MAX ${Math.round(state.maxSeconds)} s`, cx, cy + radius * 0.52);
+    }
+
+    function animate(ts) {
+      if (state.alarmActive && navigator.vibrate && ts - state.lastVibrateTs > 1200) {
+        navigator.vibrate([140, 70, 140, 70, 220]);
+        state.lastVibrateTs = ts;
+      }
+      requestAnimationFrame(animate);
+    }
+
+    maxSlider.addEventListener("input", event => {
+      state.maxSeconds = Number(event.target.value);
+      addLog(`(GUI): Max scale set to ${state.maxSeconds} s`);
+      updateStats();
+      updateAlarmState();
+      drawDial();
+    });
+
+    serialToggleBtn.addEventListener("click", toggleSerialConnection);
+    clearHistoryBtn.addEventListener("click", clearHistory);
+    uartTestInput.addEventListener("keydown", event => {
+      if (event.key === "Enter") {
+        const line = uartTestInput.value.trim();
+        if (!line) return;
+        event.preventDefault();
+        handleSerialLine(line);
+        uartTestInput.value = "";
+      }
+    });
+
+    window.addEventListener("keydown", event => {
+      const tag = document.activeElement?.tagName || "";
+      if (tag === "INPUT" || tag === "TEXTAREA" || tag === "SELECT") return;
+
+      if (event.key.toLowerCase() === "c") {
+        event.preventDefault();
+        toggleSerialConnection();
+      } else if (event.key.toLowerCase() === "h") {
+        event.preventDefault();
+        clearHistory();
+      }
+    });
+
+    window.addEventListener("resize", resizeDialCanvas);
+
+    updateSerialUi();
+    updateStats();
+    renderLogs();
+    resizeDialCanvas();
+    setStatus("Waiting for UART value", "normal");
+    requestAnimationFrame(animate);
+  </script>
+</body>
+</html>
+
+

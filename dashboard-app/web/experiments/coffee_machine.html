@@ -1,0 +1,1196 @@
+<!DOCTYPE html>
+<html lang="en" data-sync-dashboard-lights="true">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Embedded Programming - Coffee Machine</title>
+    <script>
+    (() => {
+      try {
+        const storedLights = localStorage.getItem("embedded-dashboard-lights-on");
+        const legacyStoredLights = localStorage.getItem("embedded-lights-on");
+        const resolvedLights = storedLights ?? legacyStoredLights;
+        if (resolvedLights === "false") {
+          document.documentElement.classList.add("theme-dark");
+        }
+      } catch (error) {
+        // Ignore storage failures and keep the light theme.
+      }
+    })();
+  </script>
+  <script src="../shared/mouse_glow.js"></script>
+  <script src="../shared/page_header.js"></script>
+  <style>
+    :root {
+      --bg: #edd7c4;
+      --panel: rgba(255, 251, 246, 0.92);
+      --line: #d6beab;
+      --title: #5b331f;
+      --text: #6b4836;
+      --subtle: #8b6a58;
+      --dark: #3f2a22;
+      --accent: #7d4b2c;
+      --green: #0f9f5b;
+      --red: #d04a48;
+      --cream: #f6eee6;
+      --toggle-bg: rgba(255, 255, 255, 0.92);
+      --toggle-border: #d6beab;
+      --toggle-thumb: #7d4b2c;
+      --toggle-text: #5b331f;
+      --back-bg: #f9efe6;
+      --back-border: #9e6a46;
+      --back-text: #7a4e32;
+      --status-success-bg: #eefaf4;
+      --status-warn-bg: #fff2e6;
+      --status-error-bg: #fff1f0;
+      --card-soft-bg: rgba(255,255,255,0.84);
+      --card-raised-bg: rgba(255,255,255,0.78);
+      --control-bg: #fffaf6;
+      --control-hover-bg: #fff2e6;
+      --control-disabled-bg: #f3e7de;
+      --control-hover-border: #af8467;
+      --log-bg: rgba(255,255,255,0.7);
+      --log-item-bg: rgba(255,255,255,0.9);
+      --log-item-border: #e7d7ca;
+      --field-bg: #fffaf6;
+      --machine-frame-bg: linear-gradient(180deg, rgba(255,255,255,0.65), rgba(252,245,239,0.92));
+      --machine-drawing-bg: linear-gradient(180deg, #f9efe7 0%, #f2e1d3 100%);
+      --machine-drawing-border: #d5bca9;
+      --machine-screen-bg: #ffffff;
+      --machine-screen-border: #8d8178;
+    }
+    html.theme-dark {
+      --bg: #251a15;
+      --panel: rgba(38, 27, 22, 0.94);
+      --line: #654f42;
+      --title: #fff2e7;
+      --text: #ead4c5;
+      --subtle: #c3a89a;
+      --dark: #f7e8dc;
+      --accent: #ffbe86;
+      --green: #36c67a;
+      --red: #f0726d;
+      --cream: #33251e;
+      --toggle-bg: rgba(38, 27, 22, 0.96);
+      --toggle-border: #7a5b4d;
+      --toggle-thumb: #ffbe86;
+      --toggle-text: #fff2e7;
+      --back-bg: #3a281f;
+      --back-border: #a67d63;
+      --back-text: #fff2e7;
+      --status-success-bg: rgba(54, 198, 122, 0.14);
+      --status-warn-bg: rgba(255, 190, 134, 0.16);
+      --status-error-bg: rgba(240, 114, 109, 0.14);
+      --card-soft-bg: rgba(64, 45, 36, 0.86);
+      --card-raised-bg: rgba(58, 41, 33, 0.9);
+      --control-bg: #3a281f;
+      --control-hover-bg: #513629;
+      --control-disabled-bg: #2f221c;
+      --control-hover-border: #ffbe86;
+      --log-bg: rgba(48, 34, 27, 0.78);
+      --log-item-bg: rgba(66, 46, 38, 0.94);
+      --log-item-border: #71584b;
+      --field-bg: #342520;
+      --machine-frame-bg: linear-gradient(180deg, rgba(63,46,38,0.92), rgba(40,29,24,0.96));
+      --machine-drawing-bg: linear-gradient(180deg, #4a352b 0%, #301f19 100%);
+      --machine-drawing-border: #745b4e;
+      --machine-screen-bg: #241a16;
+      --machine-screen-border: #8c766a;
+      --machine-body-bg: linear-gradient(180deg, #58433a 0%, #362721 100%);
+      --machine-body-border: #a48a79;
+      --machine-head-bg: linear-gradient(180deg, #8b817c 0%, #5d5753 100%);
+      --machine-head-border: #9f948d;
+      --dispenser-bg: #8d8178;
+      --cup-bg: linear-gradient(180deg, #3d2c24 0%, #2b1f1a 100%);
+      --cup-border: #b4937d;
+      --screen-text: #fff2e7;
+      --panel-heading: #fff2e7;
+      --panel-muted: #e2c8b8;
+    }
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      min-height: 100vh;
+      font-family: "Segoe UI", Arial, sans-serif;
+      color: var(--text);
+      background: radial-gradient(circle at top, #f7e7d7 0%, var(--bg) 60%, #e2c4ac 100%);
+    }
+    html.theme-dark body {
+      background: radial-gradient(circle at top, #3a2b24 0%, var(--bg) 60%, #18100d 100%);
+    }
+    .app { padding: 24px; display: grid; gap: 18px; }
+    .header, .layout, .machine-panel, .log-panel, .menu-link { border-radius: 28px; }
+    .header, .machine-panel, .log-panel {
+      background: var(--panel);
+      border: 2px solid var(--line);
+      box-shadow: 0 12px 28px rgba(91, 51, 31, 0.08);
+    }
+    .header {
+      padding: 18px 20px;
+      display: grid;
+      grid-template-columns: auto minmax(0, 1fr) auto auto;
+      gap: 16px;
+      align-items: center;
+    }
+    .brand-logo {
+      width: 132px;
+      max-width: 100%;
+      height: auto;
+      object-fit: contain;
+    }
+    .back {
+      text-decoration: none;
+      border: 2px solid #9e6a46;
+      color: #7a4e32;
+      background: #f9efe6;
+      border-radius: 16px;
+      padding: 12px 16px;
+      font-weight: 800;
+    }
+    h1, h2, h3, p { margin: 0; }
+    .title h1 { color: var(--title); font-size: clamp(28px, 3vw, 46px); }
+    .title p { color: var(--subtle); margin-top: 6px; }
+    .status {
+      border-radius: 18px;
+      padding: 12px 16px;
+      border: 2px solid var(--green);
+      color: var(--green);
+      background: #eefaf4;
+      font-weight: 800;
+      min-width: 240px;
+      text-align: center;
+    }
+    .layout {
+      display: grid;
+      grid-template-columns: minmax(640px, 1.15fr) minmax(320px, 0.85fr);
+      gap: 20px;
+      align-items: start;
+    }
+    .machine-panel { padding: 18px; display: grid; gap: 16px; }
+    .machine-frame {
+      min-height: 680px;
+      border-radius: 24px;
+      border: 1px solid var(--line);
+      background: linear-gradient(180deg, rgba(255,255,255,0.65), rgba(252,245,239,0.92));
+      padding: 22px;
+      display: grid;
+      grid-template-columns: minmax(280px, 0.8fr) minmax(260px, 1fr);
+      gap: 22px;
+      align-items: start;
+    }
+    .machine-drawing {
+      grid-column: 1;
+      grid-row: 1 / span 2;
+      position: relative;
+      min-height: 620px;
+      border-radius: 24px;
+      background: linear-gradient(180deg, #f9efe7 0%, #f2e1d3 100%);
+      border: 1px solid #d5bca9;
+      overflow: hidden;
+    }
+    .machine-assembly {
+      position: absolute;
+      left: 50%;
+      top: 10px;
+      width: 260px;
+      height: 430px;
+      transform: translateX(-50%);
+    }
+    .machine-body {
+      position: absolute;
+      left: 35px;
+      top: 54px;
+      width: 190px;
+      height: 340px;
+      border-radius: 26px;
+      background: linear-gradient(180deg, #f6f0ea 0%, #ddd0c7 100%);
+      border: 3px solid #9d8a7e;
+    }
+    .machine-head {
+      position: absolute;
+      left: 75px;
+      top: 10px;
+      width: 110px;
+      height: 70px;
+      border-radius: 32px;
+      background: linear-gradient(180deg, #cfc8c2 0%, #97908b 100%);
+      border: 3px solid #7f7975;
+    }
+    .machine-screen {
+      position: absolute;
+      left: 53px;
+      top: 100px;
+      width: 152px;
+      height: 66px;
+      border-radius: 14px;
+      background: #ffffff;
+      border: 2px solid #8d8178;
+      display: grid;
+      place-items: center;
+      color: var(--title);
+      font-weight: 800;
+      font-size: 18px;
+      text-align: center;
+      padding: 8px;
+    }
+    .dispenser {
+      position: absolute;
+      left: 107px;
+      top: 202px;
+      width: 44px;
+      height: 86px;
+      background: #857b74;
+      border-radius: 14px;
+    }
+    .cup {
+      position: absolute;
+      left: 83px;
+      top: 306px;
+      width: 92px;
+      height: 110px;
+      border-radius: 0 0 18px 18px;
+      border: 3px solid #826048;
+      background: linear-gradient(180deg, #ffffff 0%, #f7efe8 100%);
+      overflow: hidden;
+    }
+    .cup-fill {
+      position: absolute;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      height: 0%;
+      background: linear-gradient(180deg, #8f5b34 0%, #5d381f 100%);
+      transition: height 0.25s ease;
+    }
+    .pour {
+      position: absolute;
+      left: 138px;
+      top: 286px;
+      width: 8px;
+      height: 0;
+      background: linear-gradient(180deg, #ab6f3f 0%, #6d4023 100%);
+      border-radius: 999px;
+      transition: height 0.18s ease;
+    }
+    .phase-card, .selection-card, .custom-card {
+      background: rgba(255,255,255,0.84);
+      border: 1px solid var(--line);
+      border-radius: 22px;
+      padding: 16px;
+      display: grid;
+      gap: 14px;
+    }
+    .state-card {
+      grid-column: 2;
+      grid-row: 2;
+      background: var(--card-soft-bg);
+      border: 1px solid var(--line);
+      border-radius: 22px;
+      padding: 16px;
+      display: grid;
+      gap: 14px;
+    }
+    .state-card p {
+      color: var(--panel-muted);
+      line-height: 1.45;
+    }
+    .state-diagram {
+      display: grid;
+      grid-template-columns: repeat(7, minmax(0, 1fr));
+      gap: 10px;
+      align-items: center;
+    }
+    .state-node {
+      position: relative;
+      min-height: 96px;
+      border-radius: 20px;
+      border: 2px solid var(--line);
+      background: var(--card-raised-bg);
+      padding: 12px 10px;
+      display: grid;
+      gap: 6px;
+      place-items: center;
+      text-align: center;
+      transition: 0.2s ease;
+    }
+    .state-node strong {
+      color: var(--panel-heading);
+      font-size: 16px;
+      letter-spacing: 0.03em;
+    }
+    .state-node span {
+      color: var(--panel-muted);
+      font-size: 12px;
+      line-height: 1.35;
+    }
+    .state-node.active {
+      border-color: var(--green);
+      background: color-mix(in srgb, var(--status-success-bg) 72%, var(--card-raised-bg) 28%);
+      box-shadow: 0 0 0 3px rgba(54, 198, 122, 0.12);
+      transform: translateY(-2px);
+    }
+    .state-node.active strong,
+    .state-node.active span {
+      color: var(--panel-heading);
+    }
+    .state-arrow {
+      display: grid;
+      place-items: center;
+      font-size: 0;
+      color: var(--panel-muted);
+      font-weight: 800;
+    }
+    .state-arrow::before {
+      content: "->";
+      font-size: 22px;
+      line-height: 1;
+    }
+    .state-arrow small {
+      display: block;
+      margin-top: 4px;
+      font-size: 11px;
+      letter-spacing: 0.02em;
+    }
+    .selection-grid {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 14px;
+    }
+    .drink-btn, .option-btn, .action-btn {
+      border: 2px solid var(--line);
+      border-radius: 18px;
+      background: #fffaf6;
+      color: var(--text);
+      padding: 14px 16px;
+      font-weight: 700;
+      cursor: pointer;
+      transition: 0.18s ease;
+    }
+    .drink-btn:hover, .option-btn:hover, .action-btn:hover {
+      transform: translateY(-1px);
+      border-color: #af8467;
+      background: #fff2e6;
+    }
+    .drink-btn:disabled, .option-btn:disabled, .action-btn:disabled {
+      cursor: not-allowed;
+      opacity: 0.55;
+      transform: none;
+      background: #f3e7de;
+    }
+    .drink-btn strong { display: block; color: var(--title); margin-bottom: 4px; }
+    .shortcut-hint {
+      display: block;
+      margin-top: 6px;
+      font-size: 12px;
+      color: var(--panel-muted);
+      opacity: 0.92;
+    }
+    .option-grid {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+    }
+    .summary {
+      display: grid;
+      gap: 8px;
+      color: var(--subtle);
+      font-size: 15px;
+    }
+    .hidden { display: none !important; }
+    .log-panel { padding: 18px; display: grid; gap: 12px; }
+    .log-list {
+      min-height: 640px;
+      border-radius: 22px;
+      border: 1px solid var(--line);
+      background: rgba(255,255,255,0.7);
+      padding: 14px;
+      display: grid;
+      align-content: start;
+      gap: 8px;
+      overflow: auto;
+    }
+    .log-item {
+      font-family: Consolas, monospace;
+      font-size: 14px;
+      padding: 9px 10px;
+      border-radius: 12px;
+      background: rgba(255,255,255,0.9);
+      border: 1px solid #e7d7ca;
+      word-break: break-word;
+    }
+    .footnote { color: var(--subtle); font-size: 14px; }
+    .serial-card {
+      border: 1px solid var(--line);
+      border-radius: 22px;
+      background: rgba(255,255,255,0.78);
+      padding: 14px;
+      display: grid;
+      gap: 12px;
+    }
+    .serial-controls {
+      display: grid;
+      grid-template-columns: minmax(0, 1fr) auto;
+      gap: 10px;
+      align-items: end;
+    }
+    .tool-row {
+      display: grid;
+      grid-template-columns: minmax(0, 1fr) auto;
+      gap: 10px;
+      align-items: center;
+    }
+    .field {
+      display: grid;
+      gap: 6px;
+      font-size: 14px;
+      color: var(--subtle);
+      font-weight: 700;
+    }
+    .field select {
+      width: 100%;
+      padding: 11px 12px;
+      border-radius: 14px;
+      border: 2px solid var(--line);
+      background: #fffaf6;
+      color: var(--text);
+      font: inherit;
+    }
+    .uart-test-input {
+      width: 100%;
+      padding: 11px 12px;
+      border-radius: 14px;
+      border: 2px solid var(--line);
+      background: #fffaf6;
+      color: var(--text);
+      font: inherit;
+    }
+    .serial-meta {
+      display: grid;
+      gap: 4px;
+      font-size: 14px;
+    }
+    .serial-state {
+      color: var(--title);
+      font-weight: 800;
+    }
+    .machine-body {
+      background: var(--machine-body-bg);
+      border-color: var(--machine-body-border);
+    }
+    .machine-head {
+      background: var(--machine-head-bg);
+      border-color: var(--machine-head-border);
+    }
+    .dispenser {
+      background: var(--dispenser-bg);
+    }
+    .cup {
+      background: var(--cup-bg);
+      border-color: var(--cup-border);
+    }
+    .back {
+      border-color: var(--back-border);
+      color: var(--back-text);
+      background: var(--back-bg);
+    }
+    .status {
+      background: var(--status-success-bg);
+    }
+    .machine-frame {
+      background: var(--machine-frame-bg);
+    }
+    .machine-drawing {
+      background: var(--machine-drawing-bg);
+      border-color: var(--machine-drawing-border);
+    }
+    .machine-screen {
+      background: var(--machine-screen-bg);
+      border-color: var(--machine-screen-border);
+      color: var(--screen-text);
+    }
+    .phase-card, .selection-card, .custom-card {
+      background: var(--card-soft-bg);
+      color: var(--text);
+    }
+    .drink-btn, .option-btn, .action-btn {
+      background: var(--control-bg);
+      color: var(--text);
+    }
+    .drink-btn:hover, .option-btn:hover, .action-btn:hover {
+      border-color: var(--control-hover-border);
+      background: var(--control-hover-bg);
+    }
+    .drink-btn:disabled, .option-btn:disabled, .action-btn:disabled {
+      background: var(--control-disabled-bg);
+    }
+    .log-list {
+      background: var(--log-bg);
+    }
+    .log-item {
+      background: var(--log-item-bg);
+      border-color: var(--log-item-border);
+      color: var(--text);
+    }
+    .serial-card {
+      background: var(--card-raised-bg);
+    }
+    .field select {
+      background: var(--field-bg);
+      color: var(--text);
+    }
+    .machine-panel h2,
+    .log-panel h2,
+    .serial-card h3,
+    .selection-card h3,
+    .custom-card h3,
+    .phase-card h3 {
+      color: var(--panel-heading);
+    }
+    .title p,
+    .summary,
+    .footnote,
+    .serial-meta,
+    .field,
+    .drink-btn span,
+    .drink-btn strong,
+    .shortcut-hint {
+      color: var(--panel-muted);
+    }
+    .drink-btn strong {
+      color: var(--panel-heading);
+    }
+    .status,
+    .serial-state {
+      color: var(--panel-heading);
+    }
+    .machine-status {
+      margin-bottom: 12px;
+      justify-self: start;
+      min-width: 260px;
+    }
+    @media (max-width: 1180px) {
+      .layout { grid-template-columns: 1fr; }
+      .machine-frame { grid-template-columns: 1fr; }
+      .machine-drawing,
+      .state-card {
+        grid-column: auto;
+        grid-row: auto;
+      }
+    }
+    @media (max-width: 720px) {
+      .header { grid-template-columns: 1fr; }
+      .selection-grid { grid-template-columns: 1fr; }
+      .state-diagram { grid-template-columns: 1fr; }
+      .state-arrow { transform: rotate(90deg); min-height: 28px; }
+    }
+    .history-heading { display: flex; align-items: center; justify-content: space-between; gap: 12px; flex-wrap: wrap; }
+    .history-heading h2 { margin: 0; }
+    .uart-test-row { display: grid; grid-template-columns: minmax(0, 1fr); }
+    #serialToggleBtn { white-space: nowrap; }
+  </style>
+</head>
+<body>
+  <div class="app">
+    <header class="header">
+      <a class="back" href="../index.html">Back to menu</a>
+      <div class="title">
+        <h1>Coffee Machine</h1>
+        <p>Select a drink, customize it, and watch the machine prepare the cup.</p>
+      </div>
+      <img class="brand-logo" src="../../assets/branding/hanze_logo.png" alt="Hanze logo" />
+    </header>
+
+    <section class="layout">
+      <section class="machine-panel">
+        <h2>Machine interface</h2>
+        <div class="status machine-status" id="statusPill">Waiting for selection</div>
+        <div class="machine-frame">
+          <div class="machine-drawing">
+            <div class="machine-assembly">
+              <div class="machine-head"></div>
+              <div class="machine-body"></div>
+              <div class="machine-screen" id="machineScreen">Choose a drink</div>
+              <div class="dispenser"></div>
+              <div class="pour" id="pourStream"></div>
+              <div class="cup">
+                <div class="cup-fill" id="cupFill"></div>
+              </div>
+            </div>
+          </div>
+
+          <div class="phase-card">
+            <div id="selectPhase">
+              <div class="selection-card">
+                <h3>Select a drink</h3>
+                <div class="selection-grid" id="drinkGrid"></div>
+              </div>
+            </div>
+
+            <div id="customPhase" class="hidden">
+              <div class="custom-card">
+                <h3 id="customTitle">Sugar level</h3>
+                <div class="option-grid" id="optionGrid"></div>
+                <div class="summary" id="selectionSummary"></div>
+              </div>
+            </div>
+
+            <div id="preparePhase" class="hidden">
+              <div class="custom-card">
+                <h3>Preparing drink</h3>
+                <p id="prepareMessage">Grinding beans and heating water...</p>
+                <div class="summary" id="prepareSummary"></div>
+              </div>
+            </div>
+
+            <div id="donePhase" class="hidden">
+              <div class="custom-card">
+                <h3>Drink ready</h3>
+                <p>Your cup is ready. You can start a new order.</p>
+                <div class="summary" id="doneSummary"></div>
+                <button class="action-btn" id="newOrderBtn">Start new order</button>
+              </div>
+            </div>
+          </div>
+
+          <div class="state-card">
+            <h3>System state diagram</h3>
+            <p>The highlighted block shows the current machine state for both the local flow and the UART-driven ESP32 flow.</p>
+            <div class="state-diagram">
+              <div class="state-node active" id="stateNodeSelect" data-phase="select">
+                <strong>Select</strong>
+                <span>Idle and waiting for a drink</span>
+              </div>
+              <div class="state-arrow">â†’<small>Drink selected</small></div>
+              <div class="state-node" id="stateNodeCustom" data-phase="custom">
+                <strong>Customize</strong>
+                <span>Sugar, strength, and milk</span>
+              </div>
+              <div class="state-arrow">â†’<small>Options confirmed</small></div>
+              <div class="state-node" id="stateNodePrepare" data-phase="prepare">
+                <strong>Prepare</strong>
+                <span>Machine processes the order</span>
+              </div>
+              <div class="state-arrow">â†’<small>Drink complete</small></div>
+              <div class="state-node" id="stateNodeDone" data-phase="done">
+                <strong>Ready</strong>
+                <span>Pickup and start a new round</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <aside class="log-panel">
+        <div class="serial-card">
+          <h3>UART</h3>
+          <div class="serial-controls">
+            <label class="field">
+              <span>Baud rate</span>
+              <select id="baudSelect">
+                <option value="115200" selected>115200</option>
+                <option value="9600">9600</option>
+              </select>
+            </label>
+            <button class="action-btn" id="serialToggleBtn" type="button">Connect (Key C)</button>
+          </div>
+          <div class="serial-meta">
+            <div class="serial-state" id="serialStatus">Not connected</div>
+            <div class="footnote" id="serialHint"></div>
+          </div>
+        </div>
+        <div class="serial-card">
+          <h3>UART test</h3>
+          <div class="tool-row uart-test-row">
+            <input class="uart-test-input" id="uartTestInput" type="text" placeholder="Type a UART line, for example STATE:CUSTOMIZE, then press Enter" />
+          </div>
+          <div class="footnote">Use this field to simulate a UART line locally and check how the machine reacts.</div>
+        </div>
+        <div class="history-heading">
+          <h2>History</h2>
+          <button class="action-btn" id="clearHistoryBtn" type="button">Clear history<small class="shortcut-hint">(Key H)</small></button>
+        </div>
+        <div class="log-list" id="logList"></div>
+        <p class="footnote">When connected, the page mirrors the UART protocol from the original pygame coffee machine.</p>
+      </aside>
+    </section>
+  </div>
+
+  <script src="../shared/sound_fx.js"></script>
+  <script src="../shared/web_serial_bridge.js"></script>
+  <script>
+    const drinks = [
+      { name: "Espresso", code: "ESPRESSO", color: "#6b3f21", shortcut: "1" },
+      { name: "Cappuccino", code: "CAPUCCINO", color: "#9b6844", shortcut: "2" },
+      { name: "Tomato soup", code: "TOMATO_SOUP", color: "#ba4f33", shortcut: "3" },
+      { name: "Chocolate", code: "CHOCOLATE", color: "#5b2f24", shortcut: "4" }
+    ];
+
+    const customSteps = [
+      {
+        key: "sugar",
+        title: "Sugar level",
+        prefix: "SUGAR:",
+        options: [
+          { label: "No sugar", value: "NO_SUGAR", shortcut: "1" },
+          { label: "Low", value: "LOW", shortcut: "2" },
+          { label: "Medium", value: "MEDIUM", shortcut: "3" },
+          { label: "High", value: "HIGH", shortcut: "4" }
+        ]
+      },
+      {
+        key: "strength",
+        title: "Strength level",
+        prefix: "STRENGTH:",
+        options: [
+          { label: "Mild", value: "MILD", shortcut: "1" },
+          { label: "Medium", value: "MEDIUM", shortcut: "2" },
+          { label: "Strong", value: "STRONG", shortcut: "3" }
+        ]
+      },
+      {
+        key: "milk",
+        title: "Milk",
+        prefix: "MILK:",
+        options: [
+          { label: "Yes", value: "YES", shortcut: "1" },
+          { label: "No", value: "NO", shortcut: "2" }
+        ]
+      }
+    ];
+
+    const state = {
+      phase: "select",
+      selectedDrink: null,
+      selections: { sugar: null, strength: null, milk: null },
+      stepIndex: 0,
+      progress: 0,
+      prepareTimer: 0,
+      awaitingAck: false,
+      serialConnected: false,
+      logs: []
+    };
+
+    const drinkGrid = document.getElementById("drinkGrid");
+    const optionGrid = document.getElementById("optionGrid");
+    const machineScreen = document.getElementById("machineScreen");
+    const statusPill = document.getElementById("statusPill");
+    const selectionSummary = document.getElementById("selectionSummary");
+    const prepareSummary = document.getElementById("prepareSummary");
+    const doneSummary = document.getElementById("doneSummary");
+    const customTitle = document.getElementById("customTitle");
+    const prepareMessage = document.getElementById("prepareMessage");
+    const cupFill = document.getElementById("cupFill");
+    const pourStream = document.getElementById("pourStream");
+    const logList = document.getElementById("logList");
+    const newOrderBtn = document.getElementById("newOrderBtn");
+    const baudSelect = document.getElementById("baudSelect");
+    const serialToggleBtn = document.getElementById("serialToggleBtn");
+    const serialStatus = document.getElementById("serialStatus");
+    const serialHint = document.getElementById("serialHint");
+    const uartTestInput = document.getElementById("uartTestInput");
+    const clearHistoryBtn = document.getElementById("clearHistoryBtn");
+    const stateNodes = {
+      select: document.getElementById("stateNodeSelect"),
+      custom: document.getElementById("stateNodeCustom"),
+      prepare: document.getElementById("stateNodePrepare"),
+      done: document.getElementById("stateNodeDone")
+    };
+
+    const phaseEls = {
+      select: document.getElementById("selectPhase"),
+      custom: document.getElementById("customPhase"),
+      prepare: document.getElementById("preparePhase"),
+      done: document.getElementById("donePhase")
+    };
+
+    const serialBridge = new WebSerialLineBridge({
+      onLine: handleSerialLine,
+      onStatus: handleSerialStatus,
+      onError: error => {
+        addLog(`(SYSTEM): UART error - ${error.message || error}`);
+        setStatus("Serial read error.", "red");
+      }
+    });
+
+    function setStatus(message, tone = "green") {
+      const palette = {
+        green: { color: "var(--green)", border: "var(--green)", background: "var(--status-success-bg)" },
+        brown: { color: "var(--accent)", border: "var(--accent)", background: "var(--status-warn-bg)" },
+        red: { color: "var(--red)", border: "var(--red)", background: "var(--status-error-bg)" }
+      };
+      const theme = palette[tone] || palette.green;
+      statusPill.textContent = message;
+      statusPill.style.color = theme.color;
+      statusPill.style.borderColor = theme.border;
+      statusPill.style.background = theme.background;
+    }
+
+    function updateSerialUi() {
+      if (!serialBridge.supported) {
+        serialToggleBtn.disabled = true;
+        serialStatus.textContent = "Web Serial unavailable";
+        serialHint.textContent = "Open this page in Chrome or Edge on localhost or https.";
+        return;
+      }
+
+      serialToggleBtn.disabled = false;
+      serialToggleBtn.textContent = state.serialConnected ? "Disconnect (Key C)" : "Connect (Key C)";
+      serialStatus.textContent = state.serialConnected ? `Connected at ${baudSelect.value} baud` : "Not connected";
+      serialHint.textContent = state.serialConnected
+        ? "ESP32 lines now drive the machine state exactly like the pygame version."
+        : "Local fallback stays available when the board is not connected.";
+    }
+
+    async function sendSerialCommand(command, message, tone = "green") {
+      await serialBridge.sendLine(command);
+      addLog(`(PC): '${command}'`);
+      if (message) {
+        setStatus(message, tone);
+      }
+    }
+
+    function addLog(message) {
+      state.logs.push(message);
+      if (state.logs.length > 24) state.logs.shift();
+      renderLogs();
+    }
+
+    function clearHistory() {
+      state.logs = ["(SYSTEM): History cleared."];
+      renderLogs();
+    }
+
+    function renderLogs() {
+      logList.innerHTML = "";
+      for (const message of [...state.logs].reverse()) {
+        const item = document.createElement("div");
+        item.className = "log-item";
+        item.textContent = message;
+        logList.appendChild(item);
+      }
+    }
+
+    function setPhase(name) {
+      state.phase = name;
+      Object.entries(phaseEls).forEach(([key, el]) => el.classList.toggle("hidden", key !== name));
+      Object.entries(stateNodes).forEach(([key, el]) => el.classList.toggle("active", key === name));
+    }
+
+    function renderDrinkButtons() {
+      drinkGrid.innerHTML = "";
+      for (const drink of drinks) {
+        const btn = document.createElement("button");
+        btn.className = "drink-btn";
+        btn.innerHTML = `<strong>${drink.name}</strong><span>${drink.code}</span><small class="shortcut-hint">(Key ${drink.shortcut})</small>`;
+        btn.addEventListener("click", () => selectDrink(drink));
+        drinkGrid.appendChild(btn);
+      }
+    }
+
+    function selectDrink(drink) {
+      state.selectedDrink = drink;
+      state.selections = { sugar: null, strength: null, milk: null };
+      state.stepIndex = 0;
+      state.awaitingAck = false;
+      machineScreen.textContent = drink.name;
+
+      if (state.serialConnected) {
+        setPhase("select");
+        sendSerialCommand(`SELECTED:${drink.code}`, "Drink sent to ESP32. Waiting for customize state...", "brown")
+          .catch(error => {
+            addLog(`(SYSTEM): Send failed - ${error.message || error}`);
+            setStatus("Unable to send drink selection.", "red");
+          });
+      } else {
+        setPhase("custom");
+        addLog(`(USER): SELECTED:${drink.code}`);
+        setStatus("Customizing order", "brown");
+        renderCurrentStep();
+      }
+    }
+
+    function renderCurrentStep() {
+      const step = customSteps[state.stepIndex];
+      customTitle.textContent = step.title;
+      optionGrid.innerHTML = "";
+      selectionSummary.innerHTML = buildSummaryHtml();
+
+      for (const option of step.options) {
+        const btn = document.createElement("button");
+        btn.className = "option-btn";
+        btn.innerHTML = `${option.label}<small class="shortcut-hint">(Key ${option.shortcut})</small>`;
+        btn.disabled = state.awaitingAck;
+        btn.addEventListener("click", () => handleOption(step, option));
+        optionGrid.appendChild(btn);
+      }
+    }
+
+    function handleOption(step, option) {
+      state.selections[step.key] = option.label;
+      const command = `${step.prefix}${option.value}`;
+
+      if (state.serialConnected) {
+        state.awaitingAck = true;
+        renderCurrentStep();
+        sendSerialCommand(command, `Sent ${step.title}. Waiting confirmation...`, "brown")
+          .catch(error => {
+            state.awaitingAck = false;
+            renderCurrentStep();
+            addLog(`(SYSTEM): Send failed - ${error.message || error}`);
+            setStatus("Unable to send customization command.", "red");
+          });
+      } else {
+        addLog(`(USER): ${command}`);
+        if (state.stepIndex < customSteps.length - 1) {
+          state.stepIndex += 1;
+          renderCurrentStep();
+        } else {
+          startPreparation();
+        }
+      }
+    }
+
+    function buildSummaryHtml() {
+      const entries = [
+        `Drink: ${state.selectedDrink ? state.selectedDrink.name : "-"}`,
+        `Sugar: ${state.selections.sugar ?? "-"}`,
+        `Strength: ${state.selections.strength ?? "-"}`,
+        `Milk: ${state.selections.milk ?? "-"}`
+      ];
+      return entries.map(line => `<div>${line}</div>`).join("");
+    }
+
+    function advanceCustomStep(okPrefix) {
+      state.awaitingAck = false;
+      if (state.phase !== "custom") {
+        return;
+      }
+
+      if (okPrefix === "MILK") {
+        state.awaitingAck = true;
+        setStatus("Customization saved. Waiting for preparation...", "green");
+        renderCurrentStep();
+        return;
+      }
+
+      if (state.stepIndex < customSteps.length - 1) {
+        state.stepIndex += 1;
+        setStatus(`Saved. Choose ${customSteps[state.stepIndex].title}.`, "green");
+      }
+
+      renderCurrentStep();
+    }
+
+    function startPreparation() {
+      setPhase("prepare");
+      state.prepareTimer = 0;
+      state.progress = 0;
+      state.awaitingAck = false;
+      cupFill.style.height = "0%";
+      pourStream.style.height = "110px";
+      setStatus("Preparing drink", "green");
+      machineScreen.textContent = "Preparing...";
+      prepareSummary.innerHTML = buildSummaryHtml();
+      addLog("(MACHINE): STATE:PREPARE");
+    }
+
+    function finishPreparation() {
+      setPhase("done");
+      state.progress = 1;
+      cupFill.style.height = "78%";
+      pourStream.style.height = "0px";
+      machineScreen.textContent = "Ready!";
+      doneSummary.innerHTML = buildSummaryHtml();
+      setStatus("Ready for pickup", "green");
+      addLog("(MACHINE): READY!");
+    }
+
+    function resetOrder(options = {}) {
+      const { silentLog = false } = options;
+      state.selectedDrink = null;
+      state.selections = { sugar: null, strength: null, milk: null };
+      state.stepIndex = 0;
+      state.progress = 0;
+      state.prepareTimer = 0;
+      state.awaitingAck = false;
+      setPhase("select");
+      cupFill.style.height = "0%";
+      pourStream.style.height = "0px";
+      machineScreen.textContent = "Choose a drink";
+      setStatus(state.serialConnected ? "Connected to ESP32. Select a drink." : "Waiting for selection", "green");
+      if (!silentLog) {
+        addLog("(MACHINE): INSERT COIN / START NEW ROUND");
+      }
+    }
+
+    function updatePreparation(dt) {
+      if (state.phase !== "prepare") return;
+      state.prepareTimer += dt;
+      const targetProgress = state.serialConnected ? 0.92 : 1;
+      state.progress = Math.min(targetProgress, state.prepareTimer / 4.2);
+      cupFill.style.height = `${state.progress * 78}%`;
+      pourStream.style.height = state.progress < targetProgress ? "110px" : "0px";
+
+      if (state.progress < 0.35) prepareMessage.textContent = "Grinding beans and heating water...";
+      else if (state.progress < 0.72) prepareMessage.textContent = "Dispensing your drink...";
+      else prepareMessage.textContent = "Finalizing the cup...";
+
+      if (!state.serialConnected && state.progress >= 1) {
+        pourStream.style.height = "0px";
+        finishPreparation();
+      }
+    }
+
+    function handleSerialLine(line) {
+      addLog(`(ESP): '${line}'`);
+      const normalized = line.trim().toUpperCase();
+
+      if (normalized.startsWith("STATE:CUSTOMIZE")) {
+        setPhase("custom");
+        state.stepIndex = 0;
+        state.awaitingAck = false;
+        renderCurrentStep();
+        setStatus("Choose Sugar level.", "green");
+        return;
+      }
+
+      if (normalized.startsWith("STATE:PREPARE")) {
+        startPreparation();
+        return;
+      }
+
+      if (normalized === "SUGAR:OK") {
+        advanceCustomStep("SUGAR");
+        return;
+      }
+
+      if (normalized === "STRENGTH:OK") {
+        advanceCustomStep("STRENGTH");
+        return;
+      }
+
+      if (normalized === "MILK:OK") {
+        advanceCustomStep("MILK");
+        return;
+      }
+
+      if (normalized.startsWith("READY!")) {
+        finishPreparation();
+        return;
+      }
+
+      if (normalized.includes("INSERT COIN")) {
+        resetOrder({ silentLog: true });
+        sendSerialCommand("s", "Start signal sent. Select a drink.")
+          .catch(error => {
+            addLog(`(SYSTEM): Start signal failed - ${error.message || error}`);
+            setStatus("Unable to send start signal.", "red");
+          });
+      }
+    }
+
+    function handleSerialStatus(status) {
+      state.serialConnected = status === "connected";
+      updateSerialUi();
+
+      if (state.serialConnected) {
+        resetOrder({ silentLog: true });
+        addLog(`(SYSTEM): UART connected at ${baudSelect.value} baud.`);
+        setStatus("ESP32 connected. Waiting for device state...", "green");
+      } else {
+        resetOrder({ silentLog: true });
+        addLog("(SYSTEM): UART disconnected. Local mode enabled.");
+      }
+    }
+
+    async function toggleSerialConnection() {
+      serialToggleBtn.disabled = true;
+      try {
+        if (state.serialConnected) {
+          await serialBridge.disconnect();
+        } else {
+          await serialBridge.connect(Number(baudSelect.value));
+        }
+      } catch (error) {
+        addLog(`(SYSTEM): ${error.message || error}`);
+        setStatus("Connection failed.", "red");
+      } finally {
+        updateSerialUi();
+      }
+    }
+
+    function animate(ts) {
+      if (!animate.last) animate.last = ts;
+      const dt = Math.min(0.05, (ts - animate.last) / 1000);
+      animate.last = ts;
+      updatePreparation(dt);
+      requestAnimationFrame(animate);
+    }
+
+    newOrderBtn.addEventListener("click", resetOrder);
+    serialToggleBtn.addEventListener("click", toggleSerialConnection);
+    clearHistoryBtn.addEventListener("click", clearHistory);
+    uartTestInput.addEventListener("keydown", event => {
+      if (event.key === "Enter") {
+        const line = uartTestInput.value.trim();
+        if (!line) return;
+        event.preventDefault();
+        handleSerialLine(line);
+        uartTestInput.value = "";
+      }
+    });
+
+    window.addEventListener("keydown", event => {
+      const tag = document.activeElement?.tagName || "";
+      if (tag === "INPUT" || tag === "TEXTAREA" || tag === "SELECT") return;
+
+      const key = event.key.toLowerCase();
+
+      if (key === "c") {
+        event.preventDefault();
+        toggleSerialConnection();
+        return;
+      }
+
+      if (key === "h") {
+        event.preventDefault();
+        clearHistory();
+        return;
+      }
+
+      if (key === "n" && state.phase === "done") {
+        event.preventDefault();
+        resetOrder();
+        return;
+      }
+
+      if (state.phase === "select") {
+        const drink = drinks.find(item => item.shortcut === key);
+        if (drink) {
+          event.preventDefault();
+          selectDrink(drink);
+        }
+        return;
+      }
+
+      if (state.phase === "custom") {
+        const step = customSteps[state.stepIndex];
+        const option = step.options.find(item => item.shortcut === key);
+        if (option && !state.awaitingAck) {
+          event.preventDefault();
+          handleOption(step, option);
+        }
+      }
+    });
+
+    renderDrinkButtons();
+    updateSerialUi();
+    addLog("(SYSTEM): Coffee machine HTML experiment ready.");
+    addLog("(SYSTEM): Connect an ESP32 for UART mode or use the local fallback.");
+    resetOrder();
+    requestAnimationFrame(animate);
+  </script>
+</body>
+</html>
+
+

@@ -1,0 +1,21 @@
+<svg width="96" height="96" viewBox="0 0 96 96" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <rect x="6" y="6" width="84" height="84" rx="18" fill="#102633"/>
+  <rect x="6.5" y="6.5" width="83" height="83" rx="17.5" stroke="#486375"/>
+  <!-- Heating zone band (bottom) -->
+  <rect x="14" y="62" width="68" height="14" rx="3" fill="#FF6B3520" opacity="0.6"/>
+  <!-- Cooling zone band (top) -->
+  <rect x="14" y="20" width="68" height="14" rx="3" fill="#63C4FF20" opacity="0.6"/>
+  <!-- 4 threshold dashed lines -->
+  <!-- heatOn (orange, lowest) -->
+  <path d="M14 76H82" stroke="#FF8C42" stroke-width="1.5" stroke-dasharray="4 3"/>
+  <!-- heatOff (yellow-orange) -->
+  <path d="M14 62H82" stroke="#FFCC45" stroke-width="1.5" stroke-dasharray="4 3"/>
+  <!-- coolOff (light blue) -->
+  <path d="M14 34H82" stroke="#63C4FF" stroke-width="1.5" stroke-dasharray="4 3"/>
+  <!-- coolOn (blue, highest) -->
+  <path d="M14 20H82" stroke="#4499FF" stroke-width="1.5" stroke-dasharray="4 3"/>
+  <!-- Temperature signal: goes down (cooling) then up (heating) -->
+  <path d="M14 28 C22 28 24 56 32 56 C40 56 40 70 50 70 C58 70 58 44 66 44 C74 44 74 32 82 32" stroke="#2FC76B" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>
+  <!-- State output step (heater=orange, off=gray, AC=blue) -->
+  <path d="M14 88H26V84H38V88H52V84H64V88H82" stroke="#FF6B35" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" opacity="0.85"/>
+</svg>

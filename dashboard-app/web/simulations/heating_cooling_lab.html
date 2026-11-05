@@ -1,0 +1,792 @@
+<!DOCTYPE html>
+<html lang="en" data-sync-dashboard-lights="true">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Embedded Programming - Heating &amp; Cooling</title>
+  <script>
+  (() => {
+    try {
+      const s = localStorage.getItem("embedded-dashboard-lights-on") ?? localStorage.getItem("embedded-lights-on");
+      if (s !== "true") document.documentElement.classList.add("theme-dark");
+    } catch {}
+  })();
+  </script>
+  <script src="../shared/mouse_glow.js"></script>
+  <script src="../shared/page_header.js"></script>
+  <style>
+    :root {
+      --bg: #0f2230;
+      --panel: rgba(20, 36, 48, 0.94);
+      --card: rgba(30, 50, 65, 0.96);
+      --line: #37586d;
+      --text: #edf7fb;
+      --subtle: #9db9c8;
+      --accent: #63c4ff;
+      --accent-soft: rgba(99, 196, 255, 0.14);
+      --green: #2fc76b;
+      --green-soft: rgba(47, 199, 107, 0.14);
+      --orange: #ff9f43;
+      --orange-soft: rgba(255, 159, 67, 0.14);
+      --red: #ff6b65;
+      --red-soft: rgba(255, 107, 101, 0.14);
+      --white: #f6fbff;
+      --button-bg: #173245;
+      --shadow: 0 14px 34px rgba(0, 0, 0, 0.28);
+      --plot-fill: rgba(7, 15, 21, 0.86);
+      --plot-grid: rgba(255, 255, 255, 0.07);
+      --plot-axis: rgba(255, 255, 255, 0.55);
+      --plot-hover: rgba(255, 255, 255, 0.42);
+      --transfer-bg: rgba(7, 15, 21, 0.86);
+      --transfer-axis: rgba(255, 255, 255, 0.55);
+      --transfer-grid: rgba(255, 255, 255, 0.08);
+      --transfer-guide: rgba(255, 255, 255, 0.34);
+    }
+    html:not(.theme-dark) {
+      --bg: #eef5ff;
+      --panel: rgba(255, 255, 255, 0.88);
+      --card: rgba(248, 251, 255, 0.96);
+      --line: #d4e3f4;
+      --text: #244765;
+      --subtle: #6f88a3;
+      --white: #244765;
+      --button-bg: #f5f9ff;
+      --shadow: 0 18px 42px rgba(48, 92, 145, 0.12);
+      --plot-fill: #ffffff;
+      --plot-grid: rgba(111, 136, 163, 0.18);
+      --plot-axis: rgba(92, 119, 148, 0.74);
+      --plot-hover: rgba(111, 136, 163, 0.44);
+      --transfer-bg: #ffffff;
+      --transfer-axis: rgba(92, 119, 148, 0.74);
+      --transfer-grid: rgba(111, 136, 163, 0.14);
+      --transfer-guide: rgba(111, 136, 163, 0.34);
+    }
+    * { box-sizing: border-box; }
+    body {
+      margin: 0; min-height: 100vh;
+      font-family: "Segoe UI", Arial, sans-serif;
+      color: var(--text);
+      background: radial-gradient(circle at top, #193549 0%, var(--bg) 58%, #081118 100%);
+    }
+    html:not(.theme-dark) body { background: radial-gradient(circle at top left, rgba(120,180,255,0.18) 0%, transparent 28%), linear-gradient(180deg, #f8fbff 0%, var(--bg) 58%, #e8f1ff 100%); }
+    .app { padding: 22px; display: grid; gap: 18px; }
+    .header, .panel, .card { background: var(--panel); border: 1px solid var(--line); border-radius: 28px; box-shadow: var(--shadow); }
+    .header { padding: 18px 20px; display: grid; grid-template-columns: auto minmax(0, 1fr) auto; gap: 16px; align-items: center; }
+    .back { color: var(--text); text-decoration: none; border: 2px solid var(--line); border-radius: 16px; padding: 12px 16px; background: var(--button-bg); font-weight: 800; }
+    .brand-logo { width: 132px; max-width: 100%; height: auto; object-fit: contain; }
+    .title h1 { margin: 0; font-size: clamp(28px, 3vw, 46px); }
+    .title p { margin: 6px 0 0; color: var(--subtle); line-height: 1.45; }
+    .action-btn { appearance: none; border: 2px solid var(--line); border-radius: 14px; padding: 10px 14px; background: var(--button-bg); color: var(--text); font-weight: 800; cursor: pointer; }
+    .action-btn:hover, .action-btn.active { border-color: var(--accent); background: var(--accent-soft); color: var(--white); }
+
+    .layout {
+      display: grid;
+      grid-template-columns: minmax(280px, 0.85fr) minmax(360px, 1.05fr) minmax(360px, 1.05fr);
+      gap: 18px;
+      align-items: start;
+    }
+    .panel { padding: 18px; display: grid; gap: 14px; }
+    .card { background: var(--card); border-radius: 22px; padding: 16px; display: grid; gap: 12px; }
+    .card h2, .card h3, .card p { margin: 0; }
+    .card > p { color: var(--subtle); line-height: 1.45; }
+    .controls-grid { display: grid; gap: 12px; }
+    .control-row { display: grid; gap: 6px; }
+    .value-line { display: flex; justify-content: space-between; gap: 12px; color: var(--subtle); font-size: 14px; }
+    input[type="range"] { width: 100%; accent-color: var(--accent); }
+    .divider-label { color: var(--subtle); font-size: 12px; font-weight: 800; text-transform: uppercase; letter-spacing: 0.08em; padding-top: 6px; border-top: 1px solid var(--line); }
+    .status-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+    .status-pill { border: 2px solid var(--line); border-radius: 16px; padding: 12px 14px; background: rgba(255,255,255,0.04); display: grid; gap: 4px; }
+    html:not(.theme-dark) .status-pill { background: rgba(45,134,230,0.04); }
+    .status-pill strong { font-size: 12px; color: var(--subtle); }
+    .status-pill .val { font-size: 22px; font-weight: 900; color: var(--white); }
+    .status-pill.heating { border-color: var(--orange); background: var(--orange-soft); }
+    .status-pill.heating .val { color: var(--orange); }
+    .status-pill.cooling { border-color: var(--accent); background: var(--accent-soft); }
+    .status-pill.cooling .val { color: var(--accent); }
+    .status-pill.off { border-color: var(--green); background: var(--green-soft); }
+    .status-pill.off .val { color: var(--green); }
+    .plot-card { background: var(--card); border: 1px solid var(--line); border-radius: 22px; padding: 14px; display: grid; gap: 10px; }
+    .plot-head { display: flex; justify-content: space-between; gap: 12px; align-items: center; flex-wrap: wrap; }
+    .plot-head h2, .plot-head h3 { margin: 0; }
+    .plot-head p { margin: 4px 0 0; color: var(--subtle); font-size: 14px; line-height: 1.4; }
+    .plot-canvas { width: 100%; display: block; border-radius: 16px; border: 1px solid var(--line); }
+    .transfer-graph { width: 100%; height: auto; display: block; }
+    .legend-row { display: flex; flex-wrap: wrap; gap: 10px; }
+    .legend-item { display: inline-flex; align-items: center; gap: 7px; color: var(--subtle); font-size: 13px; font-weight: 700; }
+    .legend-swatch { width: 13px; height: 13px; border-radius: 999px; display: inline-block; flex-shrink: 0; }
+    @media (max-width: 1440px) { .layout { grid-template-columns: minmax(280px, 0.9fr) minmax(360px, 1.1fr); } }
+    @media (max-width: 980px) { .layout { grid-template-columns: 1fr; } }
+    @media (max-width: 760px) { .header { grid-template-columns: 1fr; } .status-grid { grid-template-columns: 1fr; } }
+  </style>
+</head>
+<body>
+  <div class="app">
+    <header class="header">
+      <a class="back" href="../index.html">Back to menu</a>
+      <div class="title">
+        <h1>Heating &amp; Cooling</h1>
+        <p>A three-zone thermostat with hysteresis. The heater activates below the lower band and turns off inside it; the AC activates above the upper band and turns off inside it. The dead band in between keeps everything off.</p>
+      </div>
+      <img class="brand-logo" src="../../assets/branding/hanze_logo.png" alt="Hanze logo" />
+    </header>
+
+    <section class="layout">
+
+      <!-- Column 1: Controls -->
+      <section class="panel">
+        <div class="card">
+          <h2>Interactive controls</h2>
+          <div class="controls-grid">
+            <div class="divider-label">Signal</div>
+            <div class="control-row">
+              <div class="value-line"><span>Temperature center</span><span id="centerVal">50 %</span></div>
+              <input id="centerSlider" type="range" min="20" max="80" step="1" value="50" />
+            </div>
+            <div class="control-row">
+              <div class="value-line"><span>Signal swing</span><span id="swingVal">18 %</span></div>
+              <input id="swingSlider" type="range" min="4" max="30" step="1" value="18" />
+            </div>
+            <div class="control-row">
+              <div class="value-line"><span>Noise amplitude</span><span id="noiseVal">6 %</span></div>
+              <input id="noiseSlider" type="range" min="0" max="16" step="0.5" value="6" />
+            </div>
+            <div class="control-row">
+              <div class="value-line"><span>Signal speed</span><span id="speedVal">1.0×</span></div>
+              <input id="speedSlider" type="range" min="0.3" max="3" step="0.1" value="1" />
+            </div>
+            <div class="divider-label">Heater thresholds</div>
+            <div class="control-row">
+              <div class="value-line"><span>Heat ON — activates below</span><span id="heatOnVal">35 %</span></div>
+              <input id="heatOnSlider" type="range" min="5" max="75" step="1" value="35" />
+            </div>
+            <div class="control-row">
+              <div class="value-line"><span>Heat OFF — deactivates above</span><span id="heatOffVal">42 %</span></div>
+              <input id="heatOffSlider" type="range" min="6" max="78" step="1" value="42" />
+            </div>
+            <div class="divider-label">AC thresholds</div>
+            <div class="control-row">
+              <div class="value-line"><span>Cool OFF — deactivates below</span><span id="coolOffVal">58 %</span></div>
+              <input id="coolOffSlider" type="range" min="22" max="90" step="1" value="58" />
+            </div>
+            <div class="control-row">
+              <div class="value-line"><span>Cool ON — activates above</span><span id="coolOnVal">65 %</span></div>
+              <input id="coolOnSlider" type="range" min="25" max="95" step="1" value="65" />
+            </div>
+          </div>
+        </div>
+
+        <div class="status-grid">
+          <div class="status-pill" id="tempPill">
+            <strong>Temperature</strong>
+            <span class="val" id="tempDisplay">— %</span>
+          </div>
+          <div class="status-pill" id="statePill">
+            <strong>System state</strong>
+            <span class="val" id="stateDisplay">OFF</span>
+          </div>
+          <div class="status-pill">
+            <strong>Heater cycles</strong>
+            <span class="val" id="heaterCyclesDisplay">0</span>
+          </div>
+          <div class="status-pill">
+            <strong>AC cycles</strong>
+            <span class="val" id="acCyclesDisplay">0</span>
+          </div>
+        </div>
+      </section>
+
+      <!-- Column 2: Signal plot + Transfer graph -->
+      <section class="panel">
+        <div class="plot-card">
+          <div class="plot-head">
+            <div>
+              <h2>Temperature &amp; thresholds</h2>
+              <p>Noisy temperature signal against the four threshold lines. Background colors show which zone is active.</p>
+            </div>
+            <button class="action-btn" id="pauseBtn">Pause</button>
+          </div>
+          <canvas class="plot-canvas" id="signalCanvas" height="280"></canvas>
+          <div class="legend-row">
+            <span class="legend-item"><span class="legend-swatch" style="background:#edf7fb;"></span>Temperature</span>
+            <span class="legend-item"><span class="legend-swatch" style="background:#ff6b65;"></span>Heat ON</span>
+            <span class="legend-item"><span class="legend-swatch" style="background:#ff9f43;"></span>Heat OFF</span>
+            <span class="legend-item"><span class="legend-swatch" style="background:#63c4ff;"></span>Cool OFF</span>
+            <span class="legend-item"><span class="legend-swatch" style="background:#5a9eff;"></span>Cool ON</span>
+          </div>
+        </div>
+
+        <div class="plot-card">
+          <div class="plot-head">
+            <div>
+              <h2>Transfer graph</h2>
+              <p>Output state for each temperature value. Solid path = rising temperature, dashed = falling. The dot marks the current position.</p>
+            </div>
+          </div>
+          <div id="transferGraphWrap"></div>
+        </div>
+      </section>
+
+      <!-- Column 3: Output timeline -->
+      <section class="panel">
+        <div class="plot-card">
+          <div class="plot-head">
+            <div>
+              <h2>Output timeline</h2>
+              <p>Last 12 seconds of temperature and the heater and AC states.</p>
+            </div>
+          </div>
+          <canvas class="plot-canvas" id="timelineCanvas" height="420"></canvas>
+          <div class="legend-row">
+            <span class="legend-item"><span class="legend-swatch" style="background:#63c4ff;"></span>Temperature</span>
+            <span class="legend-item"><span class="legend-swatch" style="background:#ff9f43;"></span>Heater</span>
+            <span class="legend-item"><span class="legend-swatch" style="background:#5a9eff;"></span>AC</span>
+          </div>
+        </div>
+      </section>
+
+    </section>
+  </div>
+
+  <script src="../shared/sound_fx.js"></script>
+  <script>
+    const clamp = (v, lo, hi) => Math.max(lo, Math.min(hi, v));
+
+    // ── Settings ─────────────────────────────────────────────────────────────
+    const settings = {
+      historySeconds: 12,
+      sampleStep: 0.04,
+      center: 50,
+      swing: 18,
+      noise: 6,
+      speed: 1,
+      heatOn: 35,
+      heatOff: 42,
+      coolOff: 58,
+      coolOn: 65,
+    };
+
+    // ── Simulation state ──────────────────────────────────────────────────────
+    let outputState = "OFF"; // "HEATING" | "COOLING" | "OFF"
+    let heaterCycles = 0;
+    let acCycles = 0;
+    let samples = []; // { t, signal, slow, heater, ac }
+    let simTime = 0;
+    let timelinePaused = false;
+    let timelineFrozenTime = 0;
+    let hoverRatio = null;
+    let lastTimestamp = 0;
+    let sampleAccum = 0;
+
+    // ── Signal generation (deterministic, like hysteresis_lab) ────────────────
+    function sampleSignalAt(t) {
+      const slow =
+        settings.center +
+        settings.swing * 0.72 * Math.sin(t * settings.speed * 0.62) +
+        settings.swing * 0.28 * Math.sin(t * settings.speed * 1.35 + 1.2);
+      const noise =
+        settings.noise * 0.52 * Math.sin(t * settings.speed * 8.8) +
+        settings.noise * 0.33 * Math.sin(t * settings.speed * 15.6 + 1.1) +
+        settings.noise * 0.15 * Math.sin(t * settings.speed * 24.4 + 0.35);
+      return { slow: clamp(slow, 0, 100), noisy: clamp(slow + noise, 0, 100) };
+    }
+
+    // ── State machine ─────────────────────────────────────────────────────────
+    function updateState(noisy) {
+      const prev = outputState;
+      if (outputState === "OFF") {
+        if (noisy <= settings.heatOn) outputState = "HEATING";
+        else if (noisy >= settings.coolOn) outputState = "COOLING";
+      } else if (outputState === "HEATING") {
+        if (noisy >= settings.heatOff) outputState = "OFF";
+      } else if (outputState === "COOLING") {
+        if (noisy <= settings.coolOff) outputState = "OFF";
+      }
+      if (outputState !== prev) {
+        if (prev === "HEATING" || outputState === "HEATING") heaterCycles++;
+        if (prev === "COOLING" || outputState === "COOLING") acCycles++;
+      }
+    }
+
+    // ── Add one simulation sample ─────────────────────────────────────────────
+    function addSample(dt) {
+      simTime += dt;
+      const sig = sampleSignalAt(simTime);
+      updateState(sig.noisy);
+      samples.push({
+        t: simTime,
+        signal: sig.noisy,
+        slow: sig.slow,
+        heater: outputState === "HEATING" ? 1 : 0,
+        ac: outputState === "COOLING" ? 1 : 0,
+      });
+      samples = samples.filter(s => simTime - s.t <= settings.historySeconds);
+    }
+
+    // ── Canvas helpers ────────────────────────────────────────────────────────
+    function fitCanvas(canvas, ctx) {
+      const rect = canvas.getBoundingClientRect();
+      const ratio = window.devicePixelRatio || 1;
+      const w = Math.max(1, Math.round(rect.width * ratio));
+      const h = Math.max(1, Math.round(canvas.height * ratio));
+      if (canvas.width !== w || canvas.height !== h) { canvas.width = w; canvas.height = h; }
+      ctx.setTransform(ratio, 0, 0, ratio, 0, 0);
+      return { width: rect.width, height: canvas.offsetHeight || parseInt(canvas.getAttribute("height"), 10) };
+    }
+
+    function cssVar(name) {
+      return getComputedStyle(document.documentElement).getPropertyValue(name).trim();
+    }
+
+    function getRefTime() {
+      return timelinePaused ? timelineFrozenTime : simTime;
+    }
+
+    function getX(sample, plot) {
+      const age = getRefTime() - sample.t;
+      return plot.right - clamp(age / settings.historySeconds, 0, 1) * plot.width;
+    }
+
+    function getY(value, plot, min, max) {
+      return plot.bottom - clamp((value - min) / (max - min || 1), 0, 1) * plot.height;
+    }
+
+    function drawGrid(ctx, plot, yMin, yMax, yLabels) {
+      ctx.strokeStyle = cssVar("--plot-grid");
+      ctx.lineWidth = 1;
+      for (let i = 0; i <= 4; i++) {
+        const gy = plot.top + (plot.height * i) / 4;
+        ctx.beginPath(); ctx.moveTo(plot.left, gy); ctx.lineTo(plot.right, gy); ctx.stroke();
+      }
+      for (let s = 0; s <= settings.historySeconds; s += 3) {
+        const gx = plot.right - (s / settings.historySeconds) * plot.width;
+        ctx.beginPath(); ctx.moveTo(gx, plot.top); ctx.lineTo(gx, plot.bottom); ctx.stroke();
+        ctx.fillStyle = cssVar("--plot-axis");
+        ctx.font = "12px Segoe UI"; ctx.textAlign = "center";
+        ctx.fillText(`-${s}s`, gx, plot.bottom + 14);
+      }
+      ctx.fillStyle = cssVar("--plot-axis");
+      ctx.font = "12px Segoe UI"; ctx.textAlign = "left";
+      if (yLabels) {
+        yLabels.forEach(([label, val]) => {
+          const y = getY(val, plot, yMin, yMax);
+          ctx.fillText(label, plot.left - 40, y + 4);
+        });
+      } else {
+        ctx.fillText(`${yMax}`, plot.left - 36, plot.top + 12);
+        ctx.fillText(`${yMin}`, plot.left - 30, plot.bottom - 2);
+      }
+    }
+
+    function drawThresholdLine(ctx, plot, value, color, label) {
+      const y = getY(value, plot, 0, 100);
+      ctx.strokeStyle = color;
+      ctx.setLineDash([7, 5]); ctx.lineWidth = 1.5;
+      ctx.beginPath(); ctx.moveTo(plot.left, y); ctx.lineTo(plot.right, y); ctx.stroke();
+      ctx.setLineDash([]);
+      ctx.fillStyle = color;
+      ctx.font = "12px Segoe UI"; ctx.textAlign = "right";
+      ctx.fillText(label, plot.right - 4, y - 6);
+    }
+
+    function drawBand(ctx, plot, lo, hi, fill) {
+      const y1 = getY(hi, plot, 0, 100);
+      const y2 = getY(lo, plot, 0, 100);
+      ctx.fillStyle = fill;
+      ctx.fillRect(plot.left, y1, plot.width, y2 - y1);
+    }
+
+    function drawSignalLine(ctx, plot, key, color, lw) {
+      if (samples.length < 2) return;
+      ctx.strokeStyle = color; ctx.lineWidth = lw;
+      ctx.beginPath();
+      samples.forEach((s, i) => {
+        const x = getX(s, plot);
+        const y = getY(s[key], plot, 0, 100);
+        i === 0 ? ctx.moveTo(x, y) : ctx.lineTo(x, y);
+      });
+      ctx.stroke();
+    }
+
+    function drawStateLine(ctx, plot, key, color) {
+      if (!samples.length) return;
+      ctx.strokeStyle = color; ctx.lineWidth = 3;
+      ctx.beginPath();
+      samples.forEach((s, i) => {
+        const x = getX(s, plot);
+        const y = getY(s[key], plot, 0, 1);
+        if (i === 0) { ctx.moveTo(x, y); return; }
+        const prev = samples[i - 1];
+        ctx.lineTo(x, getY(prev[key], plot, 0, 1));
+        ctx.lineTo(x, y);
+      });
+      ctx.stroke();
+    }
+
+    function drawHover(ctx, plots) {
+      if (hoverRatio === null || !plots.length) return;
+      const x = plots[0].left + hoverRatio * plots[0].width;
+      ctx.save();
+      ctx.strokeStyle = cssVar("--plot-hover"); ctx.lineWidth = 1.5;
+      ctx.setLineDash([6, 6]);
+      ctx.beginPath();
+      ctx.moveTo(x, Math.min(...plots.map(p => p.top)));
+      ctx.lineTo(x, Math.max(...plots.map(p => p.bottom)));
+      ctx.stroke();
+      ctx.restore();
+    }
+
+    // ── Signal plot (column 2 top) ────────────────────────────────────────────
+    function drawSignalPlot() {
+      const canvas = document.getElementById("signalCanvas");
+      const ctx = canvas.getContext("2d");
+      const { width, height } = fitCanvas(canvas, ctx);
+      ctx.clearRect(0, 0, width, height);
+      ctx.fillStyle = cssVar("--plot-fill"); ctx.fillRect(0, 0, width, height);
+
+      const plot = { left: 50, right: width - 16, top: 18, bottom: height - 28 };
+      plot.width = plot.right - plot.left; plot.height = plot.bottom - plot.top;
+
+      drawBand(ctx, plot, 0, settings.heatOn, "rgba(255,107,101,0.13)");
+      drawBand(ctx, plot, settings.heatOn, settings.heatOff, "rgba(255,159,67,0.11)");
+      drawBand(ctx, plot, settings.heatOff, settings.coolOff, "rgba(47,199,107,0.07)");
+      drawBand(ctx, plot, settings.coolOff, settings.coolOn, "rgba(99,196,255,0.11)");
+      drawBand(ctx, plot, settings.coolOn, 100, "rgba(90,158,255,0.13)");
+
+      drawGrid(ctx, plot, 0, 100);
+      drawThresholdLine(ctx, plot, settings.heatOn, "#ff6b65", `heat ON ${settings.heatOn}%`);
+      drawThresholdLine(ctx, plot, settings.heatOff, "#ff9f43", `heat OFF ${settings.heatOff}%`);
+      drawThresholdLine(ctx, plot, settings.coolOff, "#63c4ff", `cool OFF ${settings.coolOff}%`);
+      drawThresholdLine(ctx, plot, settings.coolOn, "#5a9eff", `cool ON ${settings.coolOn}%`);
+
+      drawSignalLine(ctx, plot, "slow", "rgba(157,185,200,0.5)", 2);
+      drawSignalLine(ctx, plot, "signal", "#edf7fb", 3);
+
+      ctx.fillStyle = "#edf7fb"; ctx.font = "700 13px Segoe UI";
+      ctx.save(); ctx.translate(16, plot.top + plot.height / 2);
+      ctx.rotate(-Math.PI / 2); ctx.textAlign = "center";
+      ctx.fillText("Temp %", 0, 0); ctx.restore();
+
+      drawHover(ctx, [plot]);
+    }
+
+    // ── Transfer graph SVG (column 2 bottom) ──────────────────────────────────
+    function drawTransferGraph() {
+      const wrap = document.getElementById("transferGraphWrap");
+      const last = samples[samples.length - 1];
+      const currentSignal = last ? last.signal : settings.center;
+
+      const L = 72, R = 500, T = 22, B = 228;
+      const W = R - L, H = B - T;
+      const mapX = v => L + clamp(v, 0, 100) / 100 * W;
+      const xHeatOn = mapX(settings.heatOn);
+      const xHeatOff = mapX(settings.heatOff);
+      const xCoolOff = mapX(settings.coolOff);
+      const xCoolOn = mapX(settings.coolOn);
+      const xCurrent = mapX(currentSignal);
+
+      const yHeating = T + H * 0.83;
+      const yOff     = T + H * 0.50;
+      const yCooling = T + H * 0.17;
+
+      const stateY = outputState === "HEATING" ? yHeating : outputState === "COOLING" ? yCooling : yOff;
+      const stateColor = outputState === "HEATING" ? "#ff9f43" : outputState === "COOLING" ? "#63c4ff" : "#2fc76b";
+
+      const axisColor = cssVar("--transfer-axis");
+      const gridColor = cssVar("--transfer-grid");
+      const guideColor = cssVar("--transfer-guide");
+      const bgColor = cssVar("--transfer-bg");
+      const lineColor = cssVar("--line");
+
+      // Build x-axis tick labels
+      const xTicks = [0, 20, 40, 60, 80, 100].map(v =>
+        `<text x="${mapX(v)}" y="${B + 18}" text-anchor="middle" fill="${axisColor}" font-size="12" font-weight="600">${v}%</text>`
+      ).join("");
+
+      wrap.innerHTML = `<svg class="transfer-graph" viewBox="0 0 540 266" aria-label="Heating and cooling transfer graph">
+        <defs>
+          <marker id="arrUp" markerWidth="7" markerHeight="7" refX="6" refY="3.5" orient="auto"><path d="M0 0 L7 3.5 L0 7 z" fill="#ff9f43"/></marker>
+          <marker id="arrDn" markerWidth="7" markerHeight="7" refX="6" refY="3.5" orient="auto"><path d="M0 0 L7 3.5 L0 7 z" fill="#5a9eff"/></marker>
+        </defs>
+
+        <!-- background -->
+        <rect x="0.5" y="0.5" width="539" height="265" rx="18" fill="${bgColor}" stroke="${lineColor}"/>
+
+        <!-- zone bands -->
+        <rect x="${L}" y="${T}" width="${W}" height="${H * 0.34}" fill="rgba(99,196,255,0.09)"/>
+        <rect x="${L}" y="${T + H * 0.34}" width="${W}" height="${H * 0.32}" fill="rgba(47,199,107,0.06)"/>
+        <rect x="${L}" y="${T + H * 0.66}" width="${W}" height="${H * 0.34}" fill="rgba(255,107,101,0.09)"/>
+
+        <!-- axes -->
+        <line x1="${L}" y1="${T}" x2="${L}" y2="${B}" stroke="${axisColor}" stroke-width="1.5"/>
+        <line x1="${L}" y1="${B}" x2="${R}" y2="${B}" stroke="${axisColor}" stroke-width="1.5"/>
+
+        <!-- x-axis grid & labels -->
+        ${[0, 20, 40, 60, 80, 100].map(v => `<line x1="${mapX(v)}" y1="${T}" x2="${mapX(v)}" y2="${B}" stroke="${gridColor}" stroke-width="1"/>`).join("")}
+        ${xTicks}
+        <text x="${L}" y="${B + 18}" text-anchor="start" fill="${axisColor}" font-size="12" font-weight="600">Signal %</text>
+
+        <!-- threshold vertical markers -->
+        <line x1="${xHeatOn}"  y1="${T}" x2="${xHeatOn}"  y2="${B}" stroke="#ff6b65" stroke-width="1.4" stroke-dasharray="6 4"/>
+        <line x1="${xHeatOff}" y1="${T}" x2="${xHeatOff}" y2="${B}" stroke="#ff9f43" stroke-width="1.4" stroke-dasharray="6 4"/>
+        <line x1="${xCoolOff}" y1="${T}" x2="${xCoolOff}" y2="${B}" stroke="#63c4ff" stroke-width="1.4" stroke-dasharray="6 4"/>
+        <line x1="${xCoolOn}"  y1="${T}" x2="${xCoolOn}"  y2="${B}" stroke="#5a9eff" stroke-width="1.4" stroke-dasharray="6 4"/>
+
+        <!-- Y axis labels -->
+        <text x="${L - 6}" y="${yCooling + 5}" text-anchor="end" fill="#63c4ff"  font-size="13" font-weight="800">COOLING</text>
+        <text x="${L - 6}" y="${yOff + 5}"     text-anchor="end" fill="#2fc76b"  font-size="13" font-weight="800">OFF</text>
+        <text x="${L - 6}" y="${yHeating + 5}" text-anchor="end" fill="#ff9f43"  font-size="13" font-weight="800">HEATING</text>
+
+        <!-- horizontal reference lines -->
+        <line x1="${L}" y1="${yCooling}" x2="${R}" y2="${yCooling}" stroke="${gridColor}" stroke-width="1"/>
+        <line x1="${L}" y1="${yOff}"     x2="${R}" y2="${yOff}"     stroke="${gridColor}" stroke-width="1"/>
+        <line x1="${L}" y1="${yHeating}" x2="${R}" y2="${yHeating}" stroke="${gridColor}" stroke-width="1"/>
+
+        <!-- Rising path (solid): HEATING → heatOff → OFF → coolOn → COOLING -->
+        <polyline points="${L},${yHeating} ${xHeatOff},${yHeating}" fill="none" stroke="#ff9f43" stroke-width="3" stroke-linecap="round"/>
+        <polyline points="${xHeatOff},${yHeating} ${xHeatOff},${yOff}" fill="none" stroke="#ff9f43" stroke-width="3" marker-end="url(#arrUp)"/>
+        <polyline points="${xHeatOff},${yOff} ${xCoolOn},${yOff}" fill="none" stroke="#ff9f43" stroke-width="3" stroke-linecap="round"/>
+        <polyline points="${xCoolOn},${yOff} ${xCoolOn},${yCooling}" fill="none" stroke="#5a9eff" stroke-width="3" marker-end="url(#arrUp)"/>
+        <polyline points="${xCoolOn},${yCooling} ${R},${yCooling}" fill="none" stroke="#5a9eff" stroke-width="3" stroke-linecap="round"/>
+
+        <!-- Falling path (dashed): COOLING → coolOff → OFF → heatOn → HEATING -->
+        <polyline points="${R},${yCooling} ${xCoolOff},${yCooling}" fill="none" stroke="#63c4ff" stroke-width="2.5" stroke-dasharray="8 4"/>
+        <polyline points="${xCoolOff},${yCooling} ${xCoolOff},${yOff}" fill="none" stroke="#63c4ff" stroke-width="2.5" marker-end="url(#arrDn)"/>
+        <polyline points="${xCoolOff},${yOff} ${xHeatOn},${yOff}" fill="none" stroke="#ff6b65" stroke-width="2.5" stroke-dasharray="8 4"/>
+        <polyline points="${xHeatOn},${yOff} ${xHeatOn},${yHeating}" fill="none" stroke="#ff6b65" stroke-width="2.5" marker-end="url(#arrDn)"/>
+        <polyline points="${xHeatOn},${yHeating} ${L},${yHeating}" fill="none" stroke="#ff6b65" stroke-width="2.5" stroke-dasharray="8 4"/>
+
+        <!-- Threshold value labels on x axis -->
+        <text x="${xHeatOn}"  y="${T - 6}" text-anchor="middle" fill="#ff6b65" font-size="11" font-weight="700">${settings.heatOn}%</text>
+        <text x="${xHeatOff}" y="${T - 6}" text-anchor="middle" fill="#ff9f43" font-size="11" font-weight="700">${settings.heatOff}%</text>
+        <text x="${xCoolOff}" y="${T - 6}" text-anchor="middle" fill="#63c4ff" font-size="11" font-weight="700">${settings.coolOff}%</text>
+        <text x="${xCoolOn}"  y="${T - 6}" text-anchor="middle" fill="#5a9eff" font-size="11" font-weight="700">${settings.coolOn}%</text>
+
+        <!-- Current position marker -->
+        <line x1="${xCurrent}" y1="${T}" x2="${xCurrent}" y2="${B}" stroke="${guideColor}" stroke-width="2" stroke-dasharray="6 4"/>
+        <circle cx="${xCurrent}" cy="${stateY}" r="9" fill="${stateColor}" opacity="0.22"/>
+        <circle cx="${xCurrent}" cy="${stateY}" r="5.5" fill="${stateColor}"/>
+        <text x="${R}" y="${T - 6}" text-anchor="end" fill="${axisColor}" font-size="12" font-weight="700">Current ${currentSignal.toFixed(1)}%</text>
+      </svg>`;
+    }
+
+    // ── Output timeline (column 3) ─────────────────────────────────────────────
+    function drawTimeline() {
+      const canvas = document.getElementById("timelineCanvas");
+      const ctx = canvas.getContext("2d");
+      const { width, height } = fitCanvas(canvas, ctx);
+      ctx.clearRect(0, 0, width, height);
+      ctx.fillStyle = cssVar("--plot-fill"); ctx.fillRect(0, 0, width, height);
+
+      const tracks = [
+        { label: "Temp %", color: "#63c4ff",  key: "signal", min: 0, max: 100, step: false },
+        { label: "Heater", color: "#ff9f43",   key: "heater", min: 0, max: 1,   step: true  },
+        { label: "AC",     color: "#5a9eff",   key: "ac",     min: 0, max: 1,   step: true  },
+      ];
+
+      const padL = 50, padR = 14, padT = 14, padB = 24;
+      const totalH = height - padT - padB;
+      const trackH = totalH / tracks.length;
+
+      const timeToX = t => {
+        const age = getRefTime() - t;
+        return (padL + (width - padL - padR)) - clamp(age / settings.historySeconds, 0, 1) * (width - padL - padR);
+      };
+
+      tracks.forEach((track, i) => {
+        const top = padT + i * trackH;
+        const bottom = top + trackH - 4;
+        const tH = bottom - top;
+        const plot = { left: padL, right: width - padR, top, bottom, width: width - padL - padR, height: tH };
+
+        // Separator
+        if (i > 0) {
+          ctx.strokeStyle = cssVar("--plot-grid"); ctx.lineWidth = 1;
+          ctx.beginPath(); ctx.moveTo(padL, top); ctx.lineTo(width - padR, top); ctx.stroke();
+        }
+
+        // Background bands for temp track
+        if (track.key === "signal") {
+          drawBand(ctx, plot, 0, settings.heatOn,   "rgba(255,107,101,0.11)");
+          drawBand(ctx, plot, settings.heatOn, settings.heatOff, "rgba(255,159,67,0.09)");
+          drawBand(ctx, plot, settings.heatOff, settings.coolOff, "rgba(47,199,107,0.06)");
+          drawBand(ctx, plot, settings.coolOff, settings.coolOn, "rgba(99,196,255,0.09)");
+          drawBand(ctx, plot, settings.coolOn, 100, "rgba(90,158,255,0.11)");
+        }
+
+        // Grid
+        ctx.strokeStyle = cssVar("--plot-grid"); ctx.lineWidth = 1;
+        for (let s = 0; s <= settings.historySeconds; s += 3) {
+          const gx = plot.right - (s / settings.historySeconds) * plot.width;
+          ctx.beginPath(); ctx.moveTo(gx, top); ctx.lineTo(gx, bottom); ctx.stroke();
+        }
+
+        // Time labels on last track
+        if (i === tracks.length - 1) {
+          ctx.fillStyle = cssVar("--plot-axis"); ctx.font = "12px Segoe UI"; ctx.textAlign = "center";
+          for (let s = 0; s <= settings.historySeconds; s += 3) {
+            const gx = plot.right - (s / settings.historySeconds) * plot.width;
+            ctx.fillText(`-${s}s`, gx, height - 6);
+          }
+        }
+
+        // Track label (rotated)
+        ctx.fillStyle = track.color; ctx.font = "700 12px Segoe UI";
+        ctx.save(); ctx.translate(14, top + tH / 2); ctx.rotate(-Math.PI / 2);
+        ctx.textAlign = "center"; ctx.fillText(track.label, 0, 0); ctx.restore();
+
+        // ON/OFF labels for binary tracks
+        if (track.step) {
+          ctx.fillStyle = cssVar("--plot-axis"); ctx.font = "12px Segoe UI"; ctx.textAlign = "left";
+          ctx.fillText("ON",  padL - 42, top + 12);
+          ctx.fillText("OFF", padL - 42, bottom - 2);
+        } else {
+          ctx.fillStyle = cssVar("--plot-axis"); ctx.font = "12px Segoe UI"; ctx.textAlign = "left";
+          ctx.fillText("100", padL - 42, top + 12);
+          ctx.fillText("0",   padL - 30, bottom - 2);
+        }
+
+        if (samples.length < 2) return;
+
+        const yOf = v => bottom - clamp((v - track.min) / (track.max - track.min || 1), 0, 1) * tH;
+
+        // Fill for binary signals
+        if (track.step) {
+          ctx.fillStyle = track.color + "33";
+          ctx.beginPath();
+          const baseY = yOf(0);
+          let started = false;
+          for (const s of samples) {
+            const x = timeToX(s.t);
+            if (x < padL) continue;
+            const y = yOf(s[track.key]);
+            if (!started) { ctx.moveTo(x, baseY); ctx.lineTo(x, y); started = true; }
+            else ctx.lineTo(x, y);
+          }
+          if (started) {
+            const last = samples[samples.length - 1];
+            ctx.lineTo(timeToX(last.t), baseY);
+          }
+          ctx.closePath(); ctx.fill();
+        }
+
+        // Signal line
+        ctx.strokeStyle = track.color; ctx.lineWidth = track.step ? 2 : 2.5;
+        ctx.beginPath();
+        let first = true; let prevY = null;
+        for (const s of samples) {
+          const x = timeToX(s.t);
+          if (x < padL) continue;
+          const y = yOf(s[track.key]);
+          if (first) { ctx.moveTo(x, y); first = false; }
+          else if (track.step && prevY !== null) { ctx.lineTo(x, prevY); ctx.lineTo(x, y); }
+          else { ctx.lineTo(x, y); }
+          prevY = y;
+        }
+        ctx.stroke();
+      });
+
+      drawHover(ctx, [{ left: padL, right: width - padR, top: padT, bottom: height - padB, width: width - padL - padR, height: totalH }]);
+    }
+
+    // ── Status display ─────────────────────────────────────────────────────────
+    function updateStatus() {
+      const last = samples[samples.length - 1];
+      if (!last) return;
+      document.getElementById("tempDisplay").textContent = `${last.signal.toFixed(1)} %`;
+      document.getElementById("stateDisplay").textContent = outputState;
+      document.getElementById("statePill").className = "status-pill " + outputState.toLowerCase();
+      document.getElementById("heaterCyclesDisplay").textContent = heaterCycles;
+      document.getElementById("acCyclesDisplay").textContent = acCycles;
+    }
+
+    // ── Render all ────────────────────────────────────────────────────────────
+    function renderAll() {
+      updateStatus();
+      drawSignalPlot();
+      drawTransferGraph();
+      drawTimeline();
+    }
+
+    // ── Simulation reset ──────────────────────────────────────────────────────
+    function resetSim() {
+      simTime = 0; sampleAccum = 0; samples = [];
+      outputState = "OFF"; heaterCycles = 0; acCycles = 0;
+      const first = sampleSignalAt(0);
+      if (first.noisy <= settings.heatOn) outputState = "HEATING";
+      else if (first.noisy >= settings.coolOn) outputState = "COOLING";
+      samples.push({ t: 0, signal: first.noisy, slow: first.slow, heater: outputState === "HEATING" ? 1 : 0, ac: outputState === "COOLING" ? 1 : 0 });
+    }
+
+    // ── Animation loop ─────────────────────────────────────────────────────────
+    function animate(ts) {
+      if (!lastTimestamp) lastTimestamp = ts;
+      const dt = Math.min(0.05, (ts - lastTimestamp) / 1000);
+      lastTimestamp = ts;
+      if (!timelinePaused) {
+        sampleAccum += dt;
+        while (sampleAccum >= settings.sampleStep) {
+          sampleAccum -= settings.sampleStep;
+          addSample(settings.sampleStep);
+        }
+      }
+      renderAll();
+      requestAnimationFrame(animate);
+    }
+
+    // ── Pause / resume ────────────────────────────────────────────────────────
+    document.getElementById("pauseBtn").addEventListener("click", () => {
+      if (!timelinePaused) {
+        timelinePaused = true;
+        timelineFrozenTime = simTime;
+        document.getElementById("pauseBtn").textContent = "Resume";
+        document.getElementById("pauseBtn").classList.add("active");
+      } else {
+        const skipped = simTime - timelineFrozenTime;
+        if (skipped > 0) samples = samples.map(s => ({ ...s, t: s.t + skipped }));
+        timelinePaused = false;
+        document.getElementById("pauseBtn").textContent = "Pause";
+        document.getElementById("pauseBtn").classList.remove("active");
+      }
+    });
+
+    // ── Hover guide ───────────────────────────────────────────────────────────
+    ["signalCanvas", "timelineCanvas"].forEach(id => {
+      const el = document.getElementById(id);
+      el.addEventListener("mousemove", e => {
+        const r = el.getBoundingClientRect();
+        hoverRatio = clamp((e.clientX - r.left) / r.width, 0, 1);
+        renderAll();
+      });
+      el.addEventListener("mouseleave", () => { hoverRatio = null; renderAll(); });
+    });
+
+    // ── Slider bindings ───────────────────────────────────────────────────────
+    function bindSlider(id, key, displayId, fmt) {
+      document.getElementById(id).addEventListener("input", e => {
+        settings[key] = Number(e.target.value);
+        // Guard threshold ordering
+        if (settings.heatOn  >= settings.heatOff)  { settings.heatOff  = settings.heatOn  + 1; document.getElementById("heatOffSlider").value = settings.heatOff;  document.getElementById("heatOffVal").textContent  = `${settings.heatOff} %`; }
+        if (settings.heatOff >= settings.coolOff)  { settings.coolOff  = settings.heatOff + 1; document.getElementById("coolOffSlider").value = settings.coolOff;  document.getElementById("coolOffVal").textContent  = `${settings.coolOff} %`; }
+        if (settings.coolOff >= settings.coolOn)   { settings.coolOn   = settings.coolOff + 1; document.getElementById("coolOnSlider").value  = settings.coolOn;   document.getElementById("coolOnVal").textContent   = `${settings.coolOn} %`; }
+        document.getElementById(displayId).textContent = fmt(settings[key]);
+        resetSim();
+      });
+    }
+
+    bindSlider("centerSlider", "center",  "centerVal",  v => `${v} %`);
+    bindSlider("swingSlider",  "swing",   "swingVal",   v => `${v} %`);
+    bindSlider("noiseSlider",  "noise",   "noiseVal",   v => `${v} %`);
+    bindSlider("speedSlider",  "speed",   "speedVal",   v => `${v.toFixed(1)}×`);
+    bindSlider("heatOnSlider", "heatOn",  "heatOnVal",  v => `${v} %`);
+    bindSlider("heatOffSlider","heatOff", "heatOffVal", v => `${v} %`);
+    bindSlider("coolOffSlider","coolOff", "coolOffVal", v => `${v} %`);
+    bindSlider("coolOnSlider", "coolOn",  "coolOnVal",  v => `${v} %`);
+
+    window.addEventListener("resize", renderAll);
+
+    // ── Boot ──────────────────────────────────────────────────────────────────
+    resetSim();
+    requestAnimationFrame(animate);
+  </script>
+</body>
+</html>

@@ -1,0 +1,276 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1600" height="1200" viewBox="0 0 1600 1200">
+  <defs>
+    <linearGradient id="metal" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" stop-color="#f7f7f7"/>
+      <stop offset="50%" stop-color="#cfd2d7"/>
+      <stop offset="100%" stop-color="#fbfbfb"/>
+    </linearGradient>
+    <linearGradient id="tankMetal" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" stop-color="#f9f9f9"/>
+      <stop offset="50%" stop-color="#d7d8dc"/>
+      <stop offset="100%" stop-color="#ffffff"/>
+    </linearGradient>
+    <linearGradient id="display" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" stop-color="#f7f7f7"/>
+      <stop offset="100%" stop-color="#d6d6d8"/>
+    </linearGradient>
+    <filter id="shadow" x="-20%" y="-20%" width="140%" height="140%">
+      <feDropShadow dx="0" dy="6" stdDeviation="8" flood-color="#4c7b8b" flood-opacity="0.18"/>
+    </filter>
+    <style>
+      .title { font: 700 34px 'Segoe UI', Arial, sans-serif; fill: #083d52; }
+      .subtitle { font: 600 20px 'Segoe UI', Arial, sans-serif; fill: #13526b; }
+      .label { font: 600 18px 'Segoe UI', Arial, sans-serif; fill: #163f4f; }
+      .small { font: 500 15px 'Segoe UI', Arial, sans-serif; fill: #275466; }
+      .axis { font: 600 14px 'Segoe UI', Arial, sans-serif; fill: #305869; }
+      .plotLabel { font: 600 16px 'Segoe UI', Arial, sans-serif; fill: #163f4f; }
+      .card { fill: rgba(255,255,255,0.28); stroke: rgba(255,255,255,0.32); stroke-width: 2; }
+      .grid { stroke: #b7d5e2; stroke-width: 1.2; stroke-dasharray: 5 5; }
+      .axisLine { stroke: #5a8090; stroke-width: 1.8; }
+    </style>
+  </defs>
+
+  <rect width="1600" height="1200" fill="#9ad6ed"/>
+
+  <text x="68" y="64" class="title">Sistema de aquecedor a gas com logica de abertura da torneira</text>
+  <text x="68" y="95" class="subtitle">Diagrama vetorial do processo e plots de entrada/saida para abrir e fechar o tap</text>
+
+  <rect x="48" y="118" width="1504" height="532" rx="28" class="card"/>
+  <rect x="48" y="680" width="1504" height="472" rx="28" class="card"/>
+
+  <text x="80" y="156" class="subtitle">1. Esquema funcional</text>
+  <text x="80" y="718" class="subtitle">2. Logica temporal</text>
+
+  <g filter="url(#shadow)">
+    <rect x="170" y="250" width="210" height="335" rx="6" fill="url(#metal)"/>
+    <rect x="190" y="500" width="170" height="70" rx="4" fill="#dfe1e4"/>
+    <rect x="233" y="164" width="58" height="92" rx="24" fill="url(#metal)"/>
+    <circle cx="262" cy="212" r="34" fill="#9f9fa4"/>
+    <circle cx="262" cy="212" r="25" fill="#cfcfd3"/>
+    <rect x="238" y="164" width="48" height="95" rx="18" fill="url(#tankMetal)"/>
+    <circle cx="225" cy="534" r="27" fill="#ffffff" stroke="#8d8f96" stroke-width="3"/>
+    <path d="M225 534 L231 520" stroke="#f54d3d" stroke-width="4" stroke-linecap="round"/>
+    <rect x="270" y="520" width="66" height="20" rx="3" fill="#afafb2"/>
+    <rect x="300" y="510" width="36" height="10" fill="#ef3131"/>
+  </g>
+  <text x="145" y="610" class="label">Aquecedor a gas</text>
+  <text x="120" y="635" class="small">igniter, valvula de gas, fan e LCD</text>
+
+  <g filter="url(#shadow)">
+    <rect x="575" y="346" width="268" height="372" rx="8" fill="url(#tankMetal)"/>
+    <rect x="575" y="346" width="268" height="14" fill="#c4c4c8"/>
+    <rect x="575" y="704" width="268" height="14" fill="#bcbcc2"/>
+    <circle cx="692" cy="458" r="26" fill="#ffffff" stroke="#9da0a6" stroke-width="3"/>
+    <path d="M692 458 L687 438" stroke="#e64747" stroke-width="4" stroke-linecap="round"/>
+    <circle cx="686" cy="603" r="47" fill="#a7a9ae"/>
+  </g>
+  <text x="616" y="756" class="label">Corpo termico / reservatorio</text>
+
+  <g filter="url(#shadow)">
+    <rect x="1134" y="195" width="202" height="108" fill="url(#display)" stroke="#8f9095" stroke-width="3"/>
+    <rect x="1152" y="212" width="164" height="52" fill="#ffffff" stroke="#8f9095" stroke-width="2.5"/>
+    <text x="1172" y="248" style="font: 700 34px monospace; fill: #55575e;">22C</text>
+    <rect x="1266" y="222" width="18" height="5" fill="#55575e"/>
+    <rect x="1266" y="231" width="18" height="5" fill="#55575e"/>
+    <rect x="1266" y="240" width="18" height="5" fill="#55575e"/>
+    <rect x="1266" y="249" width="18" height="5" fill="#55575e"/>
+    <path d="M1169 287 l14 -24 l14 24 z" fill="#2c2d31"/>
+    <rect x="1224" y="268" width="16" height="16" fill="#2c2d31"/>
+    <path d="M1283 264 l14 24 l14 -24 z" fill="#2c2d31"/>
+  </g>
+  <text x="1150" y="330" class="small">display / setpoint</text>
+
+  <g>
+    <path d="M98 220 L98 560 L194 560 L194 528" fill="none" stroke="#f2be16" stroke-width="10" stroke-linecap="round" stroke-linejoin="round"/>
+    <circle cx="98" cy="405" r="12" fill="#ffffff" stroke="#9da0a5" stroke-width="3"/>
+    <rect x="89" y="387" width="18" height="36" rx="7" fill="#ffffff" stroke="#9da0a5" stroke-width="3"/>
+    <line x1="92" y1="404" x2="104" y2="404" stroke="#f2be16" stroke-width="5" stroke-linecap="round"/>
+  </g>
+  <text x="78" y="194" class="label">Gas</text>
+
+  <g>
+    <path d="M311 565 L930 565" fill="none" stroke="#ff3b45" stroke-width="13" stroke-linecap="round"/>
+    <path d="M930 430 L1434 430" fill="none" stroke="#ff3b45" stroke-width="9" stroke-linecap="round"/>
+    <path d="M842 558 L1434 558" fill="none" stroke="#ff4d58" stroke-width="9" stroke-linecap="round"/>
+    <path d="M311 566 L311 684 L575 684" fill="none" stroke="#184da8" stroke-width="13" stroke-linecap="round" stroke-linejoin="round"/>
+    <path d="M843 548 L1342 548" fill="none" stroke="#2364d1" stroke-width="4" opacity="0.18"/>
+    <path d="M843 548 L1342 548" fill="none" stroke="#2364d1" stroke-width="0"/>
+    <path d="M843 674 L1298 674" fill="none" stroke="#194da9" stroke-width="12" stroke-linecap="round"/>
+    <path d="M842 508 L1315 508" fill="none" stroke="#1f62d0" stroke-width="9" stroke-linecap="round"/>
+  </g>
+
+  <g>
+    <rect x="1214" y="384" width="104" height="138" rx="50" fill="#144ba9"/>
+    <rect x="1214" y="454" width="104" height="17" fill="#0d3f8e"/>
+    <text x="1184" y="382" class="small">vaso de expansao</text>
+    <circle cx="1338" cy="512" r="33" fill="#ffffff" stroke="#17489d" stroke-width="4"/>
+    <path d="M1338 512 L1328 492" stroke="#3fd35c" stroke-width="4" stroke-linecap="round"/>
+    <path d="M1338 512 L1348 502" stroke="#e24848" stroke-width="4" stroke-linecap="round"/>
+  </g>
+
+  <g>
+    <path d="M1265 522 L1265 674" fill="none" stroke="#17489d" stroke-width="12" stroke-linecap="round"/>
+    <path d="M1265 508 L1265 430" fill="none" stroke="#17489d" stroke-width="12" stroke-linecap="round"/>
+    <path d="M1265 558 L1265 674" fill="none" stroke="#17489d" stroke-width="12" stroke-linecap="round"/>
+  </g>
+
+  <g>
+    <path d="M1318 558 L1440 558" fill="none" stroke="#ff4d58" stroke-width="12" stroke-linecap="round"/>
+    <path d="M1318 674 L1440 674" fill="none" stroke="#194da9" stroke-width="12" stroke-linecap="round"/>
+    <rect x="1398" y="543" width="86" height="26" rx="4" fill="#ff4d58"/>
+    <rect x="1398" y="661" width="86" height="24" rx="4" fill="#194da9"/>
+    <g stroke="#ffffff" stroke-width="8" stroke-linecap="round">
+      <line x1="1420" y1="570" x2="1420" y2="642"/>
+      <line x1="1440" y1="570" x2="1440" y2="642"/>
+      <line x1="1460" y1="570" x2="1460" y2="642"/>
+      <line x1="1480" y1="570" x2="1480" y2="642"/>
+      <line x1="1500" y1="570" x2="1500" y2="642"/>
+      <line x1="1418" y1="687" x2="1418" y2="727"/>
+      <line x1="1436" y1="687" x2="1436" y2="727"/>
+      <line x1="1454" y1="687" x2="1454" y2="727"/>
+      <line x1="1472" y1="687" x2="1472" y2="727"/>
+      <line x1="1490" y1="687" x2="1490" y2="727"/>
+    </g>
+    <g fill="#52c7ff">
+      <path d="M1420 742 C1412 727 1412 716 1420 704 C1428 716 1428 727 1420 742 Z"/>
+      <path d="M1440 742 C1432 727 1432 716 1440 704 C1448 716 1448 727 1440 742 Z"/>
+      <path d="M1460 742 C1452 727 1452 716 1460 704 C1468 716 1468 727 1460 742 Z"/>
+      <path d="M1480 742 C1472 727 1472 716 1480 704 C1488 716 1488 727 1480 742 Z"/>
+      <path d="M1500 742 C1492 727 1492 716 1500 704 C1508 716 1508 727 1500 742 Z"/>
+    </g>
+    <text x="1368" y="526" class="label">tap / shower</text>
+    <text x="1368" y="548" class="small">aberto =&gt; agua cai</text>
+  </g>
+
+  <g fill="#ffffff" stroke="#d94a4a" stroke-width="3">
+    <circle cx="1180" cy="430" r="9"/><circle cx="1087" cy="558" r="9"/><circle cx="965" cy="558" r="9"/>
+  </g>
+  <g fill="#ffffff" stroke="#2364d1" stroke-width="3">
+    <circle cx="1174" cy="508" r="9"/><circle cx="968" cy="674" r="9"/>
+  </g>
+  <g stroke-width="4" stroke-linecap="round">
+    <line x1="1173" y1="430" x2="1187" y2="430" stroke="#d94a4a"/>
+    <line x1="1080" y1="558" x2="1094" y2="558" stroke="#d94a4a"/>
+    <line x1="958" y1="558" x2="972" y2="558" stroke="#d94a4a"/>
+    <line x1="1167" y1="508" x2="1181" y2="508" stroke="#2364d1"/>
+    <line x1="961" y1="674" x2="975" y2="674" stroke="#2364d1"/>
+  </g>
+
+  <g>
+    <path d="M380 556 L468 556 L468 346 L1228 346 L1228 303" fill="none" stroke="#111111" stroke-width="5" stroke-linejoin="round"/>
+    <circle cx="468" cy="556" r="5" fill="#111111"/>
+  </g>
+
+  <g>
+    <text x="890" y="412" class="small">sensor temp saida</text>
+    <text x="900" y="491" class="small">sensor fluxo</text>
+    <text x="905" y="542" class="small">sensor tap</text>
+    <text x="900" y="654" class="small">sensor temp entrada</text>
+    <text x="335" y="706" class="small">agua fria</text>
+    <text x="420" y="548" class="small">agua quente</text>
+  </g>
+
+  <g>
+    <rect x="1125" y="355" width="112" height="34" rx="17" fill="#ffffff" opacity="0.75"/>
+    <circle cx="1210" cy="372" r="14" fill="#00b35f"/>
+    <text x="1142" y="378" class="small">fan ON</text>
+    <rect x="380" y="196" width="212" height="70" rx="18" fill="#ffffff" opacity="0.72"/>
+    <text x="404" y="226" class="label">Estado</text>
+    <text x="404" y="250" class="small">tap aberto - aquecimento ativo</text>
+  </g>
+
+  <g transform="translate(88,752)">
+    <rect x="0" y="0" width="1420" height="360" rx="24" fill="#f9fdff" opacity="0.94"/>
+
+    <g transform="translate(0,0)">
+      <line x1="120" y1="64" x2="1350" y2="64" class="grid"/>
+      <line x1="120" y1="32" x2="120" y2="96" class="axisLine"/>
+      <line x1="120" y1="96" x2="1350" y2="96" class="axisLine"/>
+      <text x="0" y="58" class="plotLabel">Tap open</text>
+      <text x="40" y="88" class="axis">0/1</text>
+      <polyline fill="none" stroke="#176ab6" stroke-width="5" points="120,96 268,96 268,32 1022,32 1022,96 1350,96"/>
+    </g>
+
+    <g transform="translate(0,108)">
+      <line x1="120" y1="64" x2="1350" y2="64" class="grid"/>
+      <line x1="120" y1="32" x2="120" y2="96" class="axisLine"/>
+      <line x1="120" y1="96" x2="1350" y2="96" class="axisLine"/>
+      <text x="0" y="58" class="plotLabel">Flow [L/min]</text>
+      <text x="40" y="88" class="axis">0..8</text>
+      <polyline fill="none" stroke="#1fbad6" stroke-width="5" points="120,96 268,96 388,32 962,32 1022,96 1350,96"/>
+    </g>
+
+    <g transform="translate(0,216)">
+      <line x1="120" y1="64" x2="1350" y2="64" class="grid"/>
+      <line x1="120" y1="32" x2="120" y2="96" class="axisLine"/>
+      <line x1="120" y1="96" x2="1350" y2="96" class="axisLine"/>
+      <text x="0" y="58" class="plotLabel">Setpoint [C]</text>
+      <text x="40" y="88" class="axis">0..40</text>
+      <polyline fill="none" stroke="#e13a35" stroke-width="5" points="120,96 248,96 248,32 1022,32 1022,96 1350,96"/>
+    </g>
+
+    <g transform="translate(710,0)">
+      <line x1="120" y1="64" x2="620" y2="64" class="grid"/>
+      <line x1="120" y1="32" x2="120" y2="96" class="axisLine"/>
+      <line x1="120" y1="96" x2="620" y2="96" class="axisLine"/>
+      <text x="0" y="58" class="plotLabel">Igniter</text>
+      <text x="40" y="88" class="axis">pulse</text>
+      <polyline fill="none" stroke="#915fd4" stroke-width="5" points="120,96 182,96 182,32 252,32 252,96 620,96"/>
+    </g>
+
+    <g transform="translate(710,108)">
+      <line x1="120" y1="64" x2="620" y2="64" class="grid"/>
+      <line x1="120" y1="32" x2="120" y2="96" class="axisLine"/>
+      <line x1="120" y1="96" x2="620" y2="96" class="axisLine"/>
+      <text x="0" y="58" class="plotLabel">Gas valve [%]</text>
+      <text x="40" y="88" class="axis">0..60</text>
+      <polyline fill="none" stroke="#2f9d3b" stroke-width="5" points="120,96 220,96 332,32 560,32 620,96"/>
+    </g>
+
+    <g transform="translate(710,216)">
+      <line x1="120" y1="64" x2="620" y2="64" class="grid"/>
+      <line x1="120" y1="32" x2="120" y2="96" class="axisLine"/>
+      <line x1="120" y1="96" x2="620" y2="96" class="axisLine"/>
+      <text x="0" y="58" class="plotLabel">Outlet temp [C]</text>
+      <text x="40" y="88" class="axis">15..40</text>
+      <polyline fill="none" stroke="#e56fd1" stroke-width="5" points="120,96 220,96 420,32 560,32 620,96"/>
+    </g>
+
+    <g>
+      <line x1="120" y1="12" x2="120" y2="336" class="grid"/>
+      <line x1="242" y1="12" x2="242" y2="336" class="grid"/>
+      <line x1="364" y1="12" x2="364" y2="336" class="grid"/>
+      <line x1="486" y1="12" x2="486" y2="336" class="grid"/>
+      <line x1="608" y1="12" x2="608" y2="336" class="grid"/>
+      <line x1="730" y1="12" x2="730" y2="336" class="grid"/>
+      <line x1="852" y1="12" x2="852" y2="336" class="grid"/>
+      <line x1="974" y1="12" x2="974" y2="336" class="grid"/>
+      <line x1="1096" y1="12" x2="1096" y2="336" class="grid"/>
+      <line x1="1218" y1="12" x2="1218" y2="336" class="grid"/>
+      <line x1="1350" y1="12" x2="1350" y2="336" class="grid"/>
+      <text x="116" y="352" class="axis">0</text>
+      <text x="236" y="352" class="axis">1</text>
+      <text x="358" y="352" class="axis">2</text>
+      <text x="480" y="352" class="axis">3</text>
+      <text x="602" y="352" class="axis">4</text>
+      <text x="724" y="352" class="axis">5</text>
+      <text x="846" y="352" class="axis">6</text>
+      <text x="968" y="352" class="axis">7</text>
+      <text x="1090" y="352" class="axis">8</text>
+      <text x="1212" y="352" class="axis">9</text>
+      <text x="1330" y="352" class="axis">10 s</text>
+    </g>
+
+    <g>
+      <rect x="184" y="6" width="340" height="28" rx="14" fill="#ffffff" opacity="0.88"/>
+      <text x="198" y="25" class="small">1.2 s: usuario abre a torneira</text>
+      <rect x="948" y="6" width="302" height="28" rx="14" fill="#ffffff" opacity="0.88"/>
+      <text x="964" y="25" class="small">8.4 s: usuario fecha a torneira</text>
+    </g>
+  </g>
+
+  <g>
+    <rect x="102" y="1090" width="1278" height="40" rx="20" fill="#ffffff" opacity="0.75"/>
+    <text x="124" y="1116" class="small">Sequencia: tap abre - sensor de fluxo detecta - igniter pulsa - fan liga - valvula de gas modula - temperatura sobe - tap fecha - fluxo cai - combustao desliga.</text>
+  </g>
+</svg>

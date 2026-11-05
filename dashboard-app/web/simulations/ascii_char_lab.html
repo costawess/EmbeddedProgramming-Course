@@ -1,0 +1,713 @@
+﻿<!DOCTYPE html>
+<html lang="en" data-sync-dashboard-lights="true">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Embedded Programming - ASCII Char</title>
+    <script>
+    (() => {
+      try {
+        const storedLights = localStorage.getItem("embedded-dashboard-lights-on");
+        const legacyStoredLights = localStorage.getItem("embedded-lights-on");
+        const resolvedLights = storedLights ?? legacyStoredLights;
+        if (resolvedLights === "false") {
+          document.documentElement.classList.add("theme-dark");
+        }
+      } catch (error) {
+        // Ignore storage failures and keep the light theme.
+      }
+    })();
+  </script>
+  <script src="../shared/mouse_glow.js"></script>
+  <script src="../shared/page_header.js"></script>
+  <style>
+    :root {
+      --bg: #0f2230;
+      --panel: rgba(20, 36, 48, 0.94);
+      --card: rgba(30, 50, 65, 0.96);
+      --line: #37586d;
+      --text: #edf7fb;
+      --subtle: #9db9c8;
+      --accent: #63c4ff;
+      --accent-soft: rgba(99, 196, 255, 0.14);
+      --green: #2fc76b;
+      --yellow: #ffcc45;
+      --red: #ff6b65;
+      --purple: #b98cff;
+      --white: #f6fbff;
+      --button-bg: #173245;
+      --code-bg: #0d1720;
+      --stage-bg: linear-gradient(180deg, #162c3b 0%, #11202a 100%);
+      --shadow: 0 14px 34px rgba(0, 0, 0, 0.28);
+    }
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      min-height: 100vh;
+      font-family: "Segoe UI", Arial, sans-serif;
+      color: var(--text);
+      background: radial-gradient(circle at top, #193549 0%, var(--bg) 58%, #081118 100%);
+    }
+    .app { padding: 22px; display: grid; gap: 18px; }
+    .header, .panel {
+      background: var(--panel);
+      border: 1px solid var(--line);
+      border-radius: 28px;
+      box-shadow: var(--shadow);
+    }
+    .header {
+      padding: 18px 20px;
+      display: grid;
+      grid-template-columns: auto minmax(0, 1fr) auto;
+      gap: 16px;
+      align-items: center;
+    }
+    .back {
+      color: var(--text);
+      text-decoration: none;
+      border: 2px solid var(--line);
+      border-radius: 16px;
+      padding: 12px 16px;
+      background: var(--button-bg);
+      font-weight: 800;
+    }
+    .brand-logo { width: 132px; max-width: 100%; height: auto; object-fit: contain; }
+    .title h1 { margin: 0; font-size: clamp(28px, 3vw, 46px); }
+    .title p { margin: 6px 0 0; color: var(--subtle); line-height: 1.45; }
+    .layout {
+      display: grid;
+      grid-template-columns: minmax(320px, 0.95fr) minmax(420px, 1.05fr) minmax(380px, 0.95fr);
+      gap: 18px;
+      align-items: start;
+    }
+    .panel { padding: 18px; display: grid; gap: 14px; }
+    .panel h2, .panel h3, .panel p { margin: 0; }
+    .topic-head { display: grid; gap: 8px; }
+    .topic-head p, .helper-text, .code-note { color: var(--subtle); line-height: 1.45; }
+    .status-pill {
+      justify-self: start;
+      border: 2px solid var(--accent);
+      border-radius: 999px;
+      padding: 10px 16px;
+      background: var(--accent-soft);
+      color: var(--accent);
+      font-weight: 800;
+    }
+    .controls-card, .visual-card, .memory-card, .ascii-card, .code-card {
+      background: var(--card);
+      border: 1px solid var(--line);
+      border-radius: 22px;
+      padding: 14px;
+      display: grid;
+      gap: 12px;
+    }
+    .card-head {
+      display: flex;
+      justify-content: space-between;
+      gap: 12px;
+      align-items: center;
+      flex-wrap: wrap;
+    }
+    .controls-grid, .control-row { display: grid; gap: 8px; }
+    .value-line {
+      display: flex;
+      justify-content: space-between;
+      gap: 12px;
+      color: var(--subtle);
+      font-size: 14px;
+      font-weight: 700;
+    }
+    .field-label { color: var(--subtle); font-size: 14px; font-weight: 700; }
+    input[type="range"], input[type="number"], input[type="text"] {
+      width: 100%;
+      padding: 11px 12px;
+      border-radius: 14px;
+      border: 2px solid var(--line);
+      background: rgba(11, 24, 34, 0.84);
+      color: var(--text);
+      font: inherit;
+    }
+    input[type="range"] { padding: 0; accent-color: var(--accent); }
+    .control-inline { display: flex; gap: 10px; flex-wrap: wrap; }
+    button.action-btn, .copy-btn {
+      appearance: none;
+      border: 2px solid var(--line);
+      border-radius: 14px;
+      padding: 10px 14px;
+      background: var(--button-bg);
+      color: var(--text);
+      font-weight: 800;
+      cursor: pointer;
+    }
+    button.action-btn.active, .copy-btn:hover {
+      border-color: var(--accent);
+      background: var(--accent-soft);
+      color: var(--white);
+    }
+    .copy-btn.copied { border-color: var(--green); background: rgba(47, 199, 107, 0.14); }
+    .visual-stage {
+      min-height: 380px;
+      border-radius: 20px;
+      border: 1px solid var(--line);
+      background: var(--stage-bg);
+      padding: 18px;
+      display: grid;
+      place-items: center;
+      overflow: hidden;
+    }
+    .visual-wrap { width: 100%; max-width: 520px; display: grid; gap: 14px; }
+    .summary-grid {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 12px;
+    }
+    .summary-box, .memory-byte, .helper-card {
+      border-radius: 18px;
+      border: 1px solid var(--line);
+      background: rgba(255, 255, 255, 0.04);
+      padding: 14px;
+      display: grid;
+      gap: 6px;
+    }
+    .summary-box strong, .helper-card strong, .memory-byte strong { color: var(--subtle); font-size: 13px; }
+    .summary-box span, .helper-card span, .memory-byte span { color: var(--white); font-weight: 900; }
+    .summary-box span { font-size: 26px; }
+    .char-stage {
+      display: grid;
+      grid-template-columns: minmax(0, 0.9fr) minmax(0, 1.1fr);
+      gap: 14px;
+      align-items: stretch;
+    }
+    .char-card {
+      border-radius: 22px;
+      border: 1px solid var(--line);
+      background: rgba(8, 18, 24, 0.48);
+      min-height: 210px;
+      display: grid;
+      place-items: center;
+      padding: 16px;
+      text-align: center;
+    }
+    .char-glyph {
+      width: 150px;
+      height: 150px;
+      border-radius: 28px;
+      display: grid;
+      place-items: center;
+      border: 2px solid rgba(99, 196, 255, 0.35);
+      background: radial-gradient(circle at top, rgba(99, 196, 255, 0.22) 0%, rgba(11, 24, 34, 0.84) 72%);
+      color: var(--white);
+      font-size: 70px;
+      font-weight: 900;
+      letter-spacing: 0.03em;
+    }
+    .char-glyph.small-text { font-size: 24px; }
+    .byte-grid {
+      display: grid;
+      grid-template-columns: repeat(8, minmax(0, 1fr));
+      gap: 8px;
+    }
+    .bit-card {
+      border-radius: 14px;
+      border: 1px solid var(--line);
+      background: rgba(255, 255, 255, 0.03);
+      padding: 10px 4px;
+      display: grid;
+      gap: 6px;
+      text-align: center;
+      justify-items: center;
+    }
+    .bit-card.active {
+      border-color: var(--accent);
+      background: var(--accent-soft);
+      box-shadow: 0 0 0 2px rgba(99, 196, 255, 0.10);
+    }
+    .bit-index { color: var(--subtle); font-size: 11px; font-weight: 700; }
+    .bit-value {
+      width: 34px;
+      height: 34px;
+      border-radius: 12px;
+      display: grid;
+      place-items: center;
+      font-size: 18px;
+      font-weight: 900;
+      background: rgba(7, 15, 21, 0.78);
+    }
+    .formula-box {
+      border-radius: 18px;
+      border: 2px dashed var(--line);
+      padding: 14px;
+      text-align: center;
+      color: var(--subtle);
+      line-height: 1.45;
+    }
+    .formula-box strong { color: var(--white); }
+    .memory-grid {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 12px;
+    }
+    .memory-byte span.code, .summary-box span.code {
+      font-family: Consolas, "Courier New", monospace;
+      word-break: break-all;
+    }
+    .ascii-table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 14px;
+    }
+    .ascii-table th, .ascii-table td {
+      padding: 8px 10px;
+      text-align: left;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+    }
+    .ascii-table th { color: var(--subtle); font-weight: 800; }
+    .ascii-table td.code { font-family: Consolas, "Courier New", monospace; }
+    .ascii-table tr.active-row {
+      background: rgba(99, 196, 255, 0.14);
+      box-shadow: inset 3px 0 0 rgba(99, 196, 255, 0.9);
+    }
+    .legend-row {
+      display: flex;
+      gap: 10px;
+      flex-wrap: wrap;
+    }
+    .legend-chip {
+      border-radius: 999px;
+      padding: 8px 12px;
+      border: 1px solid var(--line);
+      background: rgba(255, 255, 255, 0.04);
+      color: var(--subtle);
+      font-size: 13px;
+      font-weight: 800;
+    }
+    pre.code-block {
+      margin: 0;
+      min-height: 520px;
+      padding: 16px;
+      border-radius: 18px;
+      border: 1px solid var(--line);
+      background: var(--code-bg);
+      color: #d8f2ff;
+      font-family: Consolas, "Courier New", monospace;
+      font-size: 13px;
+      line-height: 1.5;
+      white-space: pre-wrap;
+      user-select: text;
+      -webkit-user-select: text;
+      cursor: text;
+    }
+    .code-line { display: block; margin: 0 -6px; padding: 1px 6px; border-radius: 8px; transition: background 0.16s ease, box-shadow 0.16s ease; }
+    .code-line.active { background: rgba(99, 196, 255, 0.16); box-shadow: inset 3px 0 0 rgba(99, 196, 255, 0.9); color: var(--white); }
+    @media (max-width: 1320px) {
+      .layout { grid-template-columns: 1fr; }
+      pre.code-block { min-height: 380px; }
+    }
+    @media (max-width: 760px) {
+      .header { grid-template-columns: 1fr; }
+      .summary-grid, .memory-grid, .char-stage { grid-template-columns: 1fr; }
+      .byte-grid { grid-template-columns: repeat(4, minmax(0, 1fr)); }
+    }
+  </style>
+</head>
+<body>
+  <div class="app">
+    <header class="header">
+      <a class="back" href="../index.html">Back to menu</a>
+      <div class="title">
+        <h1>ASCII Char</h1>
+        <p>Explore how a `char` stores one ASCII symbol, how that symbol maps to decimal, hexadecimal, and binary, and how the byte looks in memory.</p>
+      </div>
+      <img class="brand-logo" src="../../assets/branding/hanze_logo.png" alt="Hanze logo" />
+    </header>
+
+    <section class="layout">
+      <section class="panel">
+        <div class="topic-head">
+          <h2>Characters as Variables</h2>
+          <p>Use one ASCII code from `0` to `127`, and see how a `char` can represent a printable symbol or a control code.</p>
+          <div class="status-pill" id="statusPill">char letter = 'A' | ASCII 65</div>
+        </div>
+
+        <div class="controls-card">
+          <h3>Interactive controls</h3>
+          <div class="controls-grid">
+            <div class="control-row">
+              <div class="value-line"><span>ASCII code (â† â†’)</span><span id="codeValue">65</span></div>
+              <input id="codeSlider" type="range" min="0" max="127" step="1" value="65" />
+            </div>
+            <div class="control-row">
+              <div class="field-label">Decimal input</div>
+              <input id="codeInput" type="number" min="0" max="127" step="1" value="65" />
+            </div>
+            <div class="control-row">
+              <div class="field-label">Character input</div>
+              <input id="charInput" type="text" maxlength="1" value="A" />
+            </div>
+            <div class="control-row">
+              <div class="field-label">Quick examples</div>
+              <div class="control-inline">
+                <button class="action-btn quick-char" type="button" data-code="65">A</button>
+                <button class="action-btn quick-char" type="button" data-code="97">a</button>
+                <button class="action-btn quick-char" type="button" data-code="48">0</button>
+                <button class="action-btn quick-char" type="button" data-code="32">Space</button>
+                <button class="action-btn quick-char" type="button" data-code="10">LF</button>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="visual-card">
+          <h3>System view</h3>
+          <div class="visual-stage">
+            <div class="visual-wrap">
+              <div class="summary-grid" id="summaryGrid"></div>
+              <div class="char-stage">
+                <div class="char-card">
+                  <div class="char-glyph" id="charGlyph">A</div>
+                </div>
+                <div class="helper-card">
+                  <strong>ASCII meaning</strong>
+                  <span id="charMeaning">Uppercase letter A</span>
+                  <div class="legend-row" id="legendRow"></div>
+                </div>
+              </div>
+              <div class="formula-box" id="formulaBox"></div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section class="panel">
+        <div class="memory-card">
+          <h2>Memory view</h2>
+          <p class="helper-text">A `char` occupies exactly one byte. In ASCII, only the lower 7 bits are used, so bit 7 stays `0`.</p>
+          <div class="byte-grid" id="byteGrid"></div>
+          <div class="memory-grid" id="memoryGrid"></div>
+        </div>
+
+        <div class="ascii-card">
+          <h2>ASCII neighborhood</h2>
+          <p class="helper-text">The table centers on the current value, so students can compare nearby characters quickly.</p>
+          <table class="ascii-table">
+            <thead>
+              <tr>
+                <th>Dec</th>
+                <th>Hex</th>
+                <th>Bin</th>
+                <th>Char</th>
+                <th>Meaning</th>
+              </tr>
+            </thead>
+            <tbody id="asciiTableBody"></tbody>
+          </table>
+        </div>
+      </section>
+
+      <section class="panel">
+        <div class="code-card">
+          <div class="card-head">
+            <h2>Code</h2>
+            <button class="copy-btn" id="copyCodeBtn" type="button">Copy code</button>
+          </div>
+          <pre class="code-block" id="codeBlock"></pre>
+        </div>
+      </section>
+    </section>
+  </div>
+
+  <script>
+    const CONTROL_NAMES = {
+      0: "NUL", 1: "SOH", 2: "STX", 3: "ETX", 4: "EOT", 5: "ENQ", 6: "ACK", 7: "BEL",
+      8: "BS", 9: "TAB", 10: "LF", 11: "VT", 12: "FF", 13: "CR", 14: "SO", 15: "SI",
+      16: "DLE", 17: "DC1", 18: "DC2", 19: "DC3", 20: "DC4", 21: "NAK", 22: "SYN", 23: "ETB",
+      24: "CAN", 25: "EM", 26: "SUB", 27: "ESC", 28: "FS", 29: "GS", 30: "RS", 31: "US",
+      32: "SPACE", 127: "DEL"
+    };
+
+    const state = { code: 65 };
+
+    const statusPill = document.getElementById("statusPill");
+    const codeSlider = document.getElementById("codeSlider");
+    const codeInput = document.getElementById("codeInput");
+    const charInput = document.getElementById("charInput");
+    const codeValue = document.getElementById("codeValue");
+    const summaryGrid = document.getElementById("summaryGrid");
+    const charGlyph = document.getElementById("charGlyph");
+    const charMeaning = document.getElementById("charMeaning");
+    const legendRow = document.getElementById("legendRow");
+    const formulaBox = document.getElementById("formulaBox");
+    const byteGrid = document.getElementById("byteGrid");
+    const memoryGrid = document.getElementById("memoryGrid");
+    const asciiTableBody = document.getElementById("asciiTableBody");
+    const codeBlock = document.getElementById("codeBlock");
+    const copyCodeBtn = document.getElementById("copyCodeBtn");
+
+    function clamp(value, min, max) {
+      return Math.min(max, Math.max(min, value));
+    }
+
+    function escapeHtml(value) {
+      return String(value || "").replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/"/g, "&quot;");
+    }
+
+    function renderHighlightedCode(text, activeLines = []) {
+      const normalized = String(text || "");
+      const activeSet = new Set(activeLines);
+      codeBlock.dataset.rawCode = normalized;
+      codeBlock.innerHTML = normalized.split("\n").map((line, index) => {
+        const safeLine = line.length ? escapeHtml(line) : "&nbsp;";
+        return `<span class="code-line ${activeSet.has(index + 1) ? "active" : ""}">${safeLine}</span>`;
+      }).join("");
+    }
+
+    async function copyTextToClipboard(text) {
+      if (navigator.clipboard && window.isSecureContext) {
+        await navigator.clipboard.writeText(text);
+        return;
+      }
+      const area = document.createElement("textarea");
+      area.value = text;
+      area.setAttribute("readonly", "");
+      area.style.position = "fixed";
+      area.style.opacity = "0";
+      document.body.appendChild(area);
+      area.select();
+      document.execCommand("copy");
+      area.remove();
+    }
+
+    function toBinary8(code) {
+      return code.toString(2).padStart(8, "0");
+    }
+
+    function toHex2(code) {
+      return `0x${code.toString(16).toUpperCase().padStart(2, "0")}`;
+    }
+
+    function toOctal3(code) {
+      return code.toString(8).padStart(3, "0");
+    }
+
+    function isPrintable(code) {
+      return code >= 32 && code <= 126;
+    }
+
+    function getControlName(code) {
+      return CONTROL_NAMES[code] || "CTRL";
+    }
+
+    function getDisplayText(code) {
+      if (code === 32) return "SPACE";
+      if (isPrintable(code)) return String.fromCharCode(code);
+      return getControlName(code);
+    }
+
+    function getVisualMeaning(code) {
+      if (code >= 65 && code <= 90) return `Uppercase letter ${String.fromCharCode(code)}`;
+      if (code >= 97 && code <= 122) return `Lowercase letter ${String.fromCharCode(code)}`;
+      if (code >= 48 && code <= 57) return `Digit ${String.fromCharCode(code)}`;
+      if (code === 32) return "Whitespace: space";
+      if (code === 9) return "Whitespace: horizontal tab";
+      if (code === 10) return "Control code: line feed";
+      if (code === 13) return "Control code: carriage return";
+      if (isPrintable(code)) return `Printable symbol ${String.fromCharCode(code)}`;
+      return `Control code ${getControlName(code)}`;
+    }
+
+    function getTags(code) {
+      const tags = ["char = 1 byte"];
+      if (isPrintable(code)) tags.push("printable");
+      else tags.push("control code");
+      if (code >= 65 && code <= 90) tags.push("uppercase");
+      else if (code >= 97 && code <= 122) tags.push("lowercase");
+      else if (code >= 48 && code <= 57) tags.push("digit");
+      else if (code === 32 || code === 9 || code === 10 || code === 13) tags.push("whitespace");
+      return tags;
+    }
+
+    function getCharLiteral(code) {
+      if (code === 10) return "'\\n'";
+      if (code === 13) return "'\\r'";
+      if (code === 9) return "'\\t'";
+      if (code === 39) return "'\\''";
+      if (code === 92) return "'\\\\'";
+      if (code === 32) return "' '";
+      if (isPrintable(code)) return `'${String.fromCharCode(code)}'`;
+      return toHex2(code);
+    }
+
+    function getSerialTextLiteral(code) {
+      if (code === 10) return '"\\\\n"';
+      if (code === 13) return '"\\\\r"';
+      if (code === 9) return '"\\\\t"';
+      if (code === 32) return '"space"';
+      if (isPrintable(code) && code !== 34 && code !== 92) return `"${String.fromCharCode(code)}"`;
+      return `"${getControlName(code)}"`;
+    }
+
+    function setCode(nextCode) {
+      state.code = clamp(Number(nextCode) || 0, 0, 127);
+      renderAll();
+    }
+
+    function renderSummary() {
+      const code = state.code;
+      summaryGrid.innerHTML = `
+        <div class="summary-box"><strong>ASCII decimal</strong><span>${code}</span></div>
+        <div class="summary-box"><strong>Hexadecimal</strong><span class="code">${toHex2(code)}</span></div>
+        <div class="summary-box"><strong>Binary</strong><span class="code">${toBinary8(code)}</span></div>
+        <div class="summary-box"><strong>Octal</strong><span class="code">${toOctal3(code)}</span></div>
+      `;
+    }
+
+    function renderVisual() {
+      const code = state.code;
+      const displayText = getDisplayText(code);
+      const literal = getCharLiteral(code);
+
+      codeValue.textContent = String(code);
+      codeSlider.value = String(code);
+      codeInput.value = String(code);
+      charInput.value = isPrintable(code) && code !== 32 ? String.fromCharCode(code) : "";
+
+      charGlyph.textContent = displayText;
+      charGlyph.classList.toggle("small-text", displayText.length > 1);
+      charMeaning.textContent = getVisualMeaning(code);
+      statusPill.textContent = `char letter = ${literal} | ASCII ${code}`;
+      legendRow.innerHTML = getTags(code).map(tag => `<span class="legend-chip">${tag}</span>`).join("");
+      formulaBox.innerHTML = `Stored byte = <strong>${toBinary8(code)}</strong><br />In memory that is <strong>${toHex2(code)}</strong>, which means decimal <strong>${code}</strong>.`;
+    }
+
+    function renderMemory() {
+      const code = state.code;
+      const binary = toBinary8(code);
+      byteGrid.innerHTML = binary.split("").map((bit, index) => {
+        const bitIndex = 7 - index;
+        return `
+          <div class="bit-card ${bit === "1" ? "active" : ""}">
+            <div class="bit-index">bit ${bitIndex}</div>
+            <div class="bit-value">${bit}</div>
+            <div class="bit-index">${1 << bitIndex}</div>
+          </div>
+        `;
+      }).join("");
+      memoryGrid.innerHTML = `
+        <div class="memory-byte"><strong>Memory address</strong><span class="code">0x20000020</span></div>
+        <div class="memory-byte"><strong>Stored byte</strong><span class="code">${toHex2(code)} (${binary})</span></div>
+        <div class="memory-byte"><strong>Type size</strong><span>1 byte</span></div>
+        <div class="memory-byte"><strong>Bit 7</strong><span>${binary[0]} = unused in 7-bit ASCII</span></div>
+      `;
+    }
+
+    function renderAsciiTable() {
+      const code = state.code;
+      const start = clamp(code - 4, 0, 127);
+      const end = clamp(start + 8, 0, 127);
+      const rows = [];
+      for (let current = Math.max(0, end - 8); current <= end; current++) {
+        const meaning = getVisualMeaning(current);
+        const charCell = current === 32 ? "SPACE" : isPrintable(current) ? String.fromCharCode(current) : getControlName(current);
+        rows.push(`
+          <tr class="${current === code ? "active-row" : ""}">
+            <td>${current}</td>
+            <td class="code">${toHex2(current)}</td>
+            <td class="code">${toBinary8(current)}</td>
+            <td class="code">${escapeHtml(charCell)}</td>
+            <td>${escapeHtml(meaning)}</td>
+          </tr>
+        `);
+      }
+      asciiTableBody.innerHTML = rows.join("");
+    }
+
+    function renderCode() {
+      const code = state.code;
+      const literal = getCharLiteral(code);
+      const textLiteral = getSerialTextLiteral(code);
+      const codeText = `char letter = ${literal};
+
+void setup() {
+  Serial.begin(115200);
+}
+
+void loop() {
+  byte rawValue = (byte) letter;
+
+  Serial.print("char = ");
+  Serial.println(${textLiteral});
+
+  Serial.print("ASCII decimal = ");
+  Serial.println(rawValue);
+
+  Serial.print("ASCII hex = ");
+  Serial.println(rawValue, HEX);
+
+  delay(600);
+}`;
+      const activeLines = isPrintable(code) ? [1, 7, 9, 10, 12, 13, 15, 16] : [1, 7, 9, 10, 12, 13, 15, 16];
+      renderHighlightedCode(codeText, activeLines);
+    }
+
+    function renderAll() {
+      renderSummary();
+      renderVisual();
+      renderMemory();
+      renderAsciiTable();
+      renderCode();
+    }
+
+    codeSlider.addEventListener("input", event => {
+      setCode(event.target.value);
+    });
+
+    codeInput.addEventListener("input", event => {
+      setCode(event.target.value);
+    });
+
+    charInput.addEventListener("input", event => {
+      const value = event.target.value;
+      if (!value) return;
+      setCode(value.charCodeAt(0));
+    });
+
+    document.querySelectorAll(".quick-char").forEach(button => {
+      button.addEventListener("click", () => {
+        setCode(button.dataset.code);
+      });
+    });
+
+    window.addEventListener("keydown", event => {
+      const active = document.activeElement;
+      if (active && (active.tagName === "INPUT" || active.tagName === "TEXTAREA" || active.tagName === "SELECT")) return;
+      if (event.key === "ArrowLeft") {
+        event.preventDefault();
+        setCode(state.code - 1);
+      } else if (event.key === "ArrowRight") {
+        event.preventDefault();
+        setCode(state.code + 1);
+      }
+    });
+
+    copyCodeBtn.addEventListener("click", async () => {
+      const originalLabel = copyCodeBtn.textContent;
+      try {
+        await copyTextToClipboard(codeBlock.dataset.rawCode || codeBlock.textContent);
+        copyCodeBtn.textContent = "Copied";
+        copyCodeBtn.classList.add("copied");
+      } catch (error) {
+        copyCodeBtn.textContent = "Copy failed";
+      }
+      window.setTimeout(() => {
+        copyCodeBtn.textContent = originalLabel;
+        copyCodeBtn.classList.remove("copied");
+      }, 1400);
+    });
+
+    renderAll();
+  </script>
+  <script src="../shared/sound_fx.js"></script>
+</body>
+</html>
+
+
